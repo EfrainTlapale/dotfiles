@@ -239,3 +239,8 @@ export NVM_DIR="$HOME/.nvm"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+
+# What OS are we running?
+if [[ $(uname) == "Darwin" ]]; then
+  export XDG_CONFIG_HOME="$HOME/.config"
+fi
