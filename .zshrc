@@ -210,6 +210,7 @@ alias connect-wf='bluetoothctl connect AA:BB:CC:DD:EE:01'
 alias connect-wh='bluetoothctl connect AA:BB:CC:DD:EE:02'
 alias connect-pods='bluetoothctl connect AA:BB:CC:DD:EE:03'
 alias connect-mouse='bluetoothctl connect AA:BB:CC:DD:EE:04' 
+alias connect-ora='bluetoothctl connect AA:BB:CC:DD:EE:05' 
 
 showTestVideo() {
   fd -I .webm -x xdg-open
