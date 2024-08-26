@@ -329,6 +329,9 @@ require("conform").setup({
 vim.api.nvim_create_user_command('RunTests', ':TermExec cmd="./run_tests_local.sh" direction="vertical" size=80',
   {})
 
+vim.api.nvim_create_user_command('DismissNotifications', ":lua require('notify').dismiss()",
+  {})
+
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile' }, {
   pattern = '.env*',
   command = 'set filetype=bash',
