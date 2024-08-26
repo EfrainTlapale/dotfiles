@@ -205,12 +205,20 @@ isort() {
    docker exec -it django-app-my-server isort .
 }
 
+connectBtDevice() {
+  if [[ $(uname) == "Darwin" ]]; then
+    blueutil --connect $1
+  else
+    bluetoothctl connect $1
+  fi
+}
+
 # Personal aliases
-alias connect-wf='bluetoothctl connect AA:BB:CC:DD:EE:01'
-alias connect-wh='bluetoothctl connect AA:BB:CC:DD:EE:02'
-alias connect-pods='bluetoothctl connect AA:BB:CC:DD:EE:03'
-alias connect-mouse='bluetoothctl connect AA:BB:CC:DD:EE:04' 
-alias connect-ora='bluetoothctl connect AA:BB:CC:DD:EE:05' 
+alias connect-wf='connectBtDevice AA:BB:CC:DD:EE:01'
+alias connect-wh='connectBtDevice AA:BB:CC:DD:EE:02'
+alias connect-pods='connectBtDevice AA:BB:CC:DD:EE:03'
+alias connect-mouse='connectBtDevice AA:BB:CC:DD:EE:04' 
+alias connect-ora='connectBtDevice AA:BB:CC:DD:EE:05' 
 
 showTestVideo() {
   fd -I .webm -x xdg-open
