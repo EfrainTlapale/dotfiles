@@ -114,14 +114,13 @@ local on_attach = function(client, bufnr)
     vim.lsp.buf.execute_command(params)
     vim.cmd('EslintFixAll')
   end, { desc = 'Organize Imports' })
-
-  vim.api.nvim_buf_create_user_command(bufnr, 'RemoveUnusedCode', function(_)
-    vim.lsp.buf.code_action({ async = false, apply = true, context = { only = { 'source.removeUnused' } } })
-  end, { desc = 'Remove all unused code' })
 end
 
 local servers = {
-  tsserver = {},
+  -- tsserver = {},
+  vtsls = {
+    autoUseWorkspaceTsdk = true
+  },
   lua_ls = {},
   eslint = {},
   cssls = {},
@@ -153,6 +152,10 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
+    --  TEMP PATCH: fixme after mason thingy is updated
+    if server_name == "tsserver" then
+      server_name = "ts_ls"
+    end
     require('lspconfig')[server_name].setup {
       capabilities = capabilities,
       on_attach = on_attach,
@@ -203,9 +206,23 @@ cmp.setup {
 
 
 local function quickFix()
+  local is_first = true
   -- Filter actions by _typescipr/workspace_edit or eslint.applySuggestion to mimic coc code action
-  -- Probably even choose the first one to "quickfix", observations show that the first one is the "correct" to apply
-  vim.lsp.buf.code_action({ async = false, apply = true, context = { only = { 'quickfix' } } })
+  -- generaly the first option is the common fix, so for quickfix we filter just the first one
+  -- and apply it
+  vim.lsp.buf.code_action({
+    async = false,
+    filter = function(a)
+      if is_first then
+        is_first = false
+        return true
+      end
+
+      return false
+    end,
+    apply = true,
+    context = { only = { 'quickfix' } }
+  })
 end
 
 -- Additional kepmaps
@@ -216,6 +233,12 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>qf', quickFix)
 vim.keymap.set('x', '<leader>qf', quickFix)
 
+
+-- LSP commands
+vim.api.nvim_create_user_command('RemoveUnusedImports', ":VtsExec remove_unused_imports", {})
+vim.api.nvim_create_user_command('RemoveUnusedCode', ":VtsExec remove_unused", {})
+vim.api.nvim_create_user_command('AddMissingImports', ":VtsExec add_missing_imports", {})
+vim.api.nvim_create_user_command('FixAll', ":VtsExec fix_all", {})
 
 
 -- TODO: UI SETTINGS, MOVE TO OWN FILE

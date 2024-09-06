@@ -145,6 +145,7 @@ local plugins = {
     config = true,
   },
   'navarasu/onedark.nvim',
+  'yioneko/nvim-vtsls',
   { 'echasnovski/mini-git', version = false, main = 'mini.git' },
   {
     'mistweaverco/kulala.nvim',
@@ -325,6 +326,7 @@ require("conform").setup({
   },
 })
 
+require('vtsls').config({})
 
 vim.api.nvim_create_user_command('RunTests', ':TermExec cmd="./run_tests_local.sh" direction="vertical" size=80',
   {})
