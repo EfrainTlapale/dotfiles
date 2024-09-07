@@ -118,9 +118,7 @@ end
 
 local servers = {
   -- tsserver = {},
-  vtsls = {
-    autoUseWorkspaceTsdk = true
-  },
+  vtsls = { typescript = { tsserver = {} }, vtsls = { autoUseWorkspaceTsdk = true } },
   lua_ls = {},
   eslint = {},
   cssls = {},

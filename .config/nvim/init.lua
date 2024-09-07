@@ -146,7 +146,6 @@ local plugins = {
   },
   'navarasu/onedark.nvim',
   'yioneko/nvim-vtsls',
-  { 'echasnovski/mini-git', version = false, main = 'mini.git' },
   {
     'mistweaverco/kulala.nvim',
     opts = {},
@@ -188,7 +187,6 @@ require("flote").setup {
 require('gitblame').setup({
   enabled = false
 })
-require('mini.git').setup()
 require("autoclose").setup({})
 require('tsc').setup()
 require('lualine').setup({
