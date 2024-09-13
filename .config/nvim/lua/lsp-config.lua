@@ -117,7 +117,6 @@ local on_attach = function(client, bufnr)
 end
 
 local servers = {
-  -- tsserver = {},
   vtsls = { typescript = { tsserver = {} }, vtsls = { autoUseWorkspaceTsdk = true } },
   lua_ls = {},
   eslint = {},
