@@ -253,3 +253,8 @@ source <(fzf --zsh)
 if [[ $(uname) == "Darwin" ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"
 fi
+
+if [[ $(uname) == "Linux" ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
