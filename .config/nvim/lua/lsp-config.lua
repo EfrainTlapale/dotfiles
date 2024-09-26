@@ -47,7 +47,7 @@ require 'nvim-treesitter.configs'.setup {
 }
 
 -- LSP settings.
-vim.diagnostic.config({ virtual_text = false, update_in_insert = true })
+vim.diagnostic.config({ virtual_text = false, update_in_insert = false })
 
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
@@ -92,13 +92,13 @@ local on_attach = function(client, bufnr)
     nmap('<leader>ch', vim.lsp.buf.clear_references, 'Clear highlight symbol')
   end
 
-  if client.name == 'eslint' then
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
-      command = 'silent! EslintFixAll',
-      group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),
-    })
-  end
+  -- if client.name == 'eslint' then
+  --   vim.api.nvim_create_autocmd('BufWritePre', {
+  --     pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
+  --     command = 'silent! EslintFixAll',
+  --     group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),
+  --   })
+  -- end
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
@@ -117,9 +117,16 @@ local on_attach = function(client, bufnr)
 end
 
 local servers = {
-  vtsls = { typescript = { tsserver = {} }, vtsls = { autoUseWorkspaceTsdk = true } },
-  lua_ls = {},
+  vtsls = {
+    typescript = { tsserver = { maxTsServerMemory = 8192 } },
+    vtsls = {
+      autoUseWorkspaceTsdk = true,
+      experimental = {
+        completion = { enableServerSideFuzzyMatch = true, entriesLimit = 30 } }
+    }
+  },
   eslint = {},
+  lua_ls = {},
   cssls = {},
   pyright = {
     python = {
@@ -209,7 +216,7 @@ local function quickFix()
   -- and apply it
   vim.lsp.buf.code_action({
     async = false,
-    filter = function(a)
+    filter = function()
       if is_first then
         is_first = false
         return true
@@ -224,8 +231,8 @@ end
 
 -- Additional kepmaps
 
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.jump({count= -1, float= true})<CR>')
+vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.jump({count= 1, float= true})<CR>')
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>qf', quickFix)
 vim.keymap.set('x', '<leader>qf', quickFix)

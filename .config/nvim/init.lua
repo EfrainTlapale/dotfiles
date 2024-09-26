@@ -156,7 +156,7 @@ local plugins = {
       { '<leader>ci', "<cmd>lua require('kulala').from_curl()<cr>", ft = "http" },
       { '<leader>co', "<cmd>lua require('kulala').from_curl()<cr>", ft = "http" }
     }
-  }
+  },
 }
 
 require('basics')
