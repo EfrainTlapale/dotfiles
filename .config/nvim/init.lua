@@ -45,7 +45,6 @@ local plugins = {
   { "lukas-reineke/indent-blankline.nvim", main = "ibl",                              opts = {} },
   'kyazdani42/nvim-web-devicons',
   'kdheepak/lazygit.nvim',
-  { 'jdhao/better-escape.vim',             event = 'InsertEnter' },
   { 'sindrets/diffview.nvim',              dependencies = { 'nvim-lua/plenary.nvim' } },
   { "shortcuts/no-neck-pain.nvim",         version = "*" },
   {
@@ -119,11 +118,6 @@ local plugins = {
     'stevearc/conform.nvim',
     opts = {},
   },
-  -- {
-  --   "m4xshen/hardtime.nvim",
-  --   dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
-  --   opts = {}
-  -- },
   'windwp/nvim-ts-autotag',
   'L3MON4D3/LuaSnip',
   'saadparwaiz1/cmp_luasnip',
@@ -157,6 +151,18 @@ local plugins = {
       { '<leader>co', "<cmd>lua require('kulala').from_curl()<cr>", ft = "http" }
     }
   },
+  {
+    'stevearc/quicker.nvim',
+    event = "FileType qf",
+    ---@module "quicker"
+    ---@type quicker.SetupOptions
+    opts = {},
+  },
+  {
+    'mawkler/refjump.nvim',
+    -- keys = { ']r', '[r' }, -- Uncomment to lazy load
+    opts = {}
+  }
 }
 
 require('basics')
@@ -340,5 +346,33 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile' }, {
 vim.filetype.add({
   extension = {
     ['http'] = 'http',
+  },
+})
+
+-- QUICKER SETUP
+
+vim.keymap.set("n", "<leader>q", function()
+  require("quicker").toggle()
+end, {
+  desc = "Toggle quickfix",
+})
+
+require("quicker").setup({
+  edit = { enabled = false },
+  keys = {
+    {
+      ">",
+      function()
+        require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+      end,
+      desc = "Expand quickfix context",
+    },
+    {
+      "<",
+      function()
+        require("quicker").collapse()
+      end,
+      desc = "Collapse quickfix context",
+    },
   },
 })

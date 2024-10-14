@@ -94,5 +94,3 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 vim.g["netrw_banner"] = 0
 vim.g["netrw_liststyle"] = 3
 vim.g["netrw_winsize"] = 25
-
-vim.g['better_escape_shortcut'] = { 'jk', 'jj', 'kj' }

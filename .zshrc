@@ -152,6 +152,79 @@ dkcu-static() {
   cd $ORIGINAL_PATH
 }
 
+dkcu-server() {
+  ORIGINAL_PATH=$(pwd)
+  cd $HOME/deploy/my-server/latest
+  dkl
+  dku
+  cd $ORIGINAL_PATH
+}
+
+run-local-stack() {
+  ORIGINAL_PATH=$(pwd)
+  local flag_s flag_f flag_b
+
+  while getopts "sfb" opt; do
+      case $opt in
+          s) flag_s=true ;;
+          f) flag_f=true ;;
+          b) flag_b=true ;;
+          *) echo "Usage: my_function -sfb" ; return 1 ;;
+      esac
+  done
+
+  # Now you can use the flags as needed
+  if [[ $flag_s ]]; then
+      cd $HOME/deploy/my-server/latest
+      dkl
+      dku
+  fi
+  if [[ $flag_f ]]; then
+      cd $HOME/deploy/my-app-frontend/latest
+      dkl
+      dku
+  fi
+  if [[ $flag_b ]]; then
+      cd $HOME/deploy/my-app-backend/latest
+      dkl
+      dku
+  fi
+
+  cd $ORIGINAL_PATH
+}
+
+stop-local-stack() {
+  ORIGINAL_PATH=$(pwd)
+  local flag_s flag_f flag_b
+
+  while getopts "sfb" opt; do
+      case $opt in
+          s) flag_s=true ;;
+          f) flag_f=true ;;
+          b) flag_b=true ;;
+          *) echo "Usage: my_function -sfb" ; return 1 ;;
+      esac
+  done
+
+  # Now you can use the flags as needed
+  if [[ $flag_s ]]; then
+      cd $HOME/deploy/my-server/latest
+      dkd
+  fi
+  if [[ $flag_f ]]; then
+      cd $HOME/deploy/my-app-frontend/latest
+      dkd
+  fi
+  if [[ $flag_b ]]; then
+      cd $HOME/deploy/my-app-backend/latest
+      dkd
+  fi
+
+  cd $ORIGINAL_PATH
+}
+
+
+
 dkcd-static() {
   ORIGINAL_PATH=$(pwd)
   cd $HOME/deploy/my-app-frontend/latest
