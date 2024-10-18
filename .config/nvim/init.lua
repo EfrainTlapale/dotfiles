@@ -144,11 +144,12 @@ local plugins = {
     'mistweaverco/kulala.nvim',
     opts = {},
     keys = {
-      { '<CR>',       ":lua require('kulala').run()<CR>",           ft = "http" },
-      { '[r',         ":lua require('kulala').jump_prev()<CR>",     ft = "http" },
-      { ']r',         ":lua require('kulala').jump_next()<CR>",     ft = "http" },
-      { '<leader>ci', "<cmd>lua require('kulala').from_curl()<cr>", ft = "http" },
-      { '<leader>co', "<cmd>lua require('kulala').from_curl()<cr>", ft = "http" }
+      { '<CR>',       "<cmd>lua require('kulala').run()<CR>",       ft = "http" },
+      { '[r',         "<cmd>lua require('kulala').jump_prev()<CR>", ft = "http" },
+      { ']r',         "<cmd>lua require('kulala').jump_next()<CR>", ft = "http" },
+      { '<leader>ci', "<cmd>lua require('kulala').from_curl()<CR>", ft = "http" },
+      { '<leader>co', "<cmd>lua require('kulala').copy()<CR>",      ft = "http" },
+      { '<leader>sr', "<cmd>lua require('kulala').search()<CR>",    ft = "http" }
     }
   },
   {
