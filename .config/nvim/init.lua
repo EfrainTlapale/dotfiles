@@ -149,7 +149,8 @@ local plugins = {
       { ']r',         "<cmd>lua require('kulala').jump_next()<CR>", ft = "http" },
       { '<leader>ci', "<cmd>lua require('kulala').from_curl()<CR>", ft = "http" },
       { '<leader>co', "<cmd>lua require('kulala').copy()<CR>",      ft = "http" },
-      { '<leader>sr', "<cmd>lua require('kulala').search()<CR>",    ft = "http" }
+      { '<leader>sr', "<cmd>lua require('kulala').search()<CR>",    ft = "http" },
+      { '<leader>ck', "<cmd>lua require('kulala').close()<CR>",     ft = "http" },
     }
   },
   {
