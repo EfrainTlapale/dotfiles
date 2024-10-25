@@ -14,4 +14,32 @@
   # ATTENTION: All aliases prefixed with ! run in /bin/sh make sure you use sh syntax, not bash/zsh or whatever
   recentb = "!r() { count=$1; git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:magenta)%(authorname)|%(color:blue)%(subject)%(color:reset)' --color=always --count=${count:-10} | ( echo \"branch|lastcommit|author|message\n\" && cat) | column -ts'|';}; r"
 
+   diff-side-by-side = -c delta.features=side-by-side diff
+
+
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    ; side-by-side = true
+    line-numbers = true
+    syntax-theme = Dracula
+
+    dark = true
+    plus-style                    = "#b3fba5"
+    plus-non-emph-style           = "#b3fba5"
+    minus-style                   = "#ed8796"
+    minus-non-emph-style          = "#ed8796"
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
 ; vim: set ft=gitconfig:
