@@ -1,3 +1,6 @@
+local dotenv = require('lua-dotenv')
+dotenv.load_dotenv('./.env.local')
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -137,6 +140,9 @@ local plugins = {
     'fredeeb/tardis.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = true,
+    enabled = function()
+      return dotenv.enable_plugin('ENABLE_TARDIS')
+    end
   },
   'navarasu/onedark.nvim',
   'yioneko/nvim-vtsls',
@@ -164,7 +170,7 @@ local plugins = {
     'mawkler/refjump.nvim',
     -- keys = { ']r', '[r' }, -- Uncomment to lazy load
     opts = {}
-  }
+  },
 }
 
 require('basics')
