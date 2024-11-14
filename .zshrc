@@ -162,64 +162,49 @@ dkcu-server() {
 
 run-local-stack() {
   ORIGINAL_PATH=$(pwd)
-  local flag_s flag_f flag_b
+  local flag_s flag_c
 
-  while getopts "sfb" opt; do
+  while getopts "sc" opt; do
       case $opt in
           s) flag_s=true ;;
-          f) flag_f=true ;;
-          b) flag_b=true ;;
-          *) echo "Usage: my_function -sfb" ; return 1 ;;
+          c) flag_c=true ;;
+          *) echo "Usage: my_function -sc" ; return 1 ;;
       esac
   done
 
-  # Now you can use the flags as needed
   if [[ $flag_s ]]; then
       cd $HOME/deploy/my-server/latest
-      dkl
-      dku
-  fi
-  if [[ $flag_f ]]; then
-      cd $HOME/deploy/my-app-frontend/latest
-      dkl
-      dku
-  fi
-  if [[ $flag_b ]]; then
-      cd $HOME/deploy/my-app-backend/latest
-      dkl
       dku
   fi
 
+  if [[ $flag_c ]]; then
+      cd $HOME/deploy/my-app/latest
+      dku
+  fi
   cd $ORIGINAL_PATH
 }
 
 stop-local-stack() {
   ORIGINAL_PATH=$(pwd)
-  local flag_s flag_f flag_b
+  local flag_s flag_c
 
-  while getopts "sfb" opt; do
+  while getopts "sc" opt; do
       case $opt in
           s) flag_s=true ;;
-          f) flag_f=true ;;
-          b) flag_b=true ;;
-          *) echo "Usage: my_function -sfb" ; return 1 ;;
+          c) flag_c=true ;;
+          *) echo "Usage: my_function -sc" ; return 1 ;;
       esac
   done
 
-  # Now you can use the flags as needed
+  if [[ $flag_c ]]; then
+      cd $HOME/deploy/my-app/latest
+      dkd
+  fi
+
   if [[ $flag_s ]]; then
       cd $HOME/deploy/my-server/latest
       dkd
   fi
-  if [[ $flag_f ]]; then
-      cd $HOME/deploy/my-app-frontend/latest
-      dkd
-  fi
-  if [[ $flag_b ]]; then
-      cd $HOME/deploy/my-app-backend/latest
-      dkd
-  fi
-
   cd $ORIGINAL_PATH
 }
 
@@ -345,3 +330,5 @@ pastefinish() {
 }
 zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
+
+. ./wezterm.sh
