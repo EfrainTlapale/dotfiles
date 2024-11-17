@@ -45,7 +45,14 @@ local plugins = {
     name = "catppuccin",
     priority = 1000,
   },
-  { "lukas-reineke/indent-blankline.nvim", main = "ibl",                              opts = {} },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    tag = 'v3.8.2',
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {},
+  },
   'kyazdani42/nvim-web-devicons',
   'kdheepak/lazygit.nvim',
   { 'sindrets/diffview.nvim',              dependencies = { 'nvim-lua/plenary.nvim' } },
@@ -268,7 +275,7 @@ require('gitblame').setup {
 require('lsp-config')
 
 require('ibl').setup {
-  indent = { char = '┊' },
+  indent = { char = {'┊'} },
   scope = { show_start = false, show_end = false, enabled = false }
 }
 

@@ -94,6 +94,34 @@ wezterm.on('trigger-vim-with-scrollback', function(window, pane)
   os.remove(name)
 end)
 
+local function detect_host_os()
+  -- package.config:sub(1,1) returns '\' for windows and '/' for *nix.
+  if package.config:sub(1, 1) == '\\' then
+    return 'windows'
+  else
+    -- uname should be available on *nix systems.
+    local check = io.popen('uname -s')
+    local result = check:read('*l'); check:close()
+
+    if result == 'Darwin' then
+      return 'macos'
+    else
+      return 'linux'
+    end
+  end
+end
+
+local host_os = detect_host_os()
+
+if host_os == 'macos' then
+  -- check homebrew binary symlinks on startup.
+  config.set_environment_variables = {
+    PATH = '/Users/efraintlapale/neovim/bin:' .. os.getenv('PATH')
+  }
+
+  config.window_decorations = "RESIZE"
+end
+
 
 -- and finally, return the configuration to wezterm
 return config
