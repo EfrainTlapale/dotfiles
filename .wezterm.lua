@@ -120,6 +120,7 @@ if host_os == 'macos' then
   }
 
   config.window_decorations = "RESIZE"
+  config.font_size = 14
 end
 
 
