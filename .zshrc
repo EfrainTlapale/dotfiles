@@ -208,49 +208,6 @@ stop-local-stack() {
   cd $ORIGINAL_PATH
 }
 
-
-
-dkcd-static() {
-  ORIGINAL_PATH=$(pwd)
-  cd $HOME/deploy/my-app-frontend/latest
-  dkd
-  cd ../../my-app-backend/latest
-  dkd
-  cd ../../my-server/latest
-  dkd
-  cd $ORIGINAL_PATH
-}
-
-ansible-deploy-static() {
-  ORIGINAL_PATH=$(pwd)
-  cd ~/work/ansible-config #point here to ansible repo
-    if [ $# = 1 ]
-  then
-    git pull
-    git checkout $1
-  else
-    git checkout latest
-  fi
-  git pull
-  cd docker
-  dku
-  docker exec -it ansible bash ./commands/local_deploy.sh internal my-server
-  cd $HOME/deploy/my-server/latest
-  dkl
-  dku
-  docker stop chrome-gui-my-server
-  docker stop frontend-my-server
-  code docker-compose.yml #open vs code to manually comment out chrome-gui and frontend for now
-  docker exec -it ansible bash ./commands/local_deploy.sh internal my-app-frontend root
-  cd $HOME/deploy/my-app-frontend/latest
-  dkl
-  dku
-  docker exec -it ansible bash ./commands/local_deploy.sh internal my-app-backend root
-  cd $HOME/deploy/my-app-backend/latest
-  dku
-  cd $ORIGINAL_PATH
-}
-
 pyprettier() {
   docker exec -it django-app-my-server black .
 }
