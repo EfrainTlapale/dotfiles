@@ -288,4 +288,4 @@ pastefinish() {
 zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 
-. ./wezterm.sh
+. $HOME/wezterm.sh

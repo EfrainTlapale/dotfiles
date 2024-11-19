@@ -45,11 +45,18 @@ local plugins = {
     name = "catppuccin",
     priority = 1000,
   },
-  { "lukas-reineke/indent-blankline.nvim", main = "ibl",                              opts = {} },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    tag = 'v3.8.2',
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {},
+  },
   'kyazdani42/nvim-web-devicons',
   'kdheepak/lazygit.nvim',
-  { 'sindrets/diffview.nvim',              dependencies = { 'nvim-lua/plenary.nvim' } },
-  { "shortcuts/no-neck-pain.nvim",         version = "*" },
+  { 'sindrets/diffview.nvim',      dependencies = { 'nvim-lua/plenary.nvim' } },
+  { "shortcuts/no-neck-pain.nvim", version = "*" },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'kyazdani42/nvim-web-devicons', lazy = true }
@@ -171,6 +178,13 @@ local plugins = {
     -- keys = { ']r', '[r' }, -- Uncomment to lazy load
     opts = {}
   },
+  {
+    "kvrohit/rasmus.nvim",
+    priority = 1000,
+    config = function()
+      -- vim.cmd([[colorscheme rasmus]])
+    end,
+  },
 }
 
 require('basics')
@@ -268,7 +282,7 @@ require('gitblame').setup {
 require('lsp-config')
 
 require('ibl').setup {
-  indent = { char = '┊' },
+  indent = { char = { '┊' } },
   scope = { show_start = false, show_end = false, enabled = false }
 }
 
