@@ -92,13 +92,13 @@ local on_attach = function(client, bufnr)
     nmap('<leader>ch', vim.lsp.buf.clear_references, 'Clear highlight symbol')
   end
 
-  -- if client.name == 'eslint' then
-  --   vim.api.nvim_create_autocmd('BufWritePre', {
-  --     pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
-  --     command = 'silent! EslintFixAll',
-  --     group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),
-  --   })
-  -- end
+  if client.name == 'eslint' then
+    vim.api.nvim_create_autocmd('BufWritePre', {
+      pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
+      command = 'silent! EslintFixAll',
+      group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),
+    })
+  end
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
