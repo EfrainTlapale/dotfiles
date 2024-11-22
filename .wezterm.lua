@@ -39,6 +39,16 @@ config.keys = {
     mods = 'CTRL|SHIFT',
     action = wezterm.action.EmitEvent 'trigger-vim-with-scrollback',
   },
+  {
+    key = '{',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.ActivatePaneDirection 'Left',
+  },
+  {
+    key = '}',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.ActivatePaneDirection 'Right',
+  },
 }
 
 config.mouse_bindings = {
