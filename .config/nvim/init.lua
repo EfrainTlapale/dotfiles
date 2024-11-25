@@ -185,6 +185,17 @@ local plugins = {
       -- vim.cmd([[colorscheme rasmus]])
     end,
   },
+  {
+    "atiladefreitas/dooing",
+    config = function()
+      require("dooing").setup({
+        -- your custom config here (optional)
+      })
+    end,
+    keys = {
+      { "<leader>td", desc = "Toggle Todo List" },
+    },
+  }
 }
 
 require('basics')
@@ -320,7 +331,7 @@ require('gitsigns').setup {
     map('n', '<leader>tb', gs.toggle_current_line_blame)
     -- map('n', '<leader>hd', function() gs.diffthis('HEAD') end)
     map('n', '<leader>hd', gs.diffthis)
-    map('n', '<leader>td', gs.toggle_deleted)
+    -- map('n', '<leader>td', gs.toggle_deleted)
 
     -- Text object
     map({ 'o', 'x' }, 'ih', '<cmd><C-U>Gitsigns select_hunk<CR>')
