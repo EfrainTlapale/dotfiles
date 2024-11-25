@@ -1,4 +1,5 @@
 .config/lazygit/state.yml
-.config/nvim/.env
+.config/nvim/.env.local
 .config/zed
+.config/ngrok
 
