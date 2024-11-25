@@ -1,5 +1,6 @@
 local dotenv = require('lua-dotenv')
-dotenv.load_dotenv('./.env.local')
+dotenv.load_dotenv(vim.fs.normalize('~/.config/nvim/.env.local'))
+
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -143,14 +144,6 @@ local plugins = {
       "rcarriga/nvim-notify",
     }
   },
-  {
-    'fredeeb/tardis.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = true,
-    enabled = function()
-      return dotenv.enable_plugin('ENABLE_TARDIS')
-    end
-  },
   'navarasu/onedark.nvim',
   'yioneko/nvim-vtsls',
   {
@@ -184,6 +177,81 @@ local plugins = {
     config = function()
       -- vim.cmd([[colorscheme rasmus]])
     end,
+  },
+  {
+    "S1M0N38/love2d.nvim",
+    -- cmd = "LoveRun",
+    event = "VeryLazy",
+    opts = {},
+    keys = {
+      { "<leader>v",  ft = "lua",          desc = "LÖVE" },
+      { "<leader>vv", "<cmd>LoveRun<cr>",  ft = "lua",   desc = "Run LÖVE" },
+      { "<leader>vs", "<cmd>LoveStop<cr>", ft = "lua",   desc = "Stop LÖVE" },
+    },
+  },
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",  -- required
+      "sindrets/diffview.nvim", -- optional - Diff integration
+
+      -- Only one of these is needed.
+      "nvim-telescope/telescope.nvim", -- optional
+      "ibhagwan/fzf-lua",              -- optional
+    },
+    config = true
+  },
+  {
+    "Exafunction/codeium.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+    },
+    enabled = function()
+      return dotenv.enable_plugin('ENABLE_CODEIUM')
+    end,
+    opts = {
+      -- Optionally disable cmp source if using virtual text only
+      enable_cmp_source = false,
+      virtual_text = {
+        enabled = true,
+
+        -- These are the defaults
+
+        -- Set to true if you never want completions to be shown automatically.
+        manual = false,
+        -- A mapping of filetype to true or false, to enable virtual text.
+        filetypes = {},
+        -- Whether to enable virtual text of not for filetypes not specifically listed above.
+        default_filetype_enabled = true,
+        -- How long to wait (in ms) before requesting completions after typing stops.
+        idle_delay = 75,
+        -- Priority of the virtual text. This usually ensures that the completions appear on top of
+        -- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
+        -- desired.
+        virtual_text_priority = 65535,
+        -- Set to false to disable all key bindings for managing completions.
+        map_keys = true,
+        -- The key to press when hitting the accept keybinding but no completion is showing.
+        -- Defaults to \t normally or <c-n> when a popup is showing.
+        accept_fallback = nil,
+        -- Key bindings for managing completions in virtual text mode.
+        key_bindings = {
+          -- Accept the current completion.
+          accept = "<Tab>",
+          -- Accept the next word.
+          accept_word = false,
+          -- Accept the next line.
+          accept_line = false,
+          -- Clear the virtual text.
+          clear = false,
+          -- Cycle to the next completion.
+          next = "<M-]>",
+          -- Cycle to the previous completion.
+          prev = "<M-[>",
+        }
+      }
+    }
   },
 }
 
