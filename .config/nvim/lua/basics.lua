@@ -94,3 +94,33 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 vim.g["netrw_banner"] = 0
 vim.g["netrw_liststyle"] = 3
 vim.g["netrw_winsize"] = 25
+
+
+
+local function resize_relative(relativeNumber)
+  local lines = vim.o.lines
+  local factor = 1 / relativeNumber
+  local newLines = lines * factor
+  vim.cmd.resize(math.floor(newLines))
+end
+
+local function vertical_relative_resize(relativeNumber)
+  local cols = vim.o.columns
+  local factor = 1 / relativeNumber
+  local newCols = math.floor(cols * factor)
+  print(cols)
+  print(newCols)
+  vim.cmd('vertical resize ' .. newCols)
+end
+
+vim.api.nvim_create_user_command('ResizeRelative', function(opts)
+  resize_relative(opts.fargs[1])
+end, { nargs = '*' })
+
+vim.api.nvim_create_user_command('VerticalRelative', function(opts)
+  vertical_relative_resize(opts.fargs[1])
+end, { nargs = '*' })
+
+
+vim.keymap.set('n', '<leader>rh', ':ResizeRelative ')
+vim.keymap.set('n', '<leader>rv', ':VerticalRelative ')
