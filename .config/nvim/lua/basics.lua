@@ -108,8 +108,7 @@ local function vertical_relative_resize(relativeNumber)
   local cols = vim.o.columns
   local factor = 1 / relativeNumber
   local newCols = math.floor(cols * factor)
-  print(cols)
-  print(newCols)
+
   vim.cmd('vertical resize ' .. newCols)
 end
 
