@@ -412,17 +412,23 @@ require("no-neck-pain").setup({
 
 vim.notify = require('notify')
 
+local jsIshFormatterOptions = { "biome", "prettier_d", "prettier" }
+
 require("conform").setup({
+  formatters = {
+    biome = { require_cwd = true },
+    prettier = { require_cwd = true },
+  },
   formatters_by_ft = {
     lua = { "stylua" },
     -- Conform will use the first available formatter in the list
-    javascript = { "prettier_d", "prettier" },
-    typescript = { "prettier_d", "prettier" },
-    typescriptreact = { "prettier_d", "prettier" },
-    sass = { "prettier_d", "prettier" },
-    scss = { "prettier_d", "prettier" },
-    css = { "prettier_d", "prettier" },
-    json = { "prettier" }
+    javascript = jsIshFormatterOptions,
+    typescript = jsIshFormatterOptions,
+    typescriptreact = jsIshFormatterOptions,
+    sass = jsIshFormatterOptions,
+    scss = jsIshFormatterOptions,
+    css = jsIshFormatterOptions,
+    json = jsIshFormatterOptions
   },
   format_on_save = {
     -- These options will be passed to conform.format()

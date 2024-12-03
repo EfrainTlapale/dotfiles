@@ -61,7 +61,6 @@ local on_attach = function(client, bufnr)
 
   nmap('<leader>rn', vim.lsp.buf.rename, 'Rename')
   nmap('<leader>a', vim.lsp.buf.code_action, 'Action')
-  -- nmap('<leader>a', function() vim.cmd('CodeActionMenu') end, 'Action')
   vim.keymap.set('x', '<leader>a', vim.lsp.buf.code_action, { buffer = bufnr })
 
   nmap('gd', function() require('telescope.builtin').lsp_definitions() end, 'Goto Definition')
@@ -114,6 +113,11 @@ local on_attach = function(client, bufnr)
     vim.lsp.buf.execute_command(params)
     vim.cmd('EslintFixAll')
   end, { desc = 'Organize Imports' })
+
+
+  if client.name == 'biome' then
+    vim.diagnostic.config({ update_in_insert = true })
+  end
 end
 
 local servers = {
@@ -126,6 +130,12 @@ local servers = {
     }
   },
   eslint = {},
+  jsonls = {},
+  biome = {
+    biome = {
+      requireConfigFile = true
+    }
+  },
   lua_ls = {},
   cssls = {},
   pyright = {
