@@ -4,6 +4,8 @@ local wezterm = require 'wezterm'
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
+local act = wezterm.action
+
 -- This is where you actually apply your config choices
 
 config.colors = {
@@ -50,6 +52,8 @@ config.keys = {
     mods = 'CTRL|SHIFT',
     action = wezterm.action.ActivatePaneDirection 'Right',
   },
+  { key = 'UpArrow',   mods = 'SHIFT', action = act.ScrollByLine(-1) },
+  { key = 'DownArrow', mods = 'SHIFT', action = act.ScrollByLine(1) },
 }
 
 config.mouse_bindings = {

@@ -35,7 +35,7 @@
     plus-non-emph-style           = "#b3fba5"
     minus-style                   = "#ed8796"
     minus-non-emph-style          = "#ed8796"
-    map-styles = bold purple => syntax "#330f29", bold cyan => syntax "#0d3531"
+    map-styles = bold purple => syntax "#330f29", bold cyan => syntax "#0d2235"
 
 
 [merge]
