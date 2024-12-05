@@ -264,6 +264,7 @@ local plugins = {
       { "<leader>td", desc = "Toggle Todo List" },
     },
   },
+  "fnune/codeactions-on-save.nvim"
 }
 
 require('basics')
