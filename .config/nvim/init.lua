@@ -332,6 +332,9 @@ require("noice").setup({
   messages = {
     enabled = false
   },
+  notify = {
+    enabled = false
+  },
   -- you can enable a preset for easier configuration
   presets = {
     bottom_search = true,         -- use a classic bottom cmdline for search
@@ -411,7 +414,14 @@ require("no-neck-pain").setup({
   width = 150
 })
 
-vim.notify = require('notify')
+
+vim.notify = function(msg, level, opts)
+  if msg and string.find(msg, "multiple different client offset_encodings detected") then
+    return
+  end
+
+  return require('notify').notify(msg, level, opts)
+end
 
 local jsIshFormatterOptions = { "biome", "prettier_d", "prettier" }
 
