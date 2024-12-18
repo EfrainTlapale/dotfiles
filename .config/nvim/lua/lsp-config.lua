@@ -1,5 +1,20 @@
 local navic = require("nvim-navic")
 
+-- Print contents of `tbl`, with indentation.
+-- `indent` sets the initial level of indentation.
+local function tprint(tbl, indent)
+  if not indent then indent = 0 end
+  for k, v in pairs(tbl) do
+    local formatting = string.rep("  ", indent) .. k .. ": "
+    if type(v) == "table" then
+      print(formatting)
+      tprint(v, indent + 1)
+    else
+      print(formatting .. tostring(v))
+    end
+  end
+end
+
 require 'nvim-treesitter.configs'.setup {
   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "typescript", "css", "scss", "javascript", "markdown",
     "markdown_inline", "python", "tsx", "bash", "fish", "json", "http" },
@@ -48,6 +63,8 @@ require 'nvim-treesitter.configs'.setup {
 
 -- LSP settings.
 vim.diagnostic.config({ virtual_text = false, update_in_insert = false })
+
+local cos = require("codeactions-on-save")
 
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
@@ -114,9 +131,9 @@ local on_attach = function(client, bufnr)
     vim.cmd('EslintFixAll')
   end, { desc = 'Organize Imports' })
 
-
   if client.name == 'biome' then
     vim.diagnostic.config({ update_in_insert = true })
+    cos.register({ "*.ts", "*.tsx" }, { "source.organizeImports.biome" })
   end
 end
 
@@ -134,7 +151,7 @@ local servers = {
   biome = {
     biome = {
       requireConfigFile = true
-    }
+    },
   },
   lua_ls = {},
   cssls = {},
@@ -242,7 +259,10 @@ local function quickFix()
   -- and apply it
   vim.lsp.buf.code_action({
     async = false,
-    filter = function()
+    filter = function(action)
+      if string.find(action.kind, 'suppressRule') then
+        return false
+      end
       if is_first then
         is_first = false
         return true
@@ -282,6 +302,7 @@ end
 
 local Menu = require("nui.menu")
 local event = require("nui.utils.autocmd").event
+
 
 local function override_ui_select()
   local UISelect = Menu:extend("UISelect")
