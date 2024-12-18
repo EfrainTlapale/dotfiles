@@ -4,6 +4,8 @@ require('telescope').setup {
   },
 }
 
+require('telescope').load_extension('luasnip')
+
 require 'telescope-all-recent'.setup {}
 
 vim.api.nvim_set_keymap('n', '<C-P>', "<cmd>lua require('telescope.builtin').find_files()<CR>", { noremap = true })
