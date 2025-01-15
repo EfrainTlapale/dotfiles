@@ -268,7 +268,21 @@ local plugins = {
       { "<leader>td", desc = "Toggle Todo List" },
     },
   },
-  "fnune/codeactions-on-save.nvim"
+  "fnune/codeactions-on-save.nvim",
+  {
+    "neanias/everforest-nvim",
+    lazy = false,
+    version = false,
+    config = function()
+      require("everforest").setup {
+        background = "hard",
+        disable_italic_comments = true,
+      }
+    end
+  },
+  "aktersnurra/no-clown-fiesta.nvim",
+  "rebelot/kanagawa.nvim",
+  "shaunsingh/nord.nvim"
 }
 
 require('basics')
