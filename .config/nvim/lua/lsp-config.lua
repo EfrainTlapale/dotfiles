@@ -195,7 +195,7 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
-require("luasnip.loaders.from_vscode").lazy_load()
+-- require("luasnip.loaders.from_vscode").lazy_load()
 local ls = require("luasnip")
 vim.keymap.set({ "i" }, "<C-K>", function()
   if ls.expand_or_jumpable() then
