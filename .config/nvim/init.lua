@@ -282,7 +282,13 @@ local plugins = {
   },
   "aktersnurra/no-clown-fiesta.nvim",
   "rebelot/kanagawa.nvim",
-  "shaunsingh/nord.nvim"
+  {
+    "nvzone/typr",
+    dependencies = "nvzone/volt",
+    opts = {},
+    cmd = { "Typr", "TyprStats" },
+  },
+  { "EdenEast/nightfox.nvim" },
 }
 
 require('basics')
@@ -457,7 +463,9 @@ require("conform").setup({
     sass = jsIshFormatterOptions,
     scss = jsIshFormatterOptions,
     css = jsIshFormatterOptions,
-    json = jsIshFormatterOptions
+    json = jsIshFormatterOptions,
+    go = { "gofmt" },
+    gomod = { "gofmt" }
   },
   format_on_save = {
     -- These options will be passed to conform.format()
