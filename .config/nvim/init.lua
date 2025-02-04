@@ -281,8 +281,8 @@ local plugins = {
     end
   },
   "aktersnurra/no-clown-fiesta.nvim",
-  "rebelot/kanagawa.nvim",
-  "shaunsingh/nord.nvim"
+  "shaunsingh/nord.nvim",
+  "nyoom-engineering/oxocarbon.nvim",
 }
 
 require('basics')

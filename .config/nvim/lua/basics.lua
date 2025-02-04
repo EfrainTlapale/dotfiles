@@ -3,7 +3,7 @@ vim.g.loaded             = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.g.mapleader          = " "
-vim.o.number             = true
+vim.o.number             = false
 vim.o.relativenumber     = true
 vim.o.wrap               = false
 vim.o.expandtab          = true
@@ -37,6 +37,9 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+vim.api.nvim_set_keymap("c", "<c-p>", [[ wildmenumode() ? "c-k>" : "<up>" ]], { noremap = true, expr = true })
+vim.api.nvim_set_keymap("c", "<c-n>", [[ wildmenumode() ? "c-k>" : "<down>" ]], { noremap = true, expr = true })
 
 vim.api.nvim_set_keymap('n', 'vs', '<cmd>vs<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'sp', '<cmd>sp<CR>', { noremap = true })

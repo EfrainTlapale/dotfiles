@@ -73,6 +73,8 @@ ZSH_THEME="robbyrussell"
 plugins=(git gitfast zsh-autosuggestions)
 
 bindkey '^ ' autosuggest-accept
+bindkey "^P" up-line-or-search
+bindkey "^N" down-line-or-search
 
 source $ZSH/oh-my-zsh.sh
 
