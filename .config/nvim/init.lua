@@ -281,7 +281,6 @@ local plugins = {
     end
   },
   "aktersnurra/no-clown-fiesta.nvim",
-  "rebelot/kanagawa.nvim",
   {
     "nvzone/typr",
     dependencies = "nvzone/volt",
@@ -289,6 +288,8 @@ local plugins = {
     cmd = { "Typr", "TyprStats" },
   },
   { "EdenEast/nightfox.nvim" },
+  "shaunsingh/nord.nvim",
+  "nyoom-engineering/oxocarbon.nvim",
 }
 
 require('basics')
