@@ -2,4 +2,6 @@
 .config/nvim/.env.local
 .config/zed
 .config/ngrok
+.config/vi-mongo
+.config/ghostty
 
