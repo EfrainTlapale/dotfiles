@@ -290,6 +290,48 @@ local plugins = {
   { "EdenEast/nightfox.nvim" },
   "shaunsingh/nord.nvim",
   "nyoom-engineering/oxocarbon.nvim",
+  {
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        matcher = {
+          frecency = true
+        }
+      },
+      gitbrowse = {
+        -- your gitbrowse configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    },
+    keys = {
+      { "<leader>o",  function() Snacks.picker.lsp_symbols({ tree = false, filter = { default = true } }) end, desc = "LSP Symbols" },
+      { "gd",         function() Snacks.picker.lsp_definitions() end,                                          desc = "Goto Definition" },
+      { "gr",         function() Snacks.picker.lsp_references() end,                                           nowait = true,                     desc = "References" },
+      { "<C-T>",      function() Snacks.picker.lsp_workspace_symbols() end,                                    desc = "LSP Workspace Symbols" },
+      { "<C-P>",      function() Snacks.picker.files() end,                                                    desc = "Smart Find Files" },
+      { "<leader>p",  function() Snacks.picker.files() end,                                                    desc = "Smart Find Files" },
+      { "<leader>rf", function() Snacks.picker.recent({ filter = { cwd = true } }) end,                        desc = "Recent" },
+      { "<leader>fa", function() Snacks.picker.grep() end,                                                     desc = "Grep" },
+      { "<leader>fs", function() Snacks.picker.grep_word() end,                                                desc = "Visual selection or word", mode = { "n", "x" } },
+      { "<leader>fc", function() Snacks.picker.lines() end,                                                    desc = "Buffer Lines" },
+      { "<leader>bf", function() Snacks.picker.buffers() end,                                                  desc = "Buffers" },
+      { "<leader>gs", function() Snacks.picker.git_status() end,                                               desc = "Git Status" },
+      { "<leader>gg", function() Snacks.picker.git_log() end,                                                  desc = "Git Log" },
+      { "<leader>gl", function() Snacks.picker.git_log_line() end,                                             desc = "Git Log Line" },
+      { "<leader>gf", function() Snacks.picker.git_log_file() end,                                             desc = "Git Log File" },
+      { "<leader>d",  function() Snacks.picker.diagnostics_buffer() end,                                       desc = "Buffer Diagnostics" },
+
+      {
+        "<leader>gh",
+        function()
+          Snacks.gitbrowse()
+        end,
+        desc = "git-browse",
+        silent = true,
+      },
+    },
+  }
 }
 
 require('basics')
