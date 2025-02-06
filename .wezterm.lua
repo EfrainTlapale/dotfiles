@@ -31,6 +31,11 @@ config.leader = { key = 'Space', mods = 'CTRL|SHIFT' }
 
 config.keys = {
   {
+    key = 'Space',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
     key = 'Enter',
     mods = 'CTRL|SHIFT',
     action = wezterm.action.SplitHorizontal { domain = "CurrentPaneDomain" },

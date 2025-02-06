@@ -505,6 +505,7 @@ require("conform").setup({
   formatters = {
     biome = { require_cwd = true },
     prettier = { require_cwd = true },
+    gofumpt = { require_cwd = true }
   },
   formatters_by_ft = {
     lua = { "stylua" },
@@ -516,8 +517,7 @@ require("conform").setup({
     scss = jsIshFormatterOptions,
     css = jsIshFormatterOptions,
     json = jsIshFormatterOptions,
-    go = { "gofmt" },
-    gomod = { "gofmt" }
+    go = { "gofumpt" },
   },
   format_on_save = {
     -- These options will be passed to conform.format()
