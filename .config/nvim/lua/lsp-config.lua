@@ -164,7 +164,9 @@ local servers = {
       }
     }
   },
-  gopls = {}
+  gopls = {},
+  golangci_lint_ls = {},
+
 }
 
 --

@@ -340,7 +340,24 @@ local plugins = {
         silent = true,
       },
     },
-  }
+  },
+  {
+    'euclio/vim-markdown-composer',
+    run = 'cargo build --release',
+    config = function()
+      vim.g.markdown_composer_external_renderer = 'pandoc -f markdown -t html'
+      vim.g.markdown_composer_autostart = 0
+    end
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && npm install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
+  },
 }
 
 require('basics')
