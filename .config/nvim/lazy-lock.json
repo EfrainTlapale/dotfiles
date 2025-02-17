@@ -57,6 +57,7 @@
   "quicker.nvim": { "branch": "master", "commit": "92e0f61a5d6422424cf7728ad323d2a06e3ab2d5" },
   "rasmus.nvim": { "branch": "main", "commit": "49f7ee7bf3eb00db52c77f84b15bc69f318bafc1" },
   "refjump.nvim": { "branch": "main", "commit": "3459d17ad750d49458fec5b315e3181c525c6b27" },
+  "shadow.nvim": { "branch": "main", "commit": "6ec2d2d4c103b2e72256fd26390752216ab7774d" },
   "snacks.nvim": { "branch": "main", "commit": "8dce32f85daa028b3248f0c62e86eb9ec9c71f99" },
   "sqlite.lua": { "branch": "master", "commit": "b487fcc8937b683942a1f7d9662fcf50ca5acd58" },
   "telescope-all-recent.nvim": { "branch": "main", "commit": "90bb669e92386f8fe068d381b29b211c1ee470e0" },
