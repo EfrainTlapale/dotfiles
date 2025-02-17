@@ -70,16 +70,10 @@ config.keys = {
       one_shot = false,
     },
   },
-  -- CTRL+SHIFT+Space, followed by 'a' will put us in activate-pane
-  -- mode until we press some other key or until 1 second (1000ms)
-  -- of time elapses
   {
     key = 'a',
     mods = 'LEADER',
-    action = act.ActivateKeyTable {
-      name = 'activate_pane',
-      timeout_milliseconds = 1000,
-    },
+    action = act.PaneSelect {},
   },
 }
 
