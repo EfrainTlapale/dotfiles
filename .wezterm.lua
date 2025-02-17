@@ -208,5 +208,22 @@ if host_os == 'macos' then
 end
 
 
+
+wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
+  local process = pane.foreground_process_name
+  -- Get the current working directory of the pane
+  local cwd = pane.current_working_dir.file_path
+
+
+  -- Set the window title based on the cwd
+  if cwd then
+    local dir_name = cwd:match("([^/]+)/*$")
+    local procName = process:match("([^/]+)/*$")
+    return procName .. ": " .. dir_name
+  else
+    return 'WezTerm' -- Default title if no cwd available
+  end
+end)
+
 -- and finally, return the configuration to wezterm
 return config

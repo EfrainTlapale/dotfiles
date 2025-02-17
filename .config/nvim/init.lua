@@ -107,10 +107,6 @@ local plugins = {
     },
   },
   {
-    "jose-elias-alvarez/null-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-  },
-  {
     "SmiteshP/nvim-navic",
     dependencies = "neovim/nvim-lspconfig"
   },
