@@ -137,40 +137,110 @@ local on_attach = function(client, bufnr)
   end
 end
 
+local util = require 'lspconfig.util'
 local servers = {
   vtsls = {
-    typescript = { tsserver = { maxTsServerMemory = 8192 } },
-    vtsls = {
-      autoUseWorkspaceTsdk = true,
-      experimental = {
-        completion = { enableServerSideFuzzyMatch = true, entriesLimit = 30 } }
+    config = {
+      single_file_support = false,
+      root_dir = util.root_pattern('tsconfig.json', 'package.json')
+    },
+    settings = {
+      typescript = {
+        tsserver = { maxTsServerMemory = 8192 },
+        single_file_support = false
+      },
+      vtsls = {
+        single_file_support = false,
+        autoUseWorkspaceTsdk = true,
+        experimental = {
+          completion = { enableServerSideFuzzyMatch = true, entriesLimit = 30 } },
+      },
     }
   },
   eslint = {},
   jsonls = {},
   biome = {
-    biome = {
-      requireConfigFile = true
-    },
+    settings = {
+      biome = {
+        requireConfigFile = true
+      },
+    }
   },
   lua_ls = {},
   cssls = {},
   pyright = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        diagnosticMode = "openFilesOnly",
-        useLibraryCodeForTypes = true
+    settings = {
+      python = {
+        analysis = {
+          autoSearchPaths = true,
+          diagnosticMode = "openFilesOnly",
+          useLibraryCodeForTypes = true
+        }
       }
     }
   },
-  gopls = {}
+  gopls = {},
+  golangci_lint_ls = {},
+  denols = {
+    config = {
+      root_dir = util.root_pattern('deno.json', 'deno.jsonc')
+    },
+    settings = {
+      {
+        deno = {
+          enable = true,
+          disablePaths = {},
+          enablePaths = nil,
+          cache = nil,
+          cacheOnSave = true,
+          certificateStores = nil,
+          config = nil,
+          importMap = nil,
+          codeLens = {
+            implementations = false,
+            references = false,
+            referencesAllFunctions = false,
+            test = false
+          },
+          internalDebug = false,
+          internalInspect = false,
+          logFile = false,
+          lint = true,
+          documentPreloadLimit = 1000,
+          suggest = {
+            imports = {
+              autoDiscover = true,
+              hosts = {
+                ["https://deno.land"] = true
+              }
+            }
+          },
+          testing = {
+            args = {
+              "--allow-all",
+              "--no-check"
+            }
+          },
+          tlsCertificate = nil,
+          unsafelyIgnoreCertificateErrors = nil,
+          unstable = true,
+        }
+      }
+    }
+  }
+
 }
 
 --
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+capabilities = vim.tbl_deep_extend('force', capabilities, {
+  offsetEncoding = { 'utf-16' },
+  general = {
+    positionEncodings = { 'utf-16' },
+  },
+})
 
 -- Setup mason so it can manage external tooling
 require('mason').setup()
@@ -184,19 +254,24 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    --  TEMP PATCH: fixme after mason thingy is updated
-    if server_name == "tsserver" then
-      server_name = "ts_ls"
+    local server_config = servers[server_name].config
+
+    if server_config == nil then
+      server_config = {}
     end
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-    }
+    local setup_args = vim.tbl_deep_extend(
+      "keep",
+      server_config,
+      {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = servers[server_name].settings,
+      }
+    )
+    require('lspconfig')[server_name].setup(setup_args)
   end,
 }
 
--- require("luasnip.loaders.from_vscode").lazy_load()
 local luasnip = require("luasnip")
 vim.keymap.set({ "i" }, "<C-K>", function()
   if luasnip.expand_or_jumpable() then
@@ -217,8 +292,8 @@ cmp.setup {
     end
   },
   mapping = cmp.mapping.preset.insert {
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
@@ -279,6 +354,7 @@ local function quickFix()
     context = { only = { 'quickfix' } }
   })
 end
+
 
 -- Additional kepmaps
 

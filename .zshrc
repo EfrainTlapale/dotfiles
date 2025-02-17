@@ -291,3 +291,5 @@ zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 
 . $HOME/wezterm.sh
+
+export PATH=$(go env GOPATH)/bin:$PATH

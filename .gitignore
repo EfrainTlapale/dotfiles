@@ -5,4 +5,5 @@
 .config/vi-mongo
 .config/ghostty
 .config/github-copilot
+.config/.DS_Store
 
