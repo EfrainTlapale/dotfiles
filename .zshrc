@@ -1,5 +1,5 @@
 # Add deno completions to search path
-if [[ ":$FPATH:" != *":~/.zsh/completions:"* ]]; then export FPATH="/home/efrain/.zsh/completions:$FPATH"; fi
+if [[ ":$FPATH:" != *":$HOME/.zsh/completions:"* ]]; then export FPATH="/home/efrain/.zsh/completions:$FPATH"; fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
@@ -295,4 +295,4 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 . $HOME/wezterm.sh
 
 export PATH=$(go env GOPATH)/bin:$PATH
-. "~/.deno/env"
+. "$HOME/.deno/env"
