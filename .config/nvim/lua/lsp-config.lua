@@ -80,20 +80,8 @@ local on_attach = function(client, bufnr)
   nmap('<leader>a', vim.lsp.buf.code_action, 'Action')
   vim.keymap.set('x', '<leader>a', vim.lsp.buf.code_action, { buffer = bufnr })
 
-  -- nmap('gd', function() require('telescope.builtin').lsp_definitions() end, 'Goto Definition')
-  -- nmap('gr',
-  --   function()
-  --     require('telescope.builtin').lsp_references({
-  --       include_declaration = false,
-  --       -- path_display = { "tail" },
-  --       show_line = false,
-  --       layout_config = { preview_width = 0.6 }
-  --     })
-  --   end, 'Goto References')
   nmap('gi', vim.lsp.buf.implementation, 'Goto Implementation')
   nmap('gy', vim.lsp.buf.type_definition, 'Type definition')
-  -- nmap('<leader>o', require('telescope.builtin').lsp_document_symbols, 'Document Symbols')
-  -- nmap('<C-T>', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Workspace Symbols')
   nmap('gD', vim.lsp.buf.declaration, 'Goto Declaration')
 
   -- See `:help K` for why this keymap
@@ -139,6 +127,7 @@ end
 
 local util = require 'lspconfig.util'
 local servers = {
+  html = {},
   vtsls = {
     config = {
       single_file_support = false,

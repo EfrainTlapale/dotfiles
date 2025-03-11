@@ -546,6 +546,7 @@ require("conform").setup({
     css = jsIshFormatterOptions,
     json = jsIshFormatterOptions,
     go = { "gofumpt" },
+    html = { "prettier" }
   },
   format_on_save = {
     -- These options will be passed to conform.format()
