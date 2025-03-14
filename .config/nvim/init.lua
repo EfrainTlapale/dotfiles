@@ -304,6 +304,9 @@ local plugins = {
               ["<c-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
             }
           }
+        },
+        formatters = {
+          file = { truncate = 60, filename_first = true }
         }
       },
       gitbrowse = {
