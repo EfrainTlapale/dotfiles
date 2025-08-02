@@ -227,7 +227,9 @@ local plugins = {
       picker = {
         sources = {
           explorer = {
-            auto_close = true,
+            jump = {
+              close = true
+            },
             enter = true,
             win = {
               list = {
@@ -334,6 +336,25 @@ local plugins = {
     version = '1.*',
     dependencies = { 'L3MON4D3/LuaSnip', version = 'v2.*' },
     opts = {
+      enabled = function()
+        if vim.tbl_contains({ 'gitcommit', 'markdown' }, vim.bo.filetype) then
+          return false
+        end
+
+        local row, column = unpack(vim.api.nvim_win_get_cursor(0))
+        local success, node = pcall(vim.treesitter.get_node, {
+          bufnr = 0,
+          pos = { row - 1, math.max(0, column - 1) } -- seems to be necessary...
+        })
+        if success and node then
+          print(node:type())
+        end
+        if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment", "string", "string_start", "string_fragment", "string_content", "string_end" }, node:type()) then
+          return false
+        end
+
+        return vim.bo.buftype ~= 'nofile'
+      end,
       keymap = {
         preset = 'none',
         ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
@@ -362,7 +383,7 @@ local plugins = {
       completion = { documentation = { auto_show = false } },
       snippets = { preset = 'luasnip' },
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'lsp', 'snippets', },
       },
       fuzzy = { implementation = "prefer_rust_with_warning" },
       cmdline = {
