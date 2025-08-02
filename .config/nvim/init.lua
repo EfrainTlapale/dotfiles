@@ -346,9 +346,6 @@ local plugins = {
           bufnr = 0,
           pos = { row - 1, math.max(0, column - 1) } -- seems to be necessary...
         })
-        if success and node then
-          print(node:type())
-        end
         if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment", "string", "string_start", "string_fragment", "string_content", "string_end" }, node:type()) then
           return false
         end
@@ -385,6 +382,7 @@ local plugins = {
       sources = {
         default = { 'lsp', 'snippets', },
       },
+      signature = { enabled = true, trigger = { enabled = false }, window = { winblend = 10, treesitter_highlighting = true, show_documentation = true } },
       fuzzy = { implementation = "prefer_rust_with_warning" },
       cmdline = {
         completion = {
@@ -406,23 +404,6 @@ local plugins = {
       },
     },
   },
-  {
-    "saghen/blink.cmp",
-    opts = {
-      sources = {
-        -- add lazydev to your completion providers
-        default = { "lazydev", "lsp", "path", "snippets", "buffer" },
-        providers = {
-          lazydev = {
-            name = "LazyDev",
-            module = "lazydev.integrations.blink",
-            -- make lazydev completions top priority (see `:h blink.cmp`)
-            score_offset = 100,
-          },
-        },
-      },
-    },
-  }
 }
 
 require('basics')
@@ -477,6 +458,9 @@ require('Comment').setup {
 
 require("noice").setup({
   lsp = {
+    signature = {
+      enabled = false
+    },
     progress = {
       enabled = false
     },
