@@ -364,7 +364,12 @@ local plugins = {
       sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
       },
-      fuzzy = { implementation = "prefer_rust_with_warning" }
+      fuzzy = { implementation = "prefer_rust_with_warning" },
+      cmdline = {
+        completion = {
+          ghost_text = { enabled = false }
+        }
+      }
     },
     opts_extend = { "sources.default" },
   },
