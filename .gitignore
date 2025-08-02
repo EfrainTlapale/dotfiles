@@ -9,6 +9,13 @@
 !.gitignore
 !.wezterm.lua
 !wezterm.sh
+
+!.config
+
 !.config/nvim
+!.config/nvim/**
+.config/nvim/.env.local
+
 !.config/lazygit
+!.config/lazygit/**
 
