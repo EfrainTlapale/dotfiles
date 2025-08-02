@@ -86,9 +86,6 @@ local plugins = {
 
       -- Useful status updates for LSP
       'j-hui/fidget.nvim',
-
-      -- Additional lua configuration, makes nvim stuff amazing
-      'folke/neodev.nvim',
     },
   },
   {
@@ -370,6 +367,35 @@ local plugins = {
       fuzzy = { implementation = "prefer_rust_with_warning" }
     },
     opts_extend = { "sources.default" },
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        { path = "snacks.nvim",        words = { "Snacks" } },
+      },
+    },
+  },
+  {
+    "saghen/blink.cmp",
+    opts = {
+      sources = {
+        -- add lazydev to your completion providers
+        default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+        providers = {
+          lazydev = {
+            name = "LazyDev",
+            module = "lazydev.integrations.blink",
+            -- make lazydev completions top priority (see `:h blink.cmp`)
+            score_offset = 100,
+          },
+        },
+      },
+    },
   }
 }
 
@@ -384,7 +410,6 @@ require("lazy").setup({
 })
 
 -- Setup neovim lua configuration
-require('neodev').setup()
 require('colors')
 require('telescope-config')
 require("flote").setup {
@@ -408,6 +433,7 @@ require('lualine').setup({
     lualine_b = { 'diff', 'diagnostics' },
     lualine_c = { 'filename', 'navic' },
     lualine_x = { 'filetype' },
+    lualine_y = {},
   },
   tabline = {
     lualine_c = { 'branch', 'tabs' }
