@@ -29,8 +29,6 @@ require 'nvim-treesitter.configs'.setup {
     keymaps = {
       init_selection = '<c-s>',
       node_incremental = '<c-s>',
-      -- scope_incremental = '<c-s>',
-      -- node_decremental = '<c-S>',
     },
   },
   textobjects = {
@@ -66,200 +64,162 @@ vim.diagnostic.config({ virtual_text = false, update_in_insert = false })
 
 local cos = require("codeactions-on-save")
 
---  This function gets run when an LSP connects to a particular buffer.
-local on_attach = function(client, bufnr)
-  local nmap = function(keys, func, desc)
-    if desc then
-      desc = 'LSP: ' .. desc
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client then
+      return
     end
 
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
-  end
+    local nmap = function(keys, func, desc)
+      if desc then
+        desc = 'LSP: ' .. desc
+      end
 
-  nmap('<leader>rn', vim.lsp.buf.rename, 'Rename')
-  nmap('<leader>a', vim.lsp.buf.code_action, 'Action')
-  vim.keymap.set('x', '<leader>a', vim.lsp.buf.code_action, { buffer = bufnr })
+      vim.keymap.set('n', keys, func, { buffer = args.buf, desc = desc })
+    end
 
-  nmap('gi', vim.lsp.buf.implementation, 'Goto Implementation')
-  nmap('gy', vim.lsp.buf.type_definition, 'Type definition')
-  nmap('gD', vim.lsp.buf.declaration, 'Goto Declaration')
+    nmap('<leader>rn', vim.lsp.buf.rename, 'Rename')
+    nmap('<leader>a', vim.lsp.buf.code_action, 'Action')
+    vim.keymap.set('x', '<leader>a', vim.lsp.buf.code_action, { buffer = args.buf })
 
-  -- See `:help K` for why this keymap
-  nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
+    nmap('gi', vim.lsp.buf.implementation, 'Goto Implementation')
+    nmap('gy', vim.lsp.buf.type_definition, 'Type definition')
+    nmap('gD', vim.lsp.buf.declaration, 'Goto Declaration')
 
-  if client.server_capabilities.documentSymbolProvider then
-    navic.attach(client, bufnr)
-  end
+    -- See `:help K` for why this keymap
+    nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
 
-  if client.server_capabilities.documentHighlightProvider then
-    nmap('<leader>sh', vim.lsp.buf.document_highlight, 'Highlight symbol')
-    nmap('<leader>ch', vim.lsp.buf.clear_references, 'Clear highlight symbol')
-  end
+    if client.server_capabilities.documentSymbolProvider then
+      navic.attach(client, args.buf)
+    end
 
-  if client.name == 'eslint' then
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
-      command = 'silent! EslintFixAll',
-      group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),
-    })
-  end
+    if client.server_capabilities.documentHighlightProvider then
+      nmap('<leader>sh', vim.lsp.buf.document_highlight, 'Highlight symbol')
+      nmap('<leader>ch', vim.lsp.buf.clear_references, 'Clear highlight symbol')
+    end
 
-  -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    vim.lsp.buf.format({ timeout_ms = 2000 })
-  end, { desc = 'Format current buffer with LSP' })
+    if client.name == 'eslint' then
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
+        command = 'silent! EslintFixAll',
+        group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),
+      })
+    end
 
-  vim.api.nvim_buf_create_user_command(bufnr, 'OrganizeImports', function(_)
-    local params = {
-      command = "_typescript.organizeImports",
-      arguments = { vim.api.nvim_buf_get_name(0) },
-      title = "",
-    }
-    vim.lsp.buf.execute_command(params)
-    vim.cmd('EslintFixAll')
-  end, { desc = 'Organize Imports' })
+    -- Create a command `:Format` local to the LSP buffer
+    vim.api.nvim_buf_create_user_command(args.buf, 'Format', function(_)
+      vim.lsp.buf.format({ timeout_ms = 2000 })
+    end, { desc = 'Format current buffer with LSP' })
 
-  if client.name == 'biome' then
-    vim.diagnostic.config({ update_in_insert = true })
-    cos.register({ "*.ts", "*.tsx" }, { "source.organizeImports.biome" })
-  end
-end
-
-local util = require 'lspconfig.util'
-local servers = {
-  html = {},
-  vtsls = {
-    config = {
-      single_file_support = false,
-      root_dir = util.root_pattern('tsconfig.json', 'package.json')
-    },
-    settings = {
-      typescript = {
-        tsserver = { maxTsServerMemory = 8192 },
-        single_file_support = false
-      },
-      vtsls = {
-        single_file_support = false,
-        autoUseWorkspaceTsdk = true,
-        experimental = {
-          completion = { enableServerSideFuzzyMatch = true, entriesLimit = 30 } },
-      },
-    }
-  },
-  eslint = {},
-  jsonls = {},
-  biome = {
-    settings = {
-      biome = {
-        requireConfigFile = true
-      },
-    }
-  },
-  lua_ls = {},
-  cssls = {},
-  pyright = {
-    settings = {
-      python = {
-        analysis = {
-          autoSearchPaths = true,
-          diagnosticMode = "openFilesOnly",
-          useLibraryCodeForTypes = true
-        }
+    vim.api.nvim_buf_create_user_command(args.buf, 'OrganizeImports', function(_)
+      local params = {
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) },
+        title = "",
       }
-    }
-  },
-  gopls = {},
-  golangci_lint_ls = {},
-  denols = {
-    config = {
-      root_dir = util.root_pattern('deno.json', 'deno.jsonc')
-    },
-    settings = {
-      {
-        deno = {
-          enable = true,
-          disablePaths = {},
-          enablePaths = nil,
-          cache = nil,
-          cacheOnSave = true,
-          certificateStores = nil,
-          config = nil,
-          importMap = nil,
-          codeLens = {
-            implementations = false,
-            references = false,
-            referencesAllFunctions = false,
-            test = false
-          },
-          internalDebug = false,
-          internalInspect = false,
-          logFile = false,
-          lint = true,
-          documentPreloadLimit = 1000,
-          suggest = {
-            imports = {
-              autoDiscover = true,
-              hosts = {
-                ["https://deno.land"] = true
-              }
+      vim.lsp.buf.execute_command(params)
+      vim.cmd('EslintFixAll')
+    end, { desc = 'Organize Imports' })
+
+    if client.name == 'biome' then
+      vim.diagnostic.config({ update_in_insert = true })
+      cos.register({ "*.ts", "*.tsx" }, { "source.organizeImports.biome" })
+    end
+  end,
+})
+
+
+vim.lsp.config("denols", {
+  root_markers = { "deno.json" },
+  workspace_required = true,
+  settings = {
+    {
+      deno = {
+        enable = true,
+        disablePaths = {},
+        enablePaths = nil,
+        cache = nil,
+        cacheOnSave = true,
+        certificateStores = nil,
+        config = nil,
+        importMap = nil,
+        codeLens = {
+          implementations = false,
+          references = false,
+          referencesAllFunctions = false,
+          test = false
+        },
+        internalDebug = false,
+        internalInspect = false,
+        logFile = false,
+        lint = true,
+        documentPreloadLimit = 1000,
+        suggest = {
+          imports = {
+            autoDiscover = true,
+            hosts = {
+              ["https://deno.land"] = true
             }
-          },
-          testing = {
-            args = {
-              "--allow-all",
-              "--no-check"
-            }
-          },
-          tlsCertificate = nil,
-          unsafelyIgnoreCertificateErrors = nil,
-          unstable = true,
-        }
+          }
+        },
+        testing = {
+          args = {
+            "--allow-all",
+            "--no-check"
+          }
+        },
+        tlsCertificate = nil,
+        unsafelyIgnoreCertificateErrors = nil,
+        unstable = true,
       }
     }
   }
+})
 
-}
+vim.lsp.config("vtsls", {
+  root_markers = { "tsconfig.json", "package.json" },
+  workspace_required = true,
+  settings = {
+    typescript = {
+      tsserver = { maxTsServerMemory = 8192 },
+      single_file_support = false
+    },
+    vtsls = {
+      single_file_support = false,
+      autoUseWorkspaceTsdk = true,
+      experimental = {
+        completion = { enableServerSideFuzzyMatch = true, entriesLimit = 30 } },
+    },
+  }
+})
 
---
--- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-capabilities = vim.tbl_deep_extend('force', capabilities, {
-  offsetEncoding = { 'utf-16' },
-  general = {
-    positionEncodings = { 'utf-16' },
-  },
+vim.lsp.config("biome", {
+  settings = {
+    biome = {
+      requireConfigFile = true
+    },
+  }
+})
+
+vim.lsp.config("pyright", {
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        diagnosticMode = "openFilesOnly",
+        useLibraryCodeForTypes = true
+      }
+    }
+  }
 })
 
 -- Setup mason so it can manage external tooling
 require('mason').setup()
-
--- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
-
-mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
-}
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    local server_config = servers[server_name].config
-
-    if server_config == nil then
-      server_config = {}
-    end
-    local setup_args = vim.tbl_deep_extend(
-      "keep",
-      server_config,
-      {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = servers[server_name].settings,
-      }
-    )
-    require('lspconfig')[server_name].setup(setup_args)
-  end,
-}
+require('mason-lspconfig').setup({
+  ensure_installed = { 'html', 'vtsls', 'eslint', 'jsonls', 'biome', 'lua_ls', 'cssls', 'pyright', 'gopls', 'golangci_lint_ls', 'denols' },
+})
 
 local luasnip = require("luasnip")
 vim.keymap.set({ "i" }, "<C-K>", function()
