@@ -62,13 +62,6 @@ vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>DiffviewFileHistory<CR>", { nor
 
 vim.api.nvim_set_keymap("n", "<leader>ts", "<cmd>TSToggle highlight<CR>", { noremap = true, silent = true })
 
-vim.api.nvim_set_keymap('n', '<A-j>', '<cmd>m .+1<CR>==', { noremap = true })
-vim.api.nvim_set_keymap('n', '<A-k>', '<cmd>m .-2<CR>==', { noremap = true })
-vim.api.nvim_set_keymap('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { noremap = true })
-vim.api.nvim_set_keymap('i', '<A-k>', '<Esc>:m .-2<CR>==gi', { noremap = true })
-vim.api.nvim_set_keymap('v', '<A-j>', "<cmd>m '>+1<CR>gv=gv", { noremap = true })
-vim.api.nvim_set_keymap('v', '<A-k>', "<cmd>m '<-2<CR>gv=gv", { noremap = true })
-
 vim.api.nvim_set_keymap('n', '<F4>', '<cmd>set hlsearch! hlsearch?<CR>', { noremap = true })
 
 local function open_nvim_tree(data)
