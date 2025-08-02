@@ -1,9 +1,14 @@
-.config/lazygit/state.yml
-.config/nvim/.env.local
-.config/zed
-.config/ngrok
-.config/vi-mongo
-.config/ghostty
-.config/github-copilot
-.config/.DS_Store
+# Ignore everything
+*
+
+# But not these files or directories
+!README.md
+
+!.zshrc
+!.git-config-base
+!.gitignore
+!.wezterm.lua
+!wezterm.sh
+!.config/nvim
+!.config/lazygit
 

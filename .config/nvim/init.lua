@@ -152,6 +152,7 @@ local plugins = {
   {
     'mistweaverco/kulala.nvim',
     opts = {},
+    ft = { "http", "rest" },
     keys = {
       { '<CR>',       "<cmd>lua require('kulala').run()<CR>",       ft = "http" },
       { '[r',         "<cmd>lua require('kulala').jump_prev()<CR>", ft = "http" },
@@ -650,4 +651,10 @@ end
 vim.api.nvim_create_autocmd({ "BufReadCmd" }, {
   pattern = { "deno:/*" },
   callback = virtual_text_document,
+})
+
+vim.filetype.add({
+  extension = {
+    ['http'] = 'http',
+  },
 })
