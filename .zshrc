@@ -386,6 +386,14 @@ docker_psf() {
   }'
 }
 
+nvim() {
+  if [[ "$#" -eq 1 && "$1" == "." ]]; then
+    command nvim
+  else
+    command nvim "$@"
+  fi
+}
+
 pastefinish() {
   zle -N self-insert $OLD_SELF_INSERT
 }
