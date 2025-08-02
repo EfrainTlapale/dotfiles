@@ -217,6 +217,13 @@ local plugins = {
     priority = 1000,
     lazy = false,
     opts = {
+      dashboard = {
+        sections = {
+          { section = "header" },
+          { icon = " ", title = "Recent Files", section = "recent_files", cwd = true },
+          { section = "startup" },
+        }
+      },
       explorer = {
         replace_netrw = true
       },
