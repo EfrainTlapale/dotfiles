@@ -11,7 +11,7 @@ local act = wezterm.action
 config.colors = {
   -- The default text color
   foreground = 'white',
-  cursor_bg = 'white'
+  cursor_bg = 'white',
 }
 
 

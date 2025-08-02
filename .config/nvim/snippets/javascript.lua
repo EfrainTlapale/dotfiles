@@ -11,7 +11,7 @@ local function stateFormatter(
 end
 
 return {
-  s("log", { t("console.log("), i(1), t(")") }),
+  s("clog", { t("console.log("), i(1), t(")") }),
   s("arrw", { t({ "() => {", "" }), i(1), t({ "", "}" }) }),
   s("state", { t("const ["), i(1), f(stateFormatter, { 1 }, {}), t("] = useState("), i(2), t(")") })
 }

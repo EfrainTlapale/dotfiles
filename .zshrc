@@ -232,6 +232,84 @@ connectBtDevice() {
   fi
 }
 
+float_keyboard() {
+  local number
+  number=$(xinput | grep 'AT Translated Set 2 keyboard' | grep -Eo '[0-9]+' | head -2 | tail -1)
+  xinput float "$number"
+}
+
+reattach_keyboard() {
+  local number
+  number=$(xinput | grep floating | grep -Eo '[0-9]+' | head -2 | tail -1)
+  xinput reattach "$number" 3
+}
+
+float_keyboard_and_fix_touchpad() {
+  # Get keyboard ID (adjust the grep if your keyboard name differs)
+  local keyboard_id=$(xinput | grep 'AT Translated Set 2 keyboard' | grep -Eo '[0-9]+' | head -2 | tail -1)
+
+  if [[ -z "$keyboard_id" ]]; then
+    echo "❌ Could not find keyboard ID."
+    return 1
+  fi
+
+  echo "🧊 Floating keyboard (ID: $keyboard_id)"
+  xinput float "$keyboard_id"
+
+  # Find the touchpad ID
+  local touchpad_id=$(xinput | grep -i touchpad | grep -Eo 'id=[0-9]+' | grep -Eo '[0-9]+')
+  if [[ -z "$touchpad_id" ]]; then
+    echo "⚠️  Touchpad not found."
+    return 1
+  fi
+
+  # Re-enable tap-to-click (some systems might use a different prop name)
+  echo "✅ Enabling tap-to-click on touchpad (ID: $touchpad_id)"
+  xinput set-prop "$touchpad_id" "libinput Tapping Enabled" 1
+}
+
+reattach_keyboard2() {
+  local keyboard_id=$(xinput | grep 'AT Translated Set 2 keyboard' | grep -Eo '[0-9]+' | head -2 | tail -1)
+
+  if [[ -z "$keyboard_id" ]]; then
+    echo "❌ Could not find keyboard ID."
+    return 1
+  fi
+
+  echo "🔄 Reattaching keyboard (ID: $keyboard_id) to master 3"
+  xinput reattach "$keyboard_id" 3
+}
+
+toggle_keyboard_control() {
+  local keyboard_name="AT Translated Set 2 keyboard"
+  local keyboard_id=$(xinput | grep "$keyboard_name" | grep -Eo '[0-9]+' | head -2 | tail -1)
+
+  if [[ -z "$keyboard_id" ]]; then
+    echo "❌ Could not find keyboard ID for '$keyboard_name'."
+    return 1
+  fi
+
+  if xinput | grep -A0 "$keyboard_name" | grep -q 'floating'; then
+    echo "🔄 Reattaching keyboard (ID: $keyboard_id)"
+    xinput reattach "$keyboard_id" 3
+    notify-send "🔌 Keyboard Reattached" "Keyboard input restored."
+  else
+    echo "🧊 Floating keyboard (ID: $keyboard_id)"
+    xinput float "$keyboard_id"
+
+    local touchpad_id=$(xinput | grep -i touchpad | grep -Eo 'id=[0-9]+' | grep -Eo '[0-9]+')
+    if [[ -n "$touchpad_id" ]]; then
+      xinput set-prop "$touchpad_id" "libinput Tapping Enabled" 1 2>/dev/null
+      xinput set-prop "$touchpad_id" "libinput Disable While Typing Enabled" 0 2>/dev/null
+      echo "✅ Tap-to-click and touchpad during typing enabled (ID: $touchpad_id)"
+    else
+      echo "⚠️  Touchpad not found."
+    fi
+
+    notify-send "⛔️ Keyboard Floated" "Input disabled, palm detection off."
+  fi
+}
+
 # Personal aliases
 alias connect-wf='connectBtDevice AA:BB:CC:DD:EE:01'
 alias connect-wh='connectBtDevice AA:BB:CC:DD:EE:02'
@@ -284,6 +362,28 @@ fi
 pasteinit() {
   OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
   zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+docker_psf() {
+  docker ps --format '{{.Names}}\t{{.Image}}' | awk -F '\t' '
+  BEGIN {
+    # Define ANSI colors
+    name_color = "\033[1;36m"   # Cyan
+    image_color = "\033[1;32m"  # Green
+    reset = "\033[0m"
+
+    # Print headers
+    printf "%s%-25s\t%-25s\t%-10s%s\n", name_color, "CONTAINER NAME", "IMAGE NAME", "VERSION", reset
+  }
+  {
+    # Split image into name and version
+    split($2, image_parts, ":");
+    image_name = image_parts[1];
+    version = (length(image_parts) > 1) ? image_parts[2] : "latest";
+
+    # Print row with colors
+    printf "%s%-25s\t%s%-25s\t%-10s%s\n", name_color, $1, image_color, image_name, version, reset
+  }'
 }
 
 pastefinish() {
