@@ -1,7 +1,6 @@
 local dotenv = require('lua-dotenv')
 dotenv.load_dotenv(vim.fs.normalize('~/.config/nvim/.env.local'))
 
-
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -70,23 +69,6 @@ local plugins = {
   'kkharji/sqlite.lua',
   'prochri/telescope-all-recent.nvim',
   'lewis6991/gitsigns.nvim',
-  {
-    "nvim-tree/nvim-tree.lua",
-    version = "*",
-    lazy = false,
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("nvim-tree").setup {
-        actions = {
-          open_file = {
-            quit_on_open = true
-          }
-        }
-      }
-    end
-  },
   'numToStr/Comment.nvim',
   'm4xshen/autoclose.nvim',
   { "akinsho/toggleterm.nvim", version = '*' },
@@ -208,69 +190,6 @@ local plugins = {
     },
     config = true
   },
-  {
-    "Exafunction/codeium.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "hrsh7th/nvim-cmp",
-    },
-    enabled = function()
-      return dotenv.enable_plugin('ENABLE_CODEIUM')
-    end,
-    opts = {
-      -- Optionally disable cmp source if using virtual text only
-      enable_cmp_source = false,
-      virtual_text = {
-        enabled = true,
-
-        -- These are the defaults
-
-        -- Set to true if you never want completions to be shown automatically.
-        manual = false,
-        -- A mapping of filetype to true or false, to enable virtual text.
-        filetypes = {},
-        -- Whether to enable virtual text of not for filetypes not specifically listed above.
-        default_filetype_enabled = true,
-        -- How long to wait (in ms) before requesting completions after typing stops.
-        idle_delay = 75,
-        -- Priority of the virtual text. This usually ensures that the completions appear on top of
-        -- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
-        -- desired.
-        virtual_text_priority = 65535,
-        -- Set to false to disable all key bindings for managing completions.
-        map_keys = true,
-        -- The key to press when hitting the accept keybinding but no completion is showing.
-        -- Defaults to \t normally or <c-n> when a popup is showing.
-        accept_fallback = nil,
-        -- Key bindings for managing completions in virtual text mode.
-        key_bindings = {
-          -- Accept the current completion.
-          accept = "<Tab>",
-          -- Accept the next word.
-          accept_word = false,
-          -- Accept the next line.
-          accept_line = false,
-          -- Clear the virtual text.
-          clear = false,
-          -- Cycle to the next completion.
-          next = "<M-]>",
-          -- Cycle to the previous completion.
-          prev = "<M-[>",
-        }
-      }
-    }
-  },
-  {
-    "atiladefreitas/dooing",
-    config = function()
-      require("dooing").setup({
-        -- your custom config here (optional)
-      })
-    end,
-    keys = {
-      { "<leader>td", desc = "Toggle Todo List" },
-    },
-  },
   "fnune/codeactions-on-save.nvim",
   {
     "neanias/everforest-nvim",
@@ -295,8 +214,26 @@ local plugins = {
   "nyoom-engineering/oxocarbon.nvim",
   {
     "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
     opts = {
+      explorer = {
+        replace_netrw = true
+      },
       picker = {
+        sources = {
+          explorer = {
+            auto_close = true,
+            enter = true,
+            win = {
+              list = {
+                keys = {
+                  ['<c-n>'] = { 'close', mode = { 'i', 'n' } }
+                }
+              }
+            }
+          },
+        },
         matcher = {
           frecency = true,
           fuzzy = true
@@ -307,7 +244,7 @@ local plugins = {
               ["<c-d>"] = { "preview_scroll_down", mode = { "i", "n" } },
               ["<c-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
             }
-          }
+          },
         },
         formatters = {
           file = { truncate = 60, filename_first = true }
@@ -317,7 +254,7 @@ local plugins = {
         -- your gitbrowse configuration comes here
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
-      }
+      },
     },
     keys = {
       { "<leader>o", function() Snacks.picker.lsp_symbols({ tree = false, filter = { default = true } }) end, desc = "LSP Symbols" },
@@ -353,6 +290,8 @@ local plugins = {
         desc = "git-browse",
         silent = true,
       },
+
+      { "<C-N>", function() Snacks.explorer() end, desc = "Reveal explorer" }
     },
   },
   {
@@ -363,15 +302,6 @@ local plugins = {
       vim.g.markdown_composer_autostart = 0
     end
   },
-  -- {
-  --   "iamcco/markdown-preview.nvim",
-  --   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-  --   build = "cd app && npm install",
-  --   init = function()
-  --     vim.g.mkdp_filetypes = { "markdown" }
-  --   end,
-  --   ft = { "markdown" },
-  -- },
   {
     "rjshkhr/shadow.nvim",
     priority = 1000,
@@ -394,6 +324,45 @@ local plugins = {
       { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,   desc = "Flash" },
       { "<c-s>", mode = { "c" },           function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
+  },
+  {
+    'saghen/blink.cmp',
+    version = '1.*',
+    dependencies = { 'L3MON4D3/LuaSnip', version = 'v2.*' },
+    opts = {
+      keymap = {
+        preset = 'none',
+        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<C-e>'] = { 'hide', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+
+        ['<Tab>'] = {
+          'select_next',
+          'snippet_forward',
+          'fallback'
+        },
+
+        ['<Up>'] = { 'select_prev', 'fallback' },
+        ['<Down>'] = { 'select_next', 'fallback' },
+        ['<C-p>'] = { 'select_prev', 'fallback_to_mappings' },
+        ['<C-n>'] = { 'select_next', 'fallback_to_mappings' },
+
+        ['<C-u>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-d>'] = { 'scroll_documentation_down', 'fallback' },
+
+        ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
+      },
+      appearance = {
+        nerd_font_variant = 'mono'
+      },
+      completion = { documentation = { auto_show = false } },
+      snippets = { preset = 'luasnip' },
+      sources = {
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
+      },
+      fuzzy = { implementation = "prefer_rust_with_warning" }
+    },
+    opts_extend = { "sources.default" },
   }
 }
 
