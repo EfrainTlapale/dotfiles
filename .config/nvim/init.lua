@@ -346,7 +346,7 @@ local plugins = {
           bufnr = 0,
           pos = { row - 1, math.max(0, column - 1) } -- seems to be necessary...
         })
-        if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment", "string", "string_start", "string_fragment", "string_content", "string_end" }, node:type()) then
+        if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment" }, node:type()) then
           return false
         end
 
