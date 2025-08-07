@@ -187,7 +187,6 @@ local plugins = {
     },
     config = true
   },
-  "fnune/codeactions-on-save.nvim",
   {
     "neanias/everforest-nvim",
     lazy = false,
@@ -225,6 +224,7 @@ local plugins = {
         replace_netrw = true
       },
       picker = {
+        ui_select = false,
         sources = {
           explorer = {
             jump = {

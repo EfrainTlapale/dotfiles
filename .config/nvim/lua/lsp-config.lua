@@ -62,9 +62,6 @@ require 'nvim-treesitter.configs'.setup {
 -- LSP settings.
 vim.diagnostic.config({ virtual_text = false, update_in_insert = false })
 
-local cos = require("codeactions-on-save")
-
-
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -123,9 +120,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.cmd('EslintFixAll')
     end, { desc = 'Organize Imports' })
 
-    if client.name == 'biome' then
+
+    if client.name == "biome" then
       vim.diagnostic.config({ update_in_insert = true })
-      cos.register({ "*.ts", "*.tsx" }, { "source.organizeImports.biome" })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = vim.api.nvim_create_augroup("BiomeFixAll", { clear = true }),
+        callback = function()
+          vim.lsp.buf.code_action({
+            context = {
+              only = { "source.fixAll.biome" },
+              diagnostics = {},
+            },
+            apply = true,
+          })
+        end,
+      })
     end
   end,
 })
