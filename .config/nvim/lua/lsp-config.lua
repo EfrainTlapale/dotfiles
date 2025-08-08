@@ -124,7 +124,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client.name == "biome" then
       vim.diagnostic.config({ update_in_insert = true })
       vim.api.nvim_create_autocmd("BufWritePre", {
-        group = vim.api.nvim_create_augroup("BiomeFixAll", { clear = true }),
+        group = vim.api.nvim_create_augroup("BiomeFixAll", { clear = true, }),
         callback = function()
           vim.lsp.buf.code_action({
             context = {
@@ -133,6 +133,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
             },
             apply = true,
           })
+          -- usually enough to fix all and then save
+          vim.wait(150)
         end,
       })
     end

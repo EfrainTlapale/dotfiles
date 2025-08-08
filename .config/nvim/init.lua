@@ -568,6 +568,10 @@ vim.notify = function(msg, level, opts)
     return
   end
 
+  if msg and string.find(msg, "No code actions available") then
+    return
+  end
+
   return require('notify').notify(msg, level, opts)
 end
 
