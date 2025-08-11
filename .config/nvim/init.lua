@@ -178,9 +178,8 @@ local plugins = {
   {
     "NeogitOrg/neogit",
     dependencies = {
-      "nvim-lua/plenary.nvim",  -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
-
+      "nvim-lua/plenary.nvim",         -- required
+      "sindrets/diffview.nvim",        -- optional - Diff integration
       -- Only one of these is needed.
       "nvim-telescope/telescope.nvim", -- optional
       "ibhagwan/fzf-lua",              -- optional
@@ -224,6 +223,7 @@ local plugins = {
         replace_netrw = true
       },
       picker = {
+        layout = "vscode",
         ui_select = false,
         sources = {
           explorer = {
@@ -287,6 +287,7 @@ local plugins = {
       { "<leader>gl", function() Snacks.picker.git_log_line() end,                      desc = "Git Log Line" },
       { "<leader>gf", function() Snacks.picker.git_log_file() end,                      desc = "Git Log File" },
       { "<leader>d",  function() Snacks.picker.diagnostics_buffer() end,                desc = "Buffer Diagnostics" },
+      { "<leader>k",  function() Snacks.picker.pickers() end,                           desc = "Buffer Diagnostics" },
 
       {
         "<leader>gh",
@@ -385,6 +386,7 @@ local plugins = {
       signature = { enabled = true, trigger = { enabled = false }, window = { winblend = 10, treesitter_highlighting = true, show_documentation = true } },
       fuzzy = { implementation = "prefer_rust_with_warning" },
       cmdline = {
+        enabled = true,
         completion = {
           ghost_text = { enabled = false }
         }
@@ -472,10 +474,15 @@ require("noice").setup({
     },
   },
   messages = {
-    enabled = false
+    enabled = false,
+    view = 'cmdline_output',
+    view_search = false
   },
   notify = {
     enabled = false
+  },
+  popupmenu = {
+    enabled = true
   },
   -- you can enable a preset for easier configuration
   presets = {

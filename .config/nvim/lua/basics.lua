@@ -84,3 +84,5 @@ end, { nargs = '*' })
 
 vim.keymap.set('n', '<leader>rh', ':ResizeRelative ')
 vim.keymap.set('n', '<leader>rv', ':VerticalRelative ')
+
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')

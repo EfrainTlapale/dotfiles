@@ -233,7 +233,7 @@ require('mason-lspconfig').setup({
 })
 
 local luasnip = require("luasnip")
-vim.keymap.set({ "i" }, "<C-K>", function()
+vim.keymap.set({ "i" }, "<C-E>", function()
   if luasnip.expand_or_jumpable() then
     luasnip.expand_or_jump()
   end
