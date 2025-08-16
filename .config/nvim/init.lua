@@ -223,7 +223,7 @@ local plugins = {
         replace_netrw = true
       },
       picker = {
-        layout = "vscode",
+        layout = "dropdown",
         ui_select = false,
         sources = {
           explorer = {
@@ -275,19 +275,35 @@ local plugins = {
         end,
         desc = "LSP Workspace Symbols"
       },
-      { "<C-P>",      function() Snacks.picker.files() end,                             desc = "Smart Find Files" },
-      { "<leader>p",  function() Snacks.picker.files() end,                             desc = "Smart Find Files" },
-      { "<leader>rf", function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "Recent" },
-      { "<leader>fa", function() Snacks.picker.grep() end,                              desc = "Grep" },
-      { "<leader>fs", function() Snacks.picker.grep_word() end,                         desc = "Visual selection or word", mode = { "n", "x" } },
-      { "<leader>fc", function() Snacks.picker.lines() end,                             desc = "Buffer Lines" },
-      { "<leader>bf", function() Snacks.picker.buffers() end,                           desc = "Buffers" },
-      { "<leader>gs", function() Snacks.picker.git_status() end,                        desc = "Git Status" },
-      { "<leader>gg", function() Snacks.picker.git_log() end,                           desc = "Git Log" },
-      { "<leader>gl", function() Snacks.picker.git_log_line() end,                      desc = "Git Log Line" },
-      { "<leader>gf", function() Snacks.picker.git_log_file() end,                      desc = "Git Log File" },
-      { "<leader>d",  function() Snacks.picker.diagnostics_buffer() end,                desc = "Buffer Diagnostics" },
-      { "<leader>k",  function() Snacks.picker.pickers() end,                           desc = "Buffer Diagnostics" },
+      {
+        "<C-P>",
+        function() Snacks.picker.files({ layout = { preset = "vscode" } }) end,
+        desc = "Smart Find Files"
+      },
+      {
+        "<leader>p",
+        function() Snacks.picker.files({ layout = { preset = "vscode" } }) end,
+        desc = "Smart Find Files"
+      },
+      {
+        "<leader>rf",
+        function() Snacks.picker.recent({ filter = { cwd = true }, layout = { preset = "vscode" } }) end,
+        desc = "Recent"
+      },
+      { "<leader>fa", function() Snacks.picker.grep() end,      desc = "Grep" },
+      { "<leader>fs", function() Snacks.picker.grep_word() end, desc = "Visual selection or word", mode = { "n", "x" } },
+      { "<leader>fc", function() Snacks.picker.lines() end,     desc = "Buffer Lines" },
+      { "<leader>bf", function() Snacks.picker.buffers() end,   desc = "Buffers" },
+      {
+        "<leader>gs",
+        function() Snacks.picker.git_status({ layout = { preset = 'default' } }) end,
+        desc = "Git Status"
+      },
+      { "<leader>gg", function() Snacks.picker.git_log() end,            desc = "Git Log" },
+      { "<leader>gl", function() Snacks.picker.git_log_line() end,       desc = "Git Log Line" },
+      { "<leader>gf", function() Snacks.picker.git_log_file() end,       desc = "Git Log File" },
+      { "<leader>d",  function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics" },
+      { "<leader>k",  function() Snacks.picker.pickers() end,            desc = "Buffer Diagnostics" },
 
       {
         "<leader>gh",
