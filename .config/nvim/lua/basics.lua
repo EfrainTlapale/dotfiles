@@ -86,3 +86,18 @@ vim.keymap.set('n', '<leader>rh', ':ResizeRelative ')
 vim.keymap.set('n', '<leader>rv', ':VerticalRelative ')
 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
+
+vim.keymap.set({ 'n' }, '<leader>tm', '<cmd>ToggleTerm<CR>')
+
+
+vim.api.nvim_create_autocmd("ExitPre", {
+  pattern = "*",
+  callback = function(event)
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      local ok, buftype = pcall(vim.api.nvim_get_option_value, 'buftype', { buf = buf })
+      if ok and buftype == 'terminal' then
+        vim.api.nvim_buf_delete(buf, { force = true })
+      end
+    end
+  end,
+})
