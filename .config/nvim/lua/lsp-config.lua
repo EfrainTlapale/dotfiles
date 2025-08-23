@@ -1,4 +1,5 @@
 local navic = require("nvim-navic")
+local util = require 'lspconfig.util'
 
 -- Print contents of `tbl`, with indentation.
 -- `indent` sets the initial level of indentation.
@@ -213,6 +214,19 @@ vim.lsp.config("biome", {
     },
   }
 })
+
+vim.lsp.config("oxlint", {
+  cmd = { '/Users/efra/dev/sin-boleto-next/node_modules/oxlint/bin/oxc_language_server' },
+  -- cmd = './node_modules/oxlint/bin/oxc_language_server',
+  -- cmd = 'npx oxc_language_server',
+  -- root_dir = function(bufnr, on_dir)
+  --   local fname = vim.api.nvim_buf_get_name(bufnr)
+  --   on_dir(vim.fs.dirname(vim.fs.find({ '.oxlintrc.json' }, { path = fname, upward = true })[1]))
+  -- end,
+  -- single_file_support = false
+})
+
+vim.lsp.enable("oxlint")
 
 vim.lsp.config("pyright", {
   settings = {

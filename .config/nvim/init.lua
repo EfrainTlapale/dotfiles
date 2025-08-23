@@ -394,7 +394,7 @@ local plugins = {
       appearance = {
         nerd_font_variant = 'mono'
       },
-      completion = { documentation = { auto_show = false } },
+      completion = { documentation = { auto_show = false }, accept = { auto_brackets = { enabled = false } } },
       snippets = { preset = 'luasnip' },
       sources = {
         default = { 'lsp', 'snippets', },
