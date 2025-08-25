@@ -13,5 +13,30 @@ end
 return {
   s("clog", { t("console.log("), i(1), t(")") }),
   s("arrw", { t({ "() => {", "" }), i(1), t({ "", "}" }) }),
-  s("state", { t("const ["), i(1), f(stateFormatter, { 1 }, {}), t("] = useState("), i(2), t(")") })
+  s("uses", { t("const ["), i(1), f(stateFormatter, { 1 }, {}), t("] = useState("), i(2), t(")") }),
+  s(
+    "usee",
+    {
+      t({ "useEffect(() => {", "" }),
+      i(1),
+      t({ "", "}, [" }),
+      i(2),
+      t("])"),
+    }
+  ),
+
+  s(
+    "usem",
+    {
+      t({ "useMemo(() => {", "" }),
+      i(1),
+      t({ "", "}, [" }),
+      i(2),
+      t("])"),
+    }
+  ),
+  s("jlog",
+    { t("console.log(JSON.stringify("), i(1), t(", null, 2))") }
+  ),
+  s("pps", { t("{}:{"), i(1), t("}") })
 }
