@@ -277,17 +277,17 @@ local plugins = {
       },
       {
         "<C-P>",
-        function() Snacks.picker.files({ layout = { preset = "vscode" } }) end,
+        function() Snacks.picker.files({ hidden = true, layout = { preset = "vscode" } }) end,
         desc = "Smart Find Files"
       },
       {
         "<leader>p",
-        function() Snacks.picker.files({ layout = { preset = "vscode" } }) end,
+        function() Snacks.picker.files({ hidden = true, layout = { preset = "vscode" } }) end,
         desc = "Smart Find Files"
       },
       {
         "<leader>rf",
-        function() Snacks.picker.recent({ filter = { cwd = true }, layout = { preset = "vscode" } }) end,
+        function() Snacks.picker.recent({ hidden = true, filter = { cwd = true }, layout = { preset = "vscode" } }) end,
         desc = "Recent"
       },
       { "<leader>fa", function() Snacks.picker.grep() end,      desc = "Grep" },
