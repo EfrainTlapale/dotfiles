@@ -223,6 +223,13 @@ local plugins = {
         replace_netrw = true
       },
       picker = {
+        icons = {
+          kinds = {
+            Parameter = "󰅲",
+            Variable = "",
+            Property = ""
+          }
+        },
         layout = "dropdown",
         ui_select = false,
         sources = {
@@ -263,9 +270,36 @@ local plugins = {
       },
     },
     keys = {
-      { "<leader>o", function() Snacks.picker.lsp_symbols({ tree = false, filter = { default = true } }) end, desc = "LSP Symbols" },
-      { "gd",        function() Snacks.picker.lsp_definitions() end,                                          desc = "Goto Definition" },
-      { "gr",        function() Snacks.picker.lsp_references() end,                                           nowait = true,           desc = "References" },
+      {
+        "<leader>o",
+        function()
+          local picker = require("snacks.picker")
+          local tspicker = require("customTsPicker")
+
+          picker.pick({
+            finder = tspicker.symbols,
+            format = "lsp_symbol",
+            tree = false,
+            filter = {
+              default = {
+                "Class",
+                "Enum",
+                "Field",
+                "Function",
+                "Method",
+                "Struct",
+                "Variable",
+                "Parameter",
+                "Property"
+              },
+            },
+            title = "TS symbols"
+          })
+        end,
+        desc = "LSP Symbols"
+      },
+      { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
+      { "gr", function() Snacks.picker.lsp_references() end,  nowait = true,           desc = "References" },
       {
         "<C-T>",
         function()
