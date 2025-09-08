@@ -274,25 +274,12 @@ local plugins = {
         "<leader>o",
         function()
           local picker = require("snacks.picker")
-          local tspicker = require("customTsPicker")
+          local tspicker = require("tspicker")
 
           picker.pick({
-            finder = tspicker.symbols,
+            finder = tspicker.provider_symbols,
             format = "lsp_symbol",
-            tree = false,
-            filter = {
-              default = {
-                "Class",
-                "Enum",
-                "Field",
-                "Function",
-                "Method",
-                "Struct",
-                "Variable",
-                "Parameter",
-                "Property"
-              },
-            },
+            filter = { default = true },
             title = "TS symbols"
           })
         end,
