@@ -443,6 +443,24 @@ local plugins = {
       },
     },
   },
+  {
+    "khoido2003/monokai-v2.nvim",
+    priority = 1000,
+    config = function()
+      require("monokai-v2").setup({ filter = "machine" })
+    end,
+  },
+  "armannikoyan/rusty",
+  {
+    "dgox16/oldworld.nvim",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "slugbyte/lackluster.nvim",
+    lazy = false,
+    priority = 1000,
+  },
 }
 
 require('basics')
@@ -475,11 +493,18 @@ require('gitblame').setup({
 require("autoclose").setup({})
 require('tsc').setup()
 require('lualine').setup({
+  options = {
+    section_separators = { left = '', right = '' }
+  },
   sections = {
+    lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
     lualine_b = { 'diff', 'diagnostics' },
     lualine_c = { 'filename', 'navic' },
     lualine_x = { 'filetype' },
     lualine_y = {},
+    lualine_z = {
+      { 'location', separator = { right = '', left = '' }, left_padding = 2 },
+    },
   },
   tabline = {
     lualine_c = { 'branch', 'tabs' }

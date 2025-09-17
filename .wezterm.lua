@@ -206,6 +206,11 @@ if host_os == 'macos' then
   config.window_decorations = "RESIZE"
   config.font_size = 16
   config.window_padding.top = 10
+else
+  config.set_environment_variables = {
+    -- prepend the path to your utility and include the rest of the PATH
+    PATH = wezterm.home_dir .. '/.local/share/bob/nvim-bin:' .. os.getenv 'PATH',
+  }
 end
 
 

@@ -12,6 +12,8 @@ local M = {}
 ---@field scope? "parent" | "local" | "global"
 ---@field children? snacks.picker.treesitter.Match[]
 
+local ignores = { "Module", "Reference" }
+
 -- stylua: ignore
 local kind_mapping = {
   constant     = "Constant",
@@ -24,7 +26,7 @@ local kind_mapping = {
   namespace    = "Namespace",
   import       = "Module",
   var          = "Variable",
-  -- associated = "Reference",
+  associated   = "Reference",
   parameter    = "Parameter",
 }
 
@@ -96,16 +98,19 @@ function M.symbols(_, ctx)
   local items = {} ---@type snacks.picker.finder.Item[]
 
   for _, match in ipairs(matches) do
-    items[#items + 1] = {
-      text = match.text,
-      name = match.text,
-      kind = kind_mapping[match.kind] or "Unknown",
-      ts_kind = match.kind,
-      buf = buf,
-      pos = match.pos,
-      end_pos = match.end_pos,
-      depth = 0,
-    }
+    local kind = kind_mapping[match.kind] or "Unknown"
+    if not vim.tbl_contains(ignores, kind) then
+      items[#items + 1] = {
+        text = match.text,
+        name = match.text,
+        kind = kind_mapping[match.kind] or "Unknown",
+        ts_kind = match.kind,
+        buf = buf,
+        pos = match.pos,
+        end_pos = match.end_pos,
+        depth = 0,
+      }
+    end
   end
 
   return items
