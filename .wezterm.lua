@@ -19,6 +19,7 @@ config.hide_tab_bar_if_only_one_tab = true
 config.tab_bar_at_bottom = true
 config.send_composed_key_when_left_alt_is_pressed = true
 config.window_close_confirmation = 'NeverPrompt'
+config.warn_about_missing_glyphs = false
 
 config.window_padding = {
   left = 0,

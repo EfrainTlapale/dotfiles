@@ -414,12 +414,18 @@ local plugins = {
       appearance = {
         nerd_font_variant = 'mono'
       },
-      completion = { documentation = { auto_show = false }, accept = { auto_brackets = { enabled = false } } },
-      -- snippets = { preset = 'luasnip' },
+      completion = {
+        documentation = {
+          auto_show = false },
+        accept = {
+          auto_brackets = {
+            enabled = false },
+        }
+      },
       sources = {
-        -- default = { 'lsp', 'snippets', },
         default = { 'lsp', },
       },
+      snippets = { preset = 'luasnip' },
       signature = { enabled = true, trigger = { enabled = false }, window = { winblend = 10, treesitter_highlighting = true, show_documentation = true } },
       fuzzy = { implementation = "prefer_rust_with_warning" },
       cmdline = {
