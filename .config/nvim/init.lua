@@ -241,7 +241,8 @@ local plugins = {
             win = {
               list = {
                 keys = {
-                  ['<c-n>'] = { 'close', mode = { 'i', 'n' } }
+                  ['<c-n>'] = { 'close', mode = { 'i', 'n' } },
+                  ["<CR>"] = { { "pick_win", "jump" }, mode = { "n", "i" } },
                 }
               }
             }
@@ -467,6 +468,7 @@ local plugins = {
     lazy = false,
     priority = 1000,
   },
+  'brenoprata10/nvim-highlight-colors'
 }
 
 require('basics')
@@ -764,3 +766,6 @@ vim.filetype.add({
     ['http'] = 'http',
   },
 })
+
+
+require('nvim-highlight-colors').setup({ render = "foreground" })

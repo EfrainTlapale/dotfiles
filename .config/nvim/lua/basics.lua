@@ -28,6 +28,7 @@ vim.o.foldmethod     = 'manual'
 vim.o.foldlevelstart = 99
 vim.api.nvim_set_var('vimwiki_folding', 'custom')
 
+
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- Remap for dealing with word wrap
