@@ -9,7 +9,7 @@ vim.opt.background = "dark" -- set this to dark or light
 
 -- allows custom theme to be loaded from this config
 -- vim.opt.runtimepath:append("~/.config/nvim/lua")
--- vim.cmd.colorscheme "efra"
+-- vim.cmd.colorscheme "efra-2"
 
 vim.cmd.colorscheme "everforest"
 vim.api.nvim_set_hl(0, 'NonText', { fg = '#859289' })
@@ -21,10 +21,9 @@ vim.api.nvim_set_hl(0, 'NonText', { fg = '#859289' })
 --     palette = {
 --       red = '#FF9E99',
 --       gitRed = '#FF9E99',
---       -- diffRed = '#FF9E99',
---       diffRed = 'NONE',
---       -- diffRed = { bg = '#FF9E99' }
---       -- diffRed = '#FAA0A0'
+--       gitGreen = '#A9E8B4',
+--       diffRed = 'none',
+--       diffGreen = 'none'
 --     },
 --     theme = {
 --       mist = {
@@ -35,8 +34,11 @@ vim.api.nvim_set_hl(0, 'NonText', { fg = '#859289' })
 --     }
 --   }
 -- })
---
 -- vim.cmd.colorscheme "kanso"
+
+
+
+
 
 -- vim.cmd("colorscheme monokai-v2")
 -- vim.api.nvim_set_hl(0, 'string', { fg = '#FFEE8C' })

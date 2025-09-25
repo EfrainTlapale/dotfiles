@@ -500,9 +500,16 @@ require('gitblame').setup({
 })
 require("autoclose").setup({})
 require('tsc').setup()
+
+local auto = require('lualine.themes.auto')
+if vim.g.colors_name == 'efra-2' then
+  auto.visual.a.bg = '#A68CB3'
+end
+
 require('lualine').setup({
   options = {
-    section_separators = { left = '', right = '' }
+    section_separators = { left = '', right = '' },
+    theme = auto,
   },
   sections = {
     lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
@@ -516,7 +523,7 @@ require('lualine').setup({
   },
   tabline = {
     lualine_c = { 'branch', 'tabs' }
-  }
+  },
 })
 
 vim.g.skip_ts_context_commentstring_module = true
@@ -595,6 +602,9 @@ require('ibl').setup {
 }
 
 require('gitsigns').setup {
+  preview_config = {
+    border = 'rounded'
+  },
   on_attach = function(bufnr)
     local gs = package.loaded.gitsigns
 
