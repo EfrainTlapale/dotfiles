@@ -468,7 +468,16 @@ local plugins = {
     lazy = false,
     priority = 1000,
   },
-  'brenoprata10/nvim-highlight-colors'
+  'brenoprata10/nvim-highlight-colors',
+  {
+    "bngarren/checkmate.nvim",
+    ft = "markdown", -- Lazy loads for Markdown files matching patterns in 'files'
+    opts = {
+      -- your configuration here
+      -- or leave empty to use defaults
+    },
+
+  }
 }
 
 require('basics')
@@ -575,10 +584,11 @@ require("toggleterm").setup {
   direction = 'horizontal',
   terminal_mappings = true,
   close_on_exit = true,
+  size = 18,
   float_opts = {
     border = 'curved',
     width = 180,
-    height = 30,
+    height = 40,
     winblend = 3,
   },
 }
