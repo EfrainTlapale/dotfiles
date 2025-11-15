@@ -89,6 +89,7 @@ vim.keymap.set('n', '<leader>rv', ':VerticalRelative ')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
 
 vim.keymap.set({ 'n' }, '<leader>tm', '<cmd>ToggleTerm<CR>')
+vim.keymap.set({ 'n' }, '<leader>tv', '<cmd>ToggleTerm direction=vertical size=100<CR>')
 
 
 vim.api.nvim_create_autocmd("ExitPre", {

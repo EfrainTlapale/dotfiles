@@ -194,6 +194,9 @@ local plugins = {
       require("everforest").setup {
         background = "hard",
         disable_italic_comments = true,
+        on_highlights = function(hl, palette)
+          hl.NonText = { fg = '#859289', }
+        end,
       }
     end
   },
@@ -223,6 +226,7 @@ local plugins = {
         replace_netrw = true
       },
       picker = {
+        toggles = { hidden = false },
         icons = {
           kinds = {
             Parameter = "󰅲",
@@ -324,7 +328,8 @@ local plugins = {
       { "<leader>gl", function() Snacks.picker.git_log_line() end,       desc = "Git Log Line" },
       { "<leader>gf", function() Snacks.picker.git_log_file() end,       desc = "Git Log File" },
       { "<leader>d",  function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics" },
-      { "<leader>k",  function() Snacks.picker.pickers() end,            desc = "Buffer Diagnostics" },
+      { "<leader>k",  function() Snacks.picker.pickers() end,            desc = "Pickers" },
+      { "<leader>hh", function() Snacks.picker.command_history() end,    desc = "Command history" },
 
       {
         "<leader>gh",
@@ -477,7 +482,12 @@ local plugins = {
       -- or leave empty to use defaults
     },
 
-  }
+  },
+  {
+    'sainnhe/gruvbox-material',
+    lazy = false,
+    priority = 1000,
+  },
 }
 
 require('basics')
@@ -674,7 +684,19 @@ require("conform").setup({
   formatters = {
     biome = { require_cwd = true },
     prettier = { require_cwd = true },
-    gofumpt = { require_cwd = true }
+    gofumpt = { require_cwd = true },
+    ruff_format = {
+      command = 'docker',
+      args = {
+        "exec",
+        -- "django", -- 👈 **IMPORTANT: Replace with your actual container name or ID**
+        "django-app-my-server",
+        "ruff",
+        "format",
+        "$RELATIVE_FILEPATH",
+      },
+      stdin = false,
+    }
   },
   formatters_by_ft = {
     lua = { "stylua" },
@@ -687,7 +709,9 @@ require("conform").setup({
     css = jsIshFormatterOptions,
     json = jsIshFormatterOptions,
     go = { "gofumpt" },
-    html = { "prettier" }
+    html = { "prettier" },
+    markdown = { 'prettier' },
+    python = { 'ruff_format' }
   },
   format_on_save = {
     -- These options will be passed to conform.format()
@@ -789,3 +813,5 @@ vim.filetype.add({
 
 
 require('nvim-highlight-colors').setup({ render = "foreground" })
+
+require('quickrun').setup()
