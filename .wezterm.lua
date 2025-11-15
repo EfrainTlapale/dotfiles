@@ -203,7 +203,7 @@ local host_os = detect_host_os()
 if host_os == 'macos' then
   -- check homebrew binary symlinks on startup.
   config.set_environment_variables = {
-    PATH = '/Users/efraintlapale/neovim/bin:' .. os.getenv('PATH')
+    PATH = '/opt/homebrew/bin:' .. os.getenv('PATH')
   }
 
   config.window_decorations = "RESIZE"
