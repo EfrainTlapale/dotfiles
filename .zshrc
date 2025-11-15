@@ -322,7 +322,7 @@ showTestVideo() {
 }
 
 showTestTrace() {
-  fd -I trace.zip -x npx playwright show-trace
+  fd -I trace.zip -x npx playwright@latest show-trace
 }
 
 fixFrontAssetManagement(){

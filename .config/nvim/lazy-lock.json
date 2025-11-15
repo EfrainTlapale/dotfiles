@@ -17,6 +17,7 @@
   "fzf-lua": { "branch": "main", "commit": "478869cf8c4b4354771c27b6b8e9f985cb274de2" },
   "git-blame.nvim": { "branch": "master", "commit": "9874ec1ec8bc53beb33b7cd82c092b85271a578b" },
   "gitsigns.nvim": { "branch": "main", "commit": "1ee5c1fd068c81f9dd06483e639c2aa4587dc197" },
+  "gruvbox-material": { "branch": "master", "commit": "4bfc6983abc249c5943a60d8eb3980a3c2ababe1" },
   "indent-blankline.nvim": { "branch": "master", "commit": "e7a4442e055ec953311e77791546238d1eaae507" },
   "kanso.nvim": { "branch": "main", "commit": "151dbc23fe890d09c26df11b1208dd8129dca012" },
   "kulala.nvim": { "branch": "main", "commit": "0d50e9ce5c992fe507743d8641b36125e668aad4" },

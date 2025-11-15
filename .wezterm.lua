@@ -14,6 +14,8 @@ config.colors = {
   cursor_bg = 'white',
 }
 
+config.font = wezterm.font 'FiraCode Nerd Font'
+
 
 config.hide_tab_bar_if_only_one_tab = true
 config.tab_bar_at_bottom = true
@@ -208,13 +210,13 @@ if host_os == 'macos' then
   config.font_size = 16
   config.window_padding.top = 10
 else
+  -- config.font_size = 11
+  -- config.line_height = 0.95
   config.set_environment_variables = {
     -- prepend the path to your utility and include the rest of the PATH
     PATH = wezterm.home_dir .. '/.local/share/bob/nvim-bin:' .. os.getenv 'PATH',
   }
 end
-
-
 
 wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
   local process = pane.foreground_process_name
