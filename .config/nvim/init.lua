@@ -488,6 +488,11 @@ local plugins = {
     lazy = false,
     priority = 1000,
   },
+  {
+    "nendix/zen.nvim",
+    lazy = false,
+    priority = 1000,
+  }
 }
 
 require('basics')
@@ -711,7 +716,8 @@ require("conform").setup({
     go = { "gofumpt" },
     html = { "prettier" },
     markdown = { 'prettier' },
-    python = { 'ruff_format' }
+    python = { 'ruff_format' },
+    yaml = { "prettier" }
   },
   format_on_save = {
     -- These options will be passed to conform.format()

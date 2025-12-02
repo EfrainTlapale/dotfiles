@@ -13,8 +13,9 @@ vim.opt.background = "dark" -- set this to dark or light
 -- vim.opt.runtimepath:append("~/.config/nvim/lua")
 -- vim.cmd.colorscheme "efra-2"
 
--- vim.cmd.colorscheme "everforest"
-vim.cmd.colorscheme "carbonfox"
+vim.cmd.colorscheme "everforest"
+-- vim.cmd.colorscheme "zen"
+-- vim.cmd.colorscheme "carbonfox"
 -- vim.cmd.colorscheme "no-clown-fiesta-dark"
 
 -- require('kanso').setup({

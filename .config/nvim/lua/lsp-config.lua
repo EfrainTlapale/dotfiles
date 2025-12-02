@@ -18,7 +18,7 @@ end
 
 require 'nvim-treesitter.configs'.setup {
   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "typescript", "css", "scss", "javascript", "markdown",
-    "markdown_inline", "python", "tsx", "bash", "fish", "json", "http" },
+    "markdown_inline", "python", "tsx", "bash", "fish", "json", "http", "yaml" },
   highlight = {
     enable = true,
   },
@@ -121,6 +121,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.cmd('EslintFixAll')
     end, { desc = 'Organize Imports' })
 
+    if client.name == "golangci_lint_ls" or client.name == 'gopls' then
+      vim.diagnostic.config({ update_in_insert = true })
+    end
 
     if client.name == "biome" then
       vim.diagnostic.config({ update_in_insert = true })
