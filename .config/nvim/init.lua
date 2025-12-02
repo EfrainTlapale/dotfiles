@@ -327,7 +327,7 @@ local plugins = {
       { "<leader>gg", function() Snacks.picker.git_log() end,            desc = "Git Log" },
       { "<leader>gl", function() Snacks.picker.git_log_line() end,       desc = "Git Log Line" },
       { "<leader>gf", function() Snacks.picker.git_log_file() end,       desc = "Git Log File" },
-      { "<leader>d",  function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics" },
+      { "<leader>dd", function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics" },
       { "<leader>k",  function() Snacks.picker.pickers() end,            desc = "Pickers" },
       { "<leader>hh", function() Snacks.picker.command_history() end,    desc = "Command history" },
 
@@ -370,8 +370,7 @@ local plugins = {
     opts = {},
     -- stylua: ignore
     keys = {
-      { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,   desc = "Flash" },
-      { "<c-s>", mode = { "c" },           function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+      { "ss", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
     },
   },
   {
