@@ -60,6 +60,198 @@ require 'nvim-treesitter.configs'.setup {
   }
 }
 
+-- 1. Helper to find the command (from previous step)
+local function get_lint_cmd()
+  local default_cmd = "npx eslint 'src/**/*.{ts,tsx}' --no-color --format stylish"
+  local f = io.open("package.json", "r")
+  if f then
+    local content = f:read("*a")
+    f:close()
+    local ok, data = pcall(vim.json.decode, content)
+    if ok and data and data.scripts then
+      for _, name in ipairs({ "eslint", "eslint-check", "lint" }) do
+        if data.scripts[name] then
+          -- Pass args to ensure format is parsable
+          return "npm run " .. name .. " -- --no-color --format stylish"
+        end
+      end
+    end
+  end
+  return default_cmd
+end
+
+-- 2. Spinner Configuration
+local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+
+vim.api.nvim_create_user_command("LintProject", function()
+  local cmd = get_lint_cmd()
+  local lines = {}
+
+  -- Check for nvim-notify
+  local has_notify, notify = pcall(require, "notify")
+  local notif_data = nil
+  local spinner_idx = 1
+  local timer = nil
+
+  -- Helper to update the notification
+  local function update_spinner()
+    if not has_notify then return end
+
+    notif_data = notify("Linting Project...", "info", {
+      title = "ESLint",
+      icon = spinner_frames[spinner_idx],
+      replace = notif_data, -- This is the magic key that updates in-place
+      hide_from_history = true,
+    })
+
+    spinner_idx = (spinner_idx % #spinner_frames) + 1
+  end
+
+  -- Start the animation if notify is present, otherwise just print
+  if has_notify then
+    timer = vim.uv.new_timer() -- Use vim.loop for Neovim < 0.10
+    timer:start(0, 100, vim.schedule_wrap(update_spinner))
+  else
+    print("Running Project Lint...")
+  end
+
+  -- ... (keep get_lint_cmd and spinner logic from previous step) ...
+
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          if line ~= "" then table.insert(lines, line) end
+        end
+      end
+    end,
+    on_exit = function(_, code)
+      -- 1. Stop Spinner
+      if timer then
+        timer:stop()
+        timer:close()
+      end
+
+      -- 2. PARSE FIRST: Populate the Quickfix list to let Vim do the math
+      if #lines > 0 then
+        vim.fn.setqflist({}, 'r', {
+          title = 'ESLint Project',
+          lines = lines,
+          -- Stylish format pattern
+          efm = table.concat({
+            '%-P%f',                     -- Push filename (context, not an error)
+            '%\\s%#%l:%c  %t%\\w%#  %m', -- The actual error line
+            '%-G%.%#'                    -- Ignore everything else
+          }, ',')
+        })
+      else
+        vim.fn.setqflist({}, 'r')
+      end
+
+      -- 3. COUNT ACCURATELY: filter for valid entries only
+      local qf_items = vim.fn.getqflist()
+      local error_count = 0
+      for _, item in ipairs(qf_items) do
+        if item.valid == 1 then
+          error_count = error_count + 1
+        end
+      end
+
+      -- 4. Determine Notification State
+      local is_success = (code == 0) and (error_count == 0)
+      local icon = is_success and "" or ""
+      local level = is_success and "info" or "error"
+      local title = "ESLint Finished"
+      local msg = is_success and "Clean! No errors found." or string.format("Found %d issues.", error_count)
+
+      -- 5. Show Notification
+      if has_notify then
+        notify(msg, level, {
+          title = title,
+          icon = icon,
+          replace = notif_data,
+          timeout = 3000
+        })
+      else
+        print(title .. ": " .. msg)
+      end
+
+      -- 6. Open Window if errors exist
+      if error_count > 0 then
+        vim.cmd("copen")
+      end
+    end,
+  })
+end, {})
+
+
+vim.api.nvim_create_user_command("LintJson", function()
+  local cmd = "npx eslint --format json 'src/**/*.{ts,tsx}'"
+
+  print("Running Project Lint (JSON)...")
+  local output_lines = {}
+
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          table.insert(output_lines, line)
+        end
+      end
+    end,
+    on_exit = function(_, code)
+      local json_str = table.concat(output_lines, "\n")
+
+      -- Handle empty output
+      if json_str:match("^%s*$") then
+        print("Linting complete: No output returned.")
+        vim.fn.setqflist({}, 'r')
+        return
+      end
+
+      -- Decode JSON
+      local ok, results = pcall(vim.json.decode, json_str)
+      if not ok then
+        print("Error: Could not parse ESLint JSON output.")
+        return
+      end
+
+      local qf_list = {}
+
+      -- Build the list manually
+      for _, file_result in ipairs(results) do
+        local filename = file_result.filePath
+        for _, msg in ipairs(file_result.messages) do
+          table.insert(qf_list, {
+            filename = filename,
+            lnum = msg.line,
+            col = msg.column,
+            text = msg.message .. " [" .. (msg.ruleId or "unknown") .. "]",
+            type = (msg.severity == 2) and 'E' or 'W'
+          })
+        end
+      end
+
+      if #qf_list == 0 then
+        print("Linting complete: No errors found.")
+        vim.fn.setqflist({}, 'r')
+      else
+        -- Set the list using the 'items' property to avoid the E475 error
+        vim.fn.setqflist({}, 'r', {
+          title = 'ESLint Project (JSON)',
+          items = qf_list
+        })
+
+        vim.cmd("copen")
+        print("Linting complete: " .. #qf_list .. " issues found.")
+      end
+    end,
+  })
+end, {})
+
+
 -- LSP settings.
 vim.diagnostic.config({ virtual_text = false, update_in_insert = false })
 
@@ -99,6 +291,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     if client.name == 'eslint' then
+      -- 1. Set the command to run when you type :make
+      -- We use --format compact because it is easier for Neovim to parse
+      vim.o.makeprg = "npx eslint --format compact --max-warnings 0 'src/**/*.{ts,tsx}'"
+
+      -- 2. Tell Neovim how to read the output (parse filename, line, column, error)
+      -- The format matches: "file: line X, col Y, Error - Message"
+      vim.o.errorformat = "%f: line %l\\, col %c\\, %m,%-G%.%#"
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
         command = 'silent! EslintFixAll',
@@ -243,10 +442,12 @@ vim.lsp.config("pyright", {
   }
 })
 
+
 -- Setup mason so it can manage external tooling
 require('mason').setup()
 require('mason-lspconfig').setup({
   ensure_installed = { 'html', 'vtsls', 'eslint', 'jsonls', 'biome', 'lua_ls', 'cssls', 'pyright', 'gopls', 'golangci_lint_ls', 'denols' },
+  automatic_enable = true
 })
 
 local luasnip = require("luasnip")
