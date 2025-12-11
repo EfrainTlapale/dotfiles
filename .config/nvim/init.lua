@@ -2,15 +2,15 @@ local dotenv = require('lua-dotenv')
 dotenv.load_dotenv(vim.fs.normalize('~/.config/nvim/.env.local'))
 
 -- Bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out,                            "WarningMsg" },
-      { "\nPress any key to exit..." },
+      { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
+      { out,                            'WarningMsg' },
+      { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
     os.exit(1)
@@ -24,30 +24,30 @@ local plugins = {
     dependencies = { 'hrsh7th/cmp-nvim-lsp' }
   },
   {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate"
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate'
   },
   'nvim-treesitter/nvim-treesitter-textobjects',
   'JoosepAlviste/nvim-ts-context-commentstring',
   {
-    "kylechui/nvim-surround",
-    version = "*", -- Use for stability; omit to use `main` branch for the latest features
-    event = "VeryLazy",
+    'kylechui/nvim-surround',
+    version = '*', -- Use for stability; omit to use `main` branch for the latest features
+    event = 'VeryLazy',
     config = function()
-      require("nvim-surround").setup({
+      require('nvim-surround').setup({
         -- Configuration here, or leave empty to use defaults
       })
     end
   },
   'f-person/git-blame.nvim',
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
   },
   {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
+    'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
     tag = 'v3.8.2',
     ---@module "ibl"
     ---@type ibl.config
@@ -56,7 +56,7 @@ local plugins = {
   'kyazdani42/nvim-web-devicons',
   'kdheepak/lazygit.nvim',
   { 'sindrets/diffview.nvim',      dependencies = { 'nvim-lua/plenary.nvim' } },
-  { "shortcuts/no-neck-pain.nvim", version = "*" },
+  { 'shortcuts/no-neck-pain.nvim', version = '*' },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'kyazdani42/nvim-web-devicons', lazy = true }
@@ -71,7 +71,7 @@ local plugins = {
   'lewis6991/gitsigns.nvim',
   'numToStr/Comment.nvim',
   'm4xshen/autoclose.nvim',
-  { "akinsho/toggleterm.nvim", version = '*' },
+  { 'akinsho/toggleterm.nvim', version = '*' },
   'JellyApple102/flote.nvim',
   {
 
@@ -89,8 +89,8 @@ local plugins = {
     },
   },
   {
-    "SmiteshP/nvim-navic",
-    dependencies = "neovim/nvim-lspconfig"
+    'SmiteshP/nvim-navic',
+    dependencies = 'neovim/nvim-lspconfig'
   },
   'MunifTanjim/nui.nvim',
   {
@@ -109,24 +109,24 @@ local plugins = {
   },
   'windwp/nvim-ts-autotag',
   {
-    "L3MON4D3/LuaSnip",
+    'L3MON4D3/LuaSnip',
     -- follow latest release.
-    version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    version = 'v2.*', -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!).
-    build = "make install_jsregexp"
+    build = 'make install_jsregexp'
   },
   'saadparwaiz1/cmp_luasnip',
   'benfowler/telescope-luasnip.nvim',
   {
-    "folke/noice.nvim",
-    event = "VeryLazy",
+    'folke/noice.nvim',
+    event = 'VeryLazy',
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      "MunifTanjim/nui.nvim",
+      'MunifTanjim/nui.nvim',
       -- OPTIONAL:
       --   `nvim-notify` is only needed, if you want to use the notification view.
       --   If not available, we use `mini` as the fallback
-      "rcarriga/nvim-notify",
+      'rcarriga/nvim-notify',
     }
   },
   'navarasu/onedark.nvim',
@@ -134,20 +134,20 @@ local plugins = {
   {
     'mistweaverco/kulala.nvim',
     opts = {},
-    ft = { "http", "rest" },
+    ft = { 'http', 'rest' },
     keys = {
-      { '<CR>',       "<cmd>lua require('kulala').run()<CR>",       ft = "http" },
-      { '[r',         "<cmd>lua require('kulala').jump_prev()<CR>", ft = "http" },
-      { ']r',         "<cmd>lua require('kulala').jump_next()<CR>", ft = "http" },
-      { '<leader>ci', "<cmd>lua require('kulala').from_curl()<CR>", ft = "http" },
-      { '<leader>co', "<cmd>lua require('kulala').copy()<CR>",      ft = "http" },
-      { '<leader>o',  "<cmd>lua require('kulala').search()<CR>",    ft = "http" },
-      { '<leader>ck', "<cmd>lua require('kulala').close()<CR>",     ft = "http" },
+      { '<CR>',       "<cmd>lua require('kulala').run()<CR>",       ft = 'http' },
+      { '[r',         "<cmd>lua require('kulala').jump_prev()<CR>", ft = 'http' },
+      { ']r',         "<cmd>lua require('kulala').jump_next()<CR>", ft = 'http' },
+      { '<leader>ci', "<cmd>lua require('kulala').from_curl()<CR>", ft = 'http' },
+      { '<leader>co', "<cmd>lua require('kulala').copy()<CR>",      ft = 'http' },
+      { '<leader>o',  "<cmd>lua require('kulala').search()<CR>",    ft = 'http' },
+      { '<leader>ck', "<cmd>lua require('kulala').close()<CR>",     ft = 'http' },
     }
   },
   {
     'stevearc/quicker.nvim',
-    event = "FileType qf",
+    event = 'FileType qf',
     ---@module "quicker"
     ---@type quicker.SetupOptions
     opts = {},
@@ -158,41 +158,41 @@ local plugins = {
     opts = {}
   },
   {
-    "kvrohit/rasmus.nvim",
+    'kvrohit/rasmus.nvim',
     priority = 1000,
     config = function()
       -- vim.cmd([[colorscheme rasmus]])
     end,
   },
   {
-    "S1M0N38/love2d.nvim",
+    'S1M0N38/love2d.nvim',
     -- cmd = "LoveRun",
-    event = "VeryLazy",
+    event = 'VeryLazy',
     opts = {},
     keys = {
-      { "<leader>v",  ft = "lua",          desc = "LÖVE" },
-      { "<leader>vv", "<cmd>LoveRun<cr>",  ft = "lua",   desc = "Run LÖVE" },
-      { "<leader>vs", "<cmd>LoveStop<cr>", ft = "lua",   desc = "Stop LÖVE" },
+      { '<leader>v',  ft = 'lua',          desc = 'LÖVE' },
+      { '<leader>vv', '<cmd>LoveRun<cr>',  ft = 'lua',   desc = 'Run LÖVE' },
+      { '<leader>vs', '<cmd>LoveStop<cr>', ft = 'lua',   desc = 'Stop LÖVE' },
     },
   },
   {
-    "NeogitOrg/neogit",
+    'NeogitOrg/neogit',
     dependencies = {
-      "nvim-lua/plenary.nvim",         -- required
-      "sindrets/diffview.nvim",        -- optional - Diff integration
+      'nvim-lua/plenary.nvim',         -- required
+      'sindrets/diffview.nvim',        -- optional - Diff integration
       -- Only one of these is needed.
-      "nvim-telescope/telescope.nvim", -- optional
-      "ibhagwan/fzf-lua",              -- optional
+      'nvim-telescope/telescope.nvim', -- optional
+      'ibhagwan/fzf-lua',              -- optional
     },
     config = true
   },
   {
-    "neanias/everforest-nvim",
+    'neanias/everforest-nvim',
     lazy = false,
     version = false,
     config = function()
-      require("everforest").setup {
-        background = "hard",
+      require('everforest').setup {
+        background = 'hard',
         disable_italic_comments = true,
         on_highlights = function(hl, palette)
           hl.NonText = { fg = '#859289', }
@@ -200,26 +200,26 @@ local plugins = {
       }
     end
   },
-  "aktersnurra/no-clown-fiesta.nvim",
+  'aktersnurra/no-clown-fiesta.nvim',
   {
-    "nvzone/typr",
-    dependencies = "nvzone/volt",
+    'nvzone/typr',
+    dependencies = 'nvzone/volt',
     opts = {},
-    cmd = { "Typr", "TyprStats" },
+    cmd = { 'Typr', 'TyprStats' },
   },
-  { "EdenEast/nightfox.nvim" },
-  "shaunsingh/nord.nvim",
-  "nyoom-engineering/oxocarbon.nvim",
+  { 'EdenEast/nightfox.nvim' },
+  'shaunsingh/nord.nvim',
+  'nyoom-engineering/oxocarbon.nvim',
   {
-    "folke/snacks.nvim",
+    'folke/snacks.nvim',
     priority = 1000,
     lazy = false,
     opts = {
       dashboard = {
         sections = {
-          { section = "header" },
-          { icon = " ", title = "Recent Files", section = "recent_files", cwd = true },
-          { section = "startup" },
+          { section = 'header' },
+          { icon = ' ', title = 'Recent Files', section = 'recent_files', cwd = true },
+          { section = 'startup' },
         }
       },
       explorer = {
@@ -229,12 +229,12 @@ local plugins = {
         toggles = { hidden = false },
         icons = {
           kinds = {
-            Parameter = "󰅲",
-            Variable = "",
-            Property = ""
+            Parameter = '󰅲',
+            Variable = '',
+            Property = ''
           }
         },
-        layout = "dropdown",
+        layout = 'dropdown',
         ui_select = false,
         sources = {
           explorer = {
@@ -246,7 +246,7 @@ local plugins = {
               list = {
                 keys = {
                   ['<c-n>'] = { 'close', mode = { 'i', 'n' } },
-                  ["<CR>"] = { { "pick_win", "jump" }, mode = { "n", "i" } },
+                  ['<CR>'] = { { 'pick_win', 'jump' }, mode = { 'n', 'i' } },
                 }
               }
             }
@@ -259,8 +259,8 @@ local plugins = {
         win = {
           input = {
             keys = {
-              ["<c-d>"] = { "preview_scroll_down", mode = { "i", "n" } },
-              ["<c-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
+              ['<c-d>'] = { 'preview_scroll_down', mode = { 'i', 'n' } },
+              ['<c-u>'] = { 'preview_scroll_up', mode = { 'i', 'n' } },
             }
           },
         },
@@ -276,71 +276,71 @@ local plugins = {
     },
     keys = {
       {
-        "<leader>o",
+        '<leader>o',
         function()
-          local picker = require("snacks.picker")
-          local tspicker = require("customTsPicker")
+          local picker = require('snacks.picker')
+          local tspicker = require('customTsPicker')
 
           picker.pick({
             finder = tspicker.symbols,
-            format = "lsp_symbol",
-            title = "Treesitter"
+            format = 'lsp_symbol',
+            title = 'Treesitter'
           })
         end,
-        desc = "LSP Symbols"
+        desc = 'LSP Symbols'
       },
-      { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
-      { "gr", function() Snacks.picker.lsp_references() end,  nowait = true,           desc = "References" },
+      { 'gd', function() Snacks.picker.lsp_definitions() end, desc = 'Goto Definition' },
+      { 'gr', function() Snacks.picker.lsp_references() end,  nowait = true,           desc = 'References' },
       {
-        "<C-T>",
+        '<C-T>',
         function()
           Snacks.picker.lsp_workspace_symbols(
             { filter = { default = true } }
           )
         end,
-        desc = "LSP Workspace Symbols"
+        desc = 'LSP Workspace Symbols'
       },
       {
-        "<C-P>",
-        function() Snacks.picker.files({ hidden = true, layout = { preset = "vscode" } }) end,
-        desc = "Smart Find Files"
+        '<C-P>',
+        function() Snacks.picker.files({ hidden = true, layout = { preset = 'vscode' } }) end,
+        desc = 'Smart Find Files'
       },
       {
-        "<leader>p",
-        function() Snacks.picker.files({ hidden = true, layout = { preset = "vscode" } }) end,
-        desc = "Smart Find Files"
+        '<leader>p',
+        function() Snacks.picker.files({ hidden = true, layout = { preset = 'vscode' } }) end,
+        desc = 'Smart Find Files'
       },
       {
-        "<leader>rf",
-        function() Snacks.picker.recent({ hidden = true, filter = { cwd = true }, layout = { preset = "vscode" } }) end,
-        desc = "Recent"
+        '<leader>rf',
+        function() Snacks.picker.recent({ hidden = true, filter = { cwd = true }, layout = { preset = 'vscode' } }) end,
+        desc = 'Recent'
       },
-      { "<leader>fa", function() Snacks.picker.grep() end,      desc = "Grep" },
-      { "<leader>fs", function() Snacks.picker.grep_word() end, desc = "Visual selection or word", mode = { "n", "x" } },
-      { "<leader>fc", function() Snacks.picker.lines() end,     desc = "Buffer Lines" },
-      { "<leader>bf", function() Snacks.picker.buffers() end,   desc = "Buffers" },
+      { '<leader>fa', function() Snacks.picker.grep() end,      desc = 'Grep' },
+      { '<leader>fs', function() Snacks.picker.grep_word() end, desc = 'Visual selection or word', mode = { 'n', 'x' } },
+      { '<leader>fc', function() Snacks.picker.lines() end,     desc = 'Buffer Lines' },
+      { '<leader>bf', function() Snacks.picker.buffers() end,   desc = 'Buffers' },
       {
-        "<leader>gs",
+        '<leader>gs',
         function() Snacks.picker.git_status({ layout = { preset = 'default' } }) end,
-        desc = "Git Status"
+        desc = 'Git Status'
       },
-      { "<leader>gg", function() Snacks.picker.git_log() end,            desc = "Git Log" },
-      { "<leader>gl", function() Snacks.picker.git_log_line() end,       desc = "Git Log Line" },
-      { "<leader>gf", function() Snacks.picker.git_log_file() end,       desc = "Git Log File" },
-      { "<leader>dd", function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics" },
-      { "<leader>k",  function() Snacks.picker.pickers() end,            desc = "Pickers" },
-      { "<leader>hh", function() Snacks.picker.command_history() end,    desc = "Command history" },
+      { '<leader>gg', function() Snacks.picker.git_log() end,            desc = 'Git Log' },
+      { '<leader>gl', function() Snacks.picker.git_log_line() end,       desc = 'Git Log Line' },
+      { '<leader>gf', function() Snacks.picker.git_log_file() end,       desc = 'Git Log File' },
+      { '<leader>dd', function() Snacks.picker.diagnostics_buffer() end, desc = 'Buffer Diagnostics' },
+      { '<leader>k',  function() Snacks.picker.pickers() end,            desc = 'Pickers' },
+      { '<leader>hh', function() Snacks.picker.command_history() end,    desc = 'Command history' },
 
       {
-        "<leader>gh",
+        '<leader>gh',
         function()
           Snacks.gitbrowse()
         end,
-        desc = "git-browse",
+        desc = 'git-browse',
         silent = true,
       },
 
-      { "<C-N>", function() Snacks.explorer() end, desc = "Reveal explorer" }
+      { '<C-N>', function() Snacks.explorer() end, desc = 'Reveal explorer' }
     },
   },
   {
@@ -352,25 +352,25 @@ local plugins = {
     end
   },
   {
-    "rjshkhr/shadow.nvim",
+    'rjshkhr/shadow.nvim',
     priority = 1000,
     config = function()
       vim.opt.termguicolors = true
     end,
   },
   {
-    "webhooked/kanso.nvim",
+    'webhooked/kanso.nvim',
     lazy = false,
     priority = 1000,
   },
   {
-    "folke/flash.nvim",
-    event = "VeryLazy",
+    'folke/flash.nvim',
+    event = 'VeryLazy',
     ---@type Flash.Config
     opts = {},
     -- stylua: ignore
     keys = {
-      { "ss", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { 'ss', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' },
     },
   },
   {
@@ -388,7 +388,7 @@ local plugins = {
           bufnr = 0,
           pos = { row - 1, math.max(0, column - 1) } -- seems to be necessary...
         })
-        if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment" }, node:type()) then
+        if success and node and vim.tbl_contains({ 'comment', 'line_comment', 'block_comment' }, node:type()) then
           return false
         end
 
@@ -432,7 +432,7 @@ local plugins = {
       },
       snippets = { preset = 'luasnip' },
       signature = { enabled = true, trigger = { enabled = false }, window = { winblend = 10, treesitter_highlighting = true, show_documentation = true } },
-      fuzzy = { implementation = "prefer_rust_with_warning" },
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
       cmdline = {
         enabled = true,
         completion = {
@@ -440,42 +440,51 @@ local plugins = {
         }
       }
     },
-    opts_extend = { "sources.default" },
+    opts_extend = { 'sources.default' },
   },
   {
-    "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
+    'folke/lazydev.nvim',
+    ft = 'lua', -- only load on lua files
     opts = {
       library = {
         -- See the configuration section for more details
         -- Load luvit types when the `vim.uv` word is found
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        { path = "snacks.nvim",        words = { "Snacks" } },
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        { path = 'snacks.nvim',        words = { 'Snacks' } },
       },
     },
   },
   {
-    "khoido2003/monokai-v2.nvim",
+    'khoido2003/monokai-v2.nvim',
     priority = 1000,
     config = function()
-      require("monokai-v2").setup({ filter = "machine" })
+      require('monokai-v2').setup({ filter = 'machine' })
     end,
   },
-  "armannikoyan/rusty",
+  'armannikoyan/rusty',
   {
-    "dgox16/oldworld.nvim",
+    'dgox16/oldworld.nvim',
     lazy = false,
     priority = 1000,
   },
   {
-    "slugbyte/lackluster.nvim",
+    'slugbyte/lackluster.nvim',
     lazy = false,
     priority = 1000,
   },
-  'brenoprata10/nvim-highlight-colors',
+  -- 'brenoprata10/nvim-highlight-colors',
   {
-    "bngarren/checkmate.nvim",
-    ft = "markdown", -- Lazy loads for Markdown files matching patterns in 'files'
+    "eero-lehtinen/oklch-color-picker.nvim",
+    event = "VeryLazy",
+    version = "*",
+    keys = {
+    },
+    ---@type oklch.Opts
+    opts = {},
+  },
+  {
+    'bngarren/checkmate.nvim',
+    ft = 'markdown', -- Lazy loads for Markdown files matching patterns in 'files'
     opts = {
       -- your configuration here
       -- or leave empty to use defaults
@@ -488,31 +497,31 @@ local plugins = {
     priority = 1000,
   },
   {
-    "nendix/zen.nvim",
+    'nendix/zen.nvim',
     lazy = false,
     priority = 1000,
-  }
+  },
 }
 
 require('basics')
 
 -- Setup lazy.nvim
-require("lazy").setup({
+require('lazy').setup({
   spec = plugins,
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { "habamax" } },
+  install = { colorscheme = { 'habamax' } },
 })
 
 -- Setup neovim lua configuration
 require('colors')
 require('telescope-config')
-require("flote").setup {
+require('flote').setup {
   window_border = 'single',
   files = {
     cwd = function()
       local bufPath = vim.api.nvim_buf_get_name(0)
-      local cwd = require("lspconfig").util.root_pattern ".git" (bufPath)
+      local cwd = require('lspconfig').util.root_pattern '.git' (bufPath)
 
       return cwd
     end,
@@ -521,7 +530,7 @@ require("flote").setup {
 require('gitblame').setup({
   enabled = false
 })
-require("autoclose").setup({})
+require('autoclose').setup({})
 require('tsc').setup()
 
 local auto = require('lualine.themes.auto')
@@ -558,7 +567,7 @@ require('Comment').setup {
   pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
 }
 
-require("noice").setup({
+require('noice').setup({
   lsp = {
     signature = {
       enabled = false
@@ -568,9 +577,9 @@ require("noice").setup({
     },
     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
     override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true,
+      ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+      ['vim.lsp.util.stylize_markdown'] = true,
+      ['cmp.entry.get_documentation'] = true,
     },
   },
   messages = {
@@ -594,7 +603,7 @@ require("noice").setup({
   },
 })
 
-require("toggleterm").setup {
+require('toggleterm').setup {
   direction = 'horizontal',
   terminal_mappings = true,
   close_on_exit = true,
@@ -614,11 +623,11 @@ require('gitblame').setup {
 
 require('lsp-config')
 
-require("luasnip.loaders.from_lua").load({ paths = "./snippets" })
+require('luasnip.loaders.from_lua').load({ paths = './snippets' })
 
 local ls = require('luasnip')
-ls.filetype_extend("typescript", { "javascript" })
-ls.filetype_extend("typescriptreact", { "javascript" })
+ls.filetype_extend('typescript', { 'javascript' })
+ls.filetype_extend('typescriptreact', { 'javascript' })
 
 require('ibl').setup {
   indent = { char = { '┊' } },
@@ -665,26 +674,26 @@ require('gitsigns').setup {
   end
 }
 
-require("no-neck-pain").setup({
+require('no-neck-pain').setup({
   width = 150
 })
 
 
 vim.notify = function(msg, level, opts)
-  if msg and string.find(msg, "multiple different client offset_encodings detected") then
+  if msg and string.find(msg, 'multiple different client offset_encodings detected') then
     return
   end
 
-  if msg and string.find(msg, "No code actions available") then
+  if msg and string.find(msg, 'No code actions available') then
     return
   end
 
   return require('notify').notify(msg, level, opts)
 end
 
-local jsIshFormatterOptions = { "biome", "prettier_d", "prettier" }
+local jsIshFormatterOptions = { 'biome', 'prettier_d', 'prettier' }
 
-require("conform").setup({
+require('conform').setup({
   formatters = {
     biome = { require_cwd = true },
     prettier = { require_cwd = true },
@@ -692,18 +701,18 @@ require("conform").setup({
     ruff_format = {
       command = 'docker',
       args = {
-        "exec",
+        'exec',
         -- "django", -- 👈 **IMPORTANT: Replace with your actual container name or ID**
-        "django-app-my-server",
-        "ruff",
-        "format",
-        "$RELATIVE_FILEPATH",
+        'django-app-my-server',
+        'ruff',
+        'format',
+        '$RELATIVE_FILEPATH',
       },
       stdin = false,
     }
   },
   formatters_by_ft = {
-    lua = { "stylua" },
+    lua = { 'stylua' },
     -- Conform will use the first available formatter in the list
     javascript = jsIshFormatterOptions,
     typescript = jsIshFormatterOptions,
@@ -712,11 +721,11 @@ require("conform").setup({
     scss = jsIshFormatterOptions,
     css = jsIshFormatterOptions,
     json = jsIshFormatterOptions,
-    go = { "gofumpt" },
-    html = { "prettier" },
+    go = { 'gofumpt' },
+    html = { 'prettier' },
     markdown = { 'prettier' },
     python = { 'ruff_format' },
-    yaml = { "prettier" }
+    yaml = { 'prettier' }
   },
   format_on_save = {
     -- These options will be passed to conform.format()
@@ -746,28 +755,28 @@ vim.filetype.add({
 
 -- QUICKER SETUP
 
-vim.keymap.set("n", "<leader>q", function()
-  require("quicker").toggle()
+vim.keymap.set('n', '<leader>q', function()
+  require('quicker').toggle()
 end, {
-  desc = "Toggle quickfix",
+  desc = 'Toggle quickfix',
 })
 
-require("quicker").setup({
+require('quicker').setup({
   edit = { enabled = false },
   keys = {
     {
-      ">",
+      '>',
       function()
-        require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+        require('quicker').expand({ before = 2, after = 2, add_to_existing = true })
       end,
-      desc = "Expand quickfix context",
+      desc = 'Expand quickfix context',
     },
     {
-      "<",
+      '<',
       function()
-        require("quicker").collapse()
+        require('quicker').collapse()
       end,
-      desc = "Collapse quickfix context",
+      desc = 'Collapse quickfix context',
     },
   },
 })
@@ -777,36 +786,36 @@ local function virtual_text_document(params)
   local bufnr = params.buf
   local actual_path = params.match:sub(1)
 
-  local clients = vim.lsp.get_clients({ name = "denols" })
+  local clients = vim.lsp.get_clients({ name = 'denols' })
   if #clients == 0 then
     return
   end
 
   local client = clients[1]
-  local method = "deno/virtualTextDocument"
+  local method = 'deno/virtualTextDocument'
   local req_params = { textDocument = { uri = actual_path } }
   local response = client.request_sync(method, req_params, 2000, 0)
-  if not response or type(response.result) ~= "string" then
+  if not response or type(response.result) ~= 'string' then
     return
   end
 
-  local lines = vim.split(response.result, "\n")
+  local lines = vim.split(response.result, '\n')
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-  vim.api.nvim_set_option_value("readonly", true, { buf = bufnr })
-  vim.api.nvim_set_option_value("modified", false, { buf = bufnr })
-  vim.api.nvim_set_option_value("modifiable", false, { buf = bufnr })
+  vim.api.nvim_set_option_value('readonly', true, { buf = bufnr })
+  vim.api.nvim_set_option_value('modified', false, { buf = bufnr })
+  vim.api.nvim_set_option_value('modifiable', false, { buf = bufnr })
   vim.api.nvim_buf_set_name(bufnr, actual_path)
   vim.lsp.buf_attach_client(bufnr, client.id)
 
-  local filetype = "typescript"
-  if actual_path:sub(-3) == ".md" then
-    filetype = "markdown"
+  local filetype = 'typescript'
+  if actual_path:sub(-3) == '.md' then
+    filetype = 'markdown'
   end
-  vim.api.nvim_set_option_value("filetype", filetype, { buf = bufnr })
+  vim.api.nvim_set_option_value('filetype', filetype, { buf = bufnr })
 end
 
-vim.api.nvim_create_autocmd({ "BufReadCmd" }, {
-  pattern = { "deno:/*" },
+vim.api.nvim_create_autocmd({ 'BufReadCmd' }, {
+  pattern = { 'deno:/*' },
   callback = virtual_text_document,
 })
 
@@ -817,6 +826,6 @@ vim.filetype.add({
 })
 
 
-require('nvim-highlight-colors').setup({ render = "foreground" })
+-- require('nvim-highlight-colors').setup({ render = 'foreground' })
 
 require('quickrun').setup()

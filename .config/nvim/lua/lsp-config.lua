@@ -1,4 +1,4 @@
-local navic = require("nvim-navic")
+local navic = require('nvim-navic')
 local util = require 'lspconfig.util'
 
 -- Print contents of `tbl`, with indentation.
@@ -6,8 +6,8 @@ local util = require 'lspconfig.util'
 local function tprint(tbl, indent)
   if not indent then indent = 0 end
   for k, v in pairs(tbl) do
-    local formatting = string.rep("  ", indent) .. k .. ": "
-    if type(v) == "table" then
+    local formatting = string.rep('  ', indent) .. k .. ': '
+    if type(v) == 'table' then
       print(formatting)
       tprint(v, indent + 1)
     else
@@ -17,8 +17,8 @@ local function tprint(tbl, indent)
 end
 
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "typescript", "css", "scss", "javascript", "markdown",
-    "markdown_inline", "python", "tsx", "bash", "fish", "json", "http", "yaml" },
+  ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query', 'typescript', 'css', 'scss', 'javascript', 'markdown',
+    'markdown_inline', 'python', 'tsx', 'bash', 'fish', 'json', 'http', 'yaml' },
   highlight = {
     enable = true,
   },
@@ -53,8 +53,8 @@ require 'nvim-treesitter.configs'.setup {
       enable = true,
       keymaps = {
         -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
+        ['af'] = '@function.outer',
+        ['if'] = '@function.inner',
       }
     }
   }
@@ -63,7 +63,7 @@ require 'nvim-treesitter.configs'.setup {
 -- LSP settings.
 vim.diagnostic.config({ virtual_text = false, update_in_insert = false })
 
-vim.api.nvim_create_autocmd("LspAttach", {
+vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if not client then
@@ -113,26 +113,26 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     vim.api.nvim_buf_create_user_command(args.buf, 'OrganizeImports', function(_)
       local params = {
-        command = "_typescript.organizeImports",
+        command = '_typescript.organizeImports',
         arguments = { vim.api.nvim_buf_get_name(0) },
-        title = "",
+        title = '',
       }
       vim.lsp.buf.execute_command(params)
       vim.cmd('EslintFixAll')
     end, { desc = 'Organize Imports' })
 
-    if client.name == "golangci_lint_ls" or client.name == 'gopls' then
+    if client.name == 'golangci_lint_ls' or client.name == 'gopls' or client.name == 'tsgolsp' then
       vim.diagnostic.config({ update_in_insert = true })
     end
 
-    if client.name == "biome" then
+    if client.name == 'biome' then
       vim.diagnostic.config({ update_in_insert = true })
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        group = vim.api.nvim_create_augroup("BiomeFixAll", { clear = true, }),
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        group = vim.api.nvim_create_augroup('BiomeFixAll', { clear = true, }),
         callback = function()
           vim.lsp.buf.code_action({
             context = {
-              only = { "source.fixAll.biome" },
+              only = { 'source.fixAll.biome' },
               diagnostics = {},
             },
             apply = true,
@@ -146,8 +146,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 
-vim.lsp.config("denols", {
-  root_markers = { "deno.json" },
+vim.lsp.config('denols', {
+  root_markers = { 'deno.json' },
   workspace_required = true,
   settings = {
     {
@@ -175,14 +175,14 @@ vim.lsp.config("denols", {
           imports = {
             autoDiscover = true,
             hosts = {
-              ["https://deno.land"] = true
+              ['https://deno.land'] = true
             }
           }
         },
         testing = {
           args = {
-            "--allow-all",
-            "--no-check"
+            '--allow-all',
+            '--no-check'
           }
         },
         tlsCertificate = nil,
@@ -193,24 +193,7 @@ vim.lsp.config("denols", {
   }
 })
 
-vim.lsp.config("vtsls", {
-  root_markers = { "tsconfig.json", "package.json" },
-  workspace_required = true,
-  settings = {
-    typescript = {
-      tsserver = { maxTsServerMemory = 8192 },
-      single_file_support = false
-    },
-    vtsls = {
-      single_file_support = false,
-      autoUseWorkspaceTsdk = true,
-      experimental = {
-        completion = { enableServerSideFuzzyMatch = true, entriesLimit = 30 } },
-    },
-  }
-})
-
-vim.lsp.config("biome", {
+vim.lsp.config('biome', {
   settings = {
     biome = {
       requireConfigFile = true
@@ -218,7 +201,7 @@ vim.lsp.config("biome", {
   }
 })
 
-vim.lsp.config("oxlint", {
+vim.lsp.config('oxlint', {
   cmd = { '/Users/efra/dev/sin-boleto-next/node_modules/oxlint/bin/oxc_language_server' },
   -- cmd = './node_modules/oxlint/bin/oxc_language_server',
   -- cmd = 'npx oxc_language_server',
@@ -229,14 +212,31 @@ vim.lsp.config("oxlint", {
   -- single_file_support = false
 })
 
-vim.lsp.enable("oxlint")
+vim.lsp.enable('oxlint')
 
-vim.lsp.config("pyright", {
+vim.lsp.config('lua_ls', {
+  settings = {
+    Lua = {
+      format = {
+        defaultConfig = {
+          quote_style = 'single',
+          indent_style = 'space',
+          indent_size = 2,
+          max_line_length = 80,
+          break_table_list = 'lazy'
+        }
+      }
+    }
+  }
+
+})
+
+vim.lsp.config('pyright', {
   settings = {
     python = {
       analysis = {
         autoSearchPaths = true,
-        diagnosticMode = "openFilesOnly",
+        diagnosticMode = 'openFilesOnly',
         useLibraryCodeForTypes = true
       }
     }
@@ -247,10 +247,14 @@ vim.lsp.config("pyright", {
 require('mason').setup()
 require('mason-lspconfig').setup({
   ensure_installed = { 'html', 'vtsls', 'eslint', 'jsonls', 'biome', 'lua_ls', 'cssls', 'pyright', 'gopls', 'golangci_lint_ls', 'denols' },
+  automatic_enable = true
 })
 
-local luasnip = require("luasnip")
-vim.keymap.set({ "i" }, "<C-E>", function()
+vim.lsp.enable('tsgolsp')
+vim.lsp.enable('biome')
+
+local luasnip = require('luasnip')
+vim.keymap.set({ 'i' }, '<C-E>', function()
   if luasnip.expand_or_jumpable() then
     luasnip.expand_or_jump()
   end
@@ -293,71 +297,71 @@ vim.keymap.set('x', '<leader>qf', quickFix)
 
 
 -- LSP commands
-vim.api.nvim_create_user_command('RemoveUnusedImports', ":VtsExec remove_unused_imports", {})
-vim.api.nvim_create_user_command('RemoveUnusedCode', ":VtsExec remove_unused", {})
-vim.api.nvim_create_user_command('AddMissingImports', ":VtsExec add_missing_imports", {})
-vim.api.nvim_create_user_command('FixAll', ":VtsExec fix_all", {})
+vim.api.nvim_create_user_command('RemoveUnusedImports', ':VtsExec remove_unused_imports', {})
+vim.api.nvim_create_user_command('RemoveUnusedCode', ':VtsExec remove_unused', {})
+vim.api.nvim_create_user_command('AddMissingImports', ':VtsExec add_missing_imports', {})
+vim.api.nvim_create_user_command('FixAll', ':VtsExec fix_all', {})
 
 
 -- TODO: UI SETTINGS, MOVE TO OWN FILE
 local function get_prompt_text(prompt, default_prompt)
   local prompt_text = prompt or default_prompt
-  if prompt_text:sub(-1) == ":" then
-    prompt_text = "[" .. prompt_text:sub(1, -2) .. "]"
+  if prompt_text:sub(-1) == ':' then
+    prompt_text = '[' .. prompt_text:sub(1, -2) .. ']'
   end
   return prompt_text
 end
 
-local Menu = require("nui.menu")
-local event = require("nui.utils.autocmd").event
+local Menu = require('nui.menu')
+local event = require('nui.utils.autocmd').event
 
 
 local function override_ui_select()
-  local UISelect = Menu:extend("UISelect")
+  local UISelect = Menu:extend('UISelect')
 
   function UISelect:init(items, opts, on_done)
-    local border_top_text = get_prompt_text(opts.prompt, "[Select Item]")
-    local kind = opts.kind or "unknown"
+    local border_top_text = get_prompt_text(opts.prompt, '[Select Item]')
+    local kind = opts.kind or 'unknown'
     local format_item = opts.format_item or function(item)
       return tostring(item.__raw_item or item)
     end
 
     local popup_options = {
-      relative = "editor",
-      position = "50%",
+      relative = 'editor',
+      position = '50%',
       border = {
-        style = "rounded",
+        style = 'rounded',
         text = {
           top = border_top_text,
-          top_align = "left",
+          top_align = 'left',
         },
       },
       win_options = {
-        winhighlight = "Normal:Normal,FloatBorder:Normal",
+        winhighlight = 'Normal:Normal,FloatBorder:Normal',
       },
       zindex = 999,
     }
 
-    if kind == "codeaction" then
+    if kind == 'codeaction' then
       -- change position for codeaction selection
-      popup_options.relative = "cursor"
+      popup_options.relative = 'cursor'
       popup_options.position = {
         row = 1,
         col = 0,
       }
     end
 
-    local max_width = popup_options.relative == "editor" and vim.o.columns - 4 or vim.api.nvim_win_get_width(0) - 4
-    local max_height = popup_options.relative == "editor" and math.floor(vim.o.lines * 80 / 100)
+    local max_width = popup_options.relative == 'editor' and vim.o.columns - 4 or vim.api.nvim_win_get_width(0) - 4
+    local max_height = popup_options.relative == 'editor' and math.floor(vim.o.lines * 80 / 100)
         or vim.api.nvim_win_get_height(0)
 
     local menu_items = {}
     for index, item in ipairs(items) do
-      if type(item) ~= "table" then
+      if type(item) ~= 'table' then
         item = { __raw_item = item }
       end
       item.index = index
-      local item_text = tostring(index) .. ": " .. string.sub(format_item(item), 0, max_width)
+      local item_text = tostring(index) .. ': ' .. string.sub(format_item(item), 0, max_width)
       menu_items[index] = Menu.item(item_text, item)
     end
 
@@ -367,10 +371,10 @@ local function override_ui_select()
       max_height = max_height,
       lines = menu_items,
       keymap = {
-        focus_next = { "j", "<Down>", "<C-N>" },
-        focus_prev = { "k", "<Up>", "<C-P>" },
-        close = { "<Esc>", "<C-c>" },
-        submit = { "<CR>", "<Space>" },
+        focus_next = { 'j', '<Down>', '<C-N>' },
+        focus_prev = { 'k', '<Up>', '<C-P>' },
+        close = { '<Esc>', '<C-c>' },
+        submit = { '<CR>', '<Space>' },
       },
       on_close = function()
         on_done(nil, nil)
@@ -397,11 +401,11 @@ local function override_ui_select()
   local select_ui = nil
 
   vim.ui.select = function(items, opts, on_choice)
-    assert(type(on_choice) == "function", "missing on_choice function")
+    assert(type(on_choice) == 'function', 'missing on_choice function')
 
     if select_ui then
       -- ensure single ui.select operation
-      vim.api.nvim_err_writeln("busy: another select is pending!")
+      vim.api.nvim_err_writeln('busy: another select is pending!')
       return
     end
 
