@@ -28,15 +28,19 @@ return {
   root_markers = { 'tsconfig.json', 'package.json' },
   workspace_required = true,
   settings = {
+    javascript = {
+      preferences = {
+        importModuleSpecifier = "non-relative",
+        includeCompletionsForModuleExports = true,
+        includeCompletionsForImportStatements = true,
+      },
+    },
     typescript = {
-      tsserver = { maxTsServerMemory = 8192 },
-      single_file_support = false
+      preferences = {
+        importModuleSpecifier = "non-relative",
+        includeCompletionsForModuleExports = true,
+        includeCompletionsForImportStatements = true,
+      },
     },
-    vtsls = {
-      single_file_support = false,
-      autoUseWorkspaceTsdk = true,
-      experimental = {
-        completion = { enableServerSideFuzzyMatch = true, entriesLimit = 30 } },
-    },
-  }
+  },
 }

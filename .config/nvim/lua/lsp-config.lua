@@ -291,13 +291,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     if client.name == 'eslint' then
-      -- 1. Set the command to run when you type :make
-      -- We use --format compact because it is easier for Neovim to parse
-      vim.o.makeprg = "npx eslint --format compact --max-warnings 0 'src/**/*.{ts,tsx}'"
-
-      -- 2. Tell Neovim how to read the output (parse filename, line, column, error)
-      -- The format matches: "file: line X, col Y, Error - Message"
-      vim.o.errorformat = "%f: line %l\\, col %c\\, %m,%-G%.%#"
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
         command = 'silent! EslintFixAll',
@@ -321,7 +314,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, { desc = 'Organize Imports' })
 
     if client.name == 'golangci_lint_ls' or client.name == 'gopls' or client.name == 'tsgolsp' then
-      vim.diagnostic.config({ update_in_insert = true })
+      vim.diagnostic.config({ update_in_insert = true, })
     end
 
     if client.name == 'biome' then
@@ -441,6 +434,7 @@ vim.lsp.config('pyright', {
     }
   }
 })
+
 
 
 -- Setup mason so it can manage external tooling
