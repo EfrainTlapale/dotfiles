@@ -67,7 +67,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git gitfast zsh-autosuggestions)
+plugins=(gitfast zsh-autosuggestions)
 
 bindkey '^ ' autosuggest-accept
 bindkey "^P" up-line-or-search
@@ -111,6 +111,11 @@ source $ZSH/oh-my-zsh.sh
 alias gs='git status'
 alias gpnb='git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)'
 alias lg='lazygit'
+alias gss='git status --short'
+alias gc='git commit --message'
+alias gl='git pull'
+alias gp='git push'
+alias gca='git commit --all --message'
 
 # -------
 # Docker Aliases
