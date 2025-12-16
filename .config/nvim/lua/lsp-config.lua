@@ -510,6 +510,7 @@ require('mason-lspconfig').setup({
         'golangci_lint_ls',
         'denols',
         'stylua',
+        'tailwindcss',
     },
     automatic_enable = true,
 })

@@ -700,6 +700,7 @@ require('gitblame').setup({
     enabled = false,
 })
 require('autoclose').setup({})
+require('nvim-ts-autotag').setup({ opts = { auto_close_on_slash = true } })
 require('tsc').setup()
 
 local auto = require 'lualine.themes.auto'
