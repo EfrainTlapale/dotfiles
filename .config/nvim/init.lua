@@ -5,7 +5,8 @@ dotenv.load_dotenv(vim.fs.normalize('~/.config/nvim/.env.local'))
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
+  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none',
+    '--branch=stable', lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
@@ -71,6 +72,7 @@ local plugins = {
   'lewis6991/gitsigns.nvim',
   'numToStr/Comment.nvim',
   'm4xshen/autoclose.nvim',
+  'https://github.com/windwp/nvim-ts-autotag',
   { 'akinsho/toggleterm.nvim', version = '*' },
   'JellyApple102/flote.nvim',
   {
@@ -474,9 +476,9 @@ local plugins = {
   },
   -- 'brenoprata10/nvim-highlight-colors',
   {
-    "eero-lehtinen/oklch-color-picker.nvim",
-    event = "VeryLazy",
-    version = "*",
+    'eero-lehtinen/oklch-color-picker.nvim',
+    event = 'VeryLazy',
+    version = '*',
     keys = {
     },
     ---@type oklch.Opts
@@ -736,10 +738,12 @@ require('conform').setup({
 
 require('vtsls').config({})
 
-vim.api.nvim_create_user_command('RunTests', ':<cmd>TermExec cmd="./run_tests_local.sh" direction="vertical" size=80',
+vim.api.nvim_create_user_command('RunTests',
+  ':<cmd>TermExec cmd="./run_tests_local.sh" direction="vertical" size=80',
   {})
 
-vim.api.nvim_create_user_command('DismissNotifications', ":lua require('notify').dismiss()",
+vim.api.nvim_create_user_command('DismissNotifications',
+  ":lua require('notify').dismiss()",
   {})
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile' }, {
