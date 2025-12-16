@@ -78,7 +78,6 @@ local plugins = {
     'lewis6991/gitsigns.nvim',
     'numToStr/Comment.nvim',
     'm4xshen/autoclose.nvim',
-    'https://github.com/windwp/nvim-ts-autotag',
     { 'akinsho/toggleterm.nvim', version = '*' },
     'JellyApple102/flote.nvim',
     {},
@@ -661,14 +660,14 @@ local plugins = {
         },
     },
     {
-        'sainnhe/gruvbox-material',
+        'nendix/zen.nvim',
         lazy = false,
         priority = 1000,
     },
     {
-        'nendix/zen.nvim',
-        lazy = false,
-        priority = 1000,
+        'esmuellert/vscode-diff.nvim',
+        dependencies = { 'MunifTanjim/nui.nvim' },
+        cmd = 'CodeDiff',
     },
 }
 
