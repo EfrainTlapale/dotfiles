@@ -1,4 +1,4 @@
-vim.opt.background = "dark" -- set this to dark or light
+vim.opt.background = 'dark' -- set this to dark or light
 
 -- vim.cmd.colorscheme "catppuccin-macchiato"
 -- vim.cmd.colorscheme "nordfox"
@@ -14,7 +14,7 @@ vim.opt.background = "dark" -- set this to dark or light
 -- vim.cmd.colorscheme "efra-2"
 
 -- vim.cmd.colorscheme "everforest"
-vim.cmd.colorscheme "zen"
+vim.cmd.colorscheme 'zen'
 -- vim.cmd.colorscheme "carbonfox"
 -- vim.cmd.colorscheme "no-clown-fiesta-dark"
 
@@ -23,10 +23,6 @@ vim.cmd.colorscheme "zen"
 --   background = { dark = 'mist' },
 -- })
 -- vim.cmd.colorscheme "kanso"
-
-
-
-
 
 -- vim.cmd("colorscheme monokai-v2")
 -- vim.api.nvim_set_hl(0, 'string', { fg = '#FFEE8C' })
