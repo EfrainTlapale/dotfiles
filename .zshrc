@@ -111,6 +111,7 @@ source $ZSH/oh-my-zsh.sh
 alias gs='git status'
 alias gpnb='git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)'
 alias lg='lazygit'
+alias glg='git log'
 alias gss='git status --short'
 alias gc='git commit --message'
 alias gl='git pull'
