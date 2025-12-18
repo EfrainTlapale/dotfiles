@@ -138,9 +138,9 @@ app-cli() {
 }
 
 complete -F _custom_docker_exec_completion dksh
-alias dkd='docker-compose down --remove-orphans -t0'
 alias dkl='docker-compose pull'
-alias dku='docker-compose up -d'
+alias dkd='docker compose down --remove-orphans -t0'
+alias dku='docker compose up -d'
 
 dkcu-static() {
   ORIGINAL_PATH=$(pwd)
