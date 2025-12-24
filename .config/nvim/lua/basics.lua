@@ -136,6 +136,10 @@ vim.api.nvim_create_user_command('VerticalRelative', function(opts)
   vertical_relative_resize(opts.fargs[1])
 end, { nargs = '*' })
 
+vim.api.nvim_create_user_command('ToggleColors', function(opts)
+  require('oklch-color-picker').highlight.toggle()
+end, { nargs = '*' })
+
 vim.keymap.set('n', '<leader>rh', ':ResizeRelative ')
 vim.keymap.set('n', '<leader>rv', ':VerticalRelative ')
 
@@ -160,23 +164,3 @@ vim.api.nvim_create_autocmd('ExitPre', {
     end
   end,
 })
-
-vim.cmdline_inspect_hl = function()
-  local line = vim.fn.getcmdline()
-  local pos = vim.fn.getcmdpos()
-
-  if pos < 1 or pos > #line then
-    return 'No cmdline highlight'
-  end
-
-  local syn_id = vim.fn.synID(pos, 1, 1)
-  local hl_name = vim.fn.synIDattr(syn_id, 'name')
-  local trans_id = vim.fn.synIDtrans(syn_id)
-  local trans_name = vim.fn.synIDattr(trans_id, 'name')
-
-  return string.format(
-    'hl=%s → %s',
-    hl_name ~= '' and hl_name or 'NONE',
-    trans_name ~= '' and trans_name or 'NONE'
-  )
-end

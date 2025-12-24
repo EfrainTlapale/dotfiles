@@ -814,7 +814,11 @@ local plugins = {
     'eero-lehtinen/oklch-color-picker.nvim',
     event = 'VeryLazy',
     version = '*',
-    opts = {},
+    opts = {
+      highlight = {
+        enabled = true,
+      },
+    },
   },
   { 'bngarren/checkmate.nvim', ft = 'markdown', opts = {} },
   { 'nendix/zen.nvim', lazy = false, priority = 1000 },
