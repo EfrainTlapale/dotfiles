@@ -5,7 +5,6 @@ if vim.fn.filereadable(env_path) == 1 then
   dotenv.load_dotenv(env_path)
 end
 
--- Load basics (options, globals) early
 require 'basics'
 
 -- Bootstrap lazy.nvim
@@ -876,11 +875,6 @@ require('lualine').setup({
 
 -- == CUSTOM COMMANDS & AUTOCMDS ==
 
-vim.api.nvim_create_user_command(
-  'RunTests',
-  ':<cmd>TermExec cmd="./run_tests_local.sh" direction="vertical" size=80',
-  {}
-)
 vim.api.nvim_create_user_command(
   'DismissNotifications',
   ":lua require('notify').dismiss()",

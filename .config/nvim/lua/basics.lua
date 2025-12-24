@@ -1,42 +1,61 @@
-vim.g.mapleader      = " "
-vim.o.number         = false
+vim.g.mapleader = ' '
+vim.o.number = false
 vim.o.relativenumber = true
-vim.o.wrap           = false
-vim.o.expandtab      = true
-vim.o.incsearch      = true
-vim.o.tabstop        = 2
-vim.o.cursorline     = true
-vim.o.ignorecase     = true
-vim.o.hlsearch       = false
-vim.o.swapfile       = false
-vim.o.splitbelow     = true
-vim.o.splitright     = true
-vim.o.scrolloff      = 3
-vim.o.errorbells     = false
-vim.o.shiftwidth     = 2
-vim.o.numberwidth    = 1
-vim.o.termguicolors  = true
-vim.o.showmode       = false
-vim.o.showtabline    = 2
-vim.o.signcolumn     = 'yes:1'
-vim.opt.path         = vim.opt.path + "**"
-vim.opt.mouse        = ''
-vim.opt.linebreak    = true
-vim.opt.wrap         = true
-vim.opt.hidden       = true
-vim.o.foldmethod     = 'manual'
+vim.o.wrap = false
+vim.o.expandtab = true
+vim.o.incsearch = true
+vim.o.tabstop = 2
+vim.o.cursorline = true
+vim.o.ignorecase = true
+vim.o.hlsearch = false
+vim.o.swapfile = false
+vim.o.splitbelow = true
+vim.o.splitright = true
+vim.o.scrolloff = 3
+vim.o.errorbells = false
+vim.o.shiftwidth = 2
+vim.o.numberwidth = 1
+vim.o.termguicolors = true
+vim.o.showmode = false
+vim.o.showtabline = 2
+vim.o.signcolumn = 'yes:1'
+vim.opt.path = vim.opt.path + '**'
+vim.opt.mouse = ''
+vim.opt.linebreak = true
+vim.opt.wrap = true
+vim.opt.hidden = true
+vim.o.foldmethod = 'manual'
 vim.o.foldlevelstart = 99
 vim.api.nvim_set_var('vimwiki_folding', 'custom')
-
 
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+vim.keymap.set(
+  'n',
+  'k',
+  "v:count == 0 ? 'gk' : 'k'",
+  { expr = true, silent = true }
+)
+vim.keymap.set(
+  'n',
+  'j',
+  "v:count == 0 ? 'gj' : 'j'",
+  { expr = true, silent = true }
+)
 
-vim.api.nvim_set_keymap("c", "<c-p>", [[ wildmenumode() ? "c-k>" : "<up>" ]], { noremap = true, expr = true })
-vim.api.nvim_set_keymap("c", "<c-n>", [[ wildmenumode() ? "c-k>" : "<down>" ]], { noremap = true, expr = true })
+vim.api.nvim_set_keymap(
+  'c',
+  '<c-p>',
+  [[ wildmenumode() ? "c-k>" : "<up>" ]],
+  { noremap = true, expr = true }
+)
+vim.api.nvim_set_keymap(
+  'c',
+  '<c-n>',
+  [[ wildmenumode() ? "c-k>" : "<down>" ]],
+  { noremap = true, expr = true }
+)
 
 vim.api.nvim_set_keymap('n', 'vs', '<cmd>vs<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'sp', '<cmd>sp<CR>', { noremap = true })
@@ -48,16 +67,51 @@ vim.api.nvim_set_keymap('n', 'tn', '<cmd>tabnew<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'tl', '<cmd>tabnext<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'th', '<cmd>tabprev<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'to', '<cmd>tabo<CR>', { noremap = true })
-vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>gb", "<cmd>GitBlameToggle<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+  't',
+  '<Esc>',
+  '<C-\\><C-n>',
+  { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+  'n',
+  '<leader>gb',
+  '<cmd>GitBlameToggle<CR>',
+  { noremap = true, silent = true }
+)
 
-vim.api.nvim_set_keymap("n", "<leader>do", "<cmd>DiffviewOpen<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>dc", "<cmd>DiffviewClose<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>DiffviewFileHistory<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+  'n',
+  '<leader>do',
+  '<cmd>DiffviewOpen<CR>',
+  { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+  'n',
+  '<leader>dc',
+  '<cmd>DiffviewClose<CR>',
+  { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+  'n',
+  '<leader>fh',
+  '<cmd>DiffviewFileHistory<CR>',
+  { noremap = true, silent = true }
+)
 
-vim.api.nvim_set_keymap("n", "<leader>ts", "<cmd>TSToggle highlight<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+  'n',
+  '<leader>ts',
+  '<cmd>TSToggle highlight<CR>',
+  { noremap = true, silent = true }
+)
 
-vim.api.nvim_set_keymap('n', '<F4>', '<cmd>set hlsearch! hlsearch?<CR>', { noremap = true })
+vim.api.nvim_set_keymap(
+  'n',
+  '<F4>',
+  '<cmd>set hlsearch! hlsearch?<CR>',
+  { noremap = true }
+)
 
 local function resize_relative(relativeNumber)
   local lines = vim.o.lines
@@ -82,24 +136,47 @@ vim.api.nvim_create_user_command('VerticalRelative', function(opts)
   vertical_relative_resize(opts.fargs[1])
 end, { nargs = '*' })
 
-
 vim.keymap.set('n', '<leader>rh', ':ResizeRelative ')
 vim.keymap.set('n', '<leader>rv', ':VerticalRelative ')
 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
 
 vim.keymap.set({ 'n' }, '<leader>tm', '<cmd>ToggleTerm<CR>')
-vim.keymap.set({ 'n' }, '<leader>tv', '<cmd>ToggleTerm direction=vertical size=100<CR>')
+vim.keymap.set(
+  { 'n' },
+  '<leader>tv',
+  '<cmd>ToggleTerm direction=vertical size=100<CR>'
+)
 
-
-vim.api.nvim_create_autocmd("ExitPre", {
-  pattern = "*",
+vim.api.nvim_create_autocmd('ExitPre', {
+  pattern = '*',
   callback = function(event)
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      local ok, buftype = pcall(vim.api.nvim_get_option_value, 'buftype', { buf = buf })
+      local ok, buftype =
+        pcall(vim.api.nvim_get_option_value, 'buftype', { buf = buf })
       if ok and buftype == 'terminal' then
         vim.api.nvim_buf_delete(buf, { force = true })
       end
     end
   end,
 })
+
+vim.cmdline_inspect_hl = function()
+  local line = vim.fn.getcmdline()
+  local pos = vim.fn.getcmdpos()
+
+  if pos < 1 or pos > #line then
+    return 'No cmdline highlight'
+  end
+
+  local syn_id = vim.fn.synID(pos, 1, 1)
+  local hl_name = vim.fn.synIDattr(syn_id, 'name')
+  local trans_id = vim.fn.synIDtrans(syn_id)
+  local trans_name = vim.fn.synIDattr(trans_id, 'name')
+
+  return string.format(
+    'hl=%s → %s',
+    hl_name ~= '' and hl_name or 'NONE',
+    trans_name ~= '' and trans_name or 'NONE'
+  )
+end
