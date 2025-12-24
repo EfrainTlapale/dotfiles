@@ -26,7 +26,7 @@ return {
   },
 
   visual = {
-    a = { fg = p.bg, bg = p.keyword, gui = 'bold' },
+    a = { fg = p.bg, bg = p.fg_dim, gui = 'bold' },
     b = { fg = p.fg, bg = p.bg_alt },
     c = { fg = p.fg_dim, bg = p.bg },
   },
