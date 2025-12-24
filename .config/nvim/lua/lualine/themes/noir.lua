@@ -14,7 +14,7 @@ local p = {
 
 return {
   normal = {
-    a = { fg = p.bg, bg = p.accent, gui = 'bold' },
+    a = { fg = p.bg, bg = p.comment, gui = 'bold' },
     b = { fg = p.fg, bg = p.bg_alt },
     c = { fg = p.fg_dim, bg = p.bg },
   },
