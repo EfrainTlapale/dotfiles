@@ -101,3 +101,12 @@ hi('DiffRemoved', { bg = palette.inline_del_bg })
 
 hi('DiagnosticInfo', { fg = palette.accent })
 hi('MoreMsg', { fg = palette.keyword })
+
+hi(
+  'DiagnosticUnderlineError',
+  { fg = 'NONE', bg = 'NONE', sp = 'NvimLightRed', undercurl = true }
+)
+hi(
+  'DiagnosticUnderlineWarn',
+  { fg = 'NONE', bg = 'NONE', sp = 'NvimLightYellow', undercurl = true }
+)

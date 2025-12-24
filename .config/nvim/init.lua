@@ -816,7 +816,7 @@ local plugins = {
     version = '*',
     opts = {
       highlight = {
-        enabled = true,
+        enabled = false,
       },
     },
   },
@@ -849,6 +849,10 @@ require('quickrun').setup()
 local auto = require 'lualine.themes.auto'
 if vim.g.colors_name == 'efra-2' then
   auto.visual.a.bg = '#A68CB3'
+end
+
+if vim.g.colors_name == 'noir' then
+  auto = require 'lualine.themes.noir'
 end
 
 require('lualine').setup({
