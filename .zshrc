@@ -411,3 +411,6 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 export PATH=$(go env GOPATH)/bin:$PATH
 . "$HOME/.deno/env"
 
+
+export EDITOR=nvim
+export VISUAL="$EDITOR"
