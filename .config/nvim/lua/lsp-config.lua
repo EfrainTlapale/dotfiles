@@ -2,22 +2,6 @@ local navic = require 'nvim-navic'
 local util = require 'lspconfig.util'
 local luasnip = require 'luasnip'
 
--- Print contents of `tbl`, with indentation.
-local function tprint(tbl, indent)
-  if not indent then
-    indent = 0
-  end
-  for k, v in pairs(tbl) do
-    local formatting = string.rep('  ', indent) .. k .. ': '
-    if type(v) == 'table' then
-      print(formatting)
-      tprint(v, indent + 1)
-    else
-      print(formatting .. tostring(v))
-    end
-  end
-end
-
 -- Custom QuickFix helper
 local function quickFix()
   local is_first = true
@@ -37,56 +21,6 @@ local function quickFix()
     context = { only = { 'quickfix' } },
   })
 end
-
-require('nvim-treesitter.configs').setup({
-  ensure_installed = {
-    'c',
-    'lua',
-    'vim',
-    'vimdoc',
-    'query',
-    'typescript',
-    'css',
-    'scss',
-    'javascript',
-    'markdown',
-    'markdown_inline',
-    'python',
-    'tsx',
-    'bash',
-    'fish',
-    'json',
-    'http',
-    'yaml',
-  },
-  highlight = { enable = true },
-  auto_install = true,
-  indent = { enable = true },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = '<c-s>',
-      node_incremental = '<c-s>',
-    },
-  },
-  textobjects = {
-    move = {
-      enable = true,
-      set_jumps = true,
-      goto_next_start = { [']f'] = '@function.outer' },
-      goto_next_end = { [']M'] = '@function.outer' },
-      goto_previous_start = { ['[f'] = '@function.outer' },
-      goto_previous_end = { ['[M'] = '@function.outer' },
-    },
-    select = {
-      enable = true,
-      keymaps = {
-        ['af'] = '@function.outer',
-        ['if'] = '@function.inner',
-      },
-    },
-  },
-})
 
 require('mason').setup()
 require('mason-lspconfig').setup({
