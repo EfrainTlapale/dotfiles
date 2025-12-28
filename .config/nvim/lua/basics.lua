@@ -11,7 +11,7 @@ vim.o.hlsearch = false
 vim.o.swapfile = false
 vim.o.splitbelow = true
 vim.o.splitright = true
-vim.o.scrolloff = 3
+vim.o.scrolloff = 5
 vim.o.errorbells = false
 vim.o.shiftwidth = 2
 vim.o.numberwidth = 1
@@ -88,6 +88,12 @@ vim.api.nvim_set_keymap(
 )
 vim.api.nvim_set_keymap(
   'n',
+  '<leader>cd',
+  '<cmd>CodeDiff<CR>',
+  { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+  'n',
   '<leader>dc',
   '<cmd>DiffviewClose<CR>',
   { noremap = true, silent = true }
@@ -95,7 +101,7 @@ vim.api.nvim_set_keymap(
 vim.api.nvim_set_keymap(
   'n',
   '<leader>fh',
-  '<cmd>DiffviewFileHistory<CR>',
+  '<cmd>DiffviewFileHistory %<CR>',
   { noremap = true, silent = true }
 )
 
