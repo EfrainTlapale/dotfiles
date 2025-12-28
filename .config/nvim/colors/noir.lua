@@ -117,7 +117,7 @@ hi('Keyword', { fg = palette.keyword })
 hi('Type', { fg = palette.accent })
 hi('Identifier', { fg = palette.fg_dim })
 hi('Operator', { fg = palette.fg })
-hi('Constant', { fg = palette.fg })
+hi('Constant', { fg = '#B7D3FF' })
 hi('Special', { fg = palette.accent })
 
 hi('StatusLine', { fg = palette.fg, bg = palette.bg_alt })
@@ -183,3 +183,4 @@ hi(
   'DiagnosticUnderlineWarn',
   { fg = 'NONE', bg = 'NONE', sp = 'NvimLightYellow', undercurl = true }
 )
+hi('FlashLabel', { fg = palette.keyword })
