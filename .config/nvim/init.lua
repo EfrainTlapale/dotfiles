@@ -815,7 +815,12 @@ local plugins = {
       vim.opt.termguicolors = true
     end,
   },
-  { 'webhooked/kanso.nvim', lazy = false, priority = 1000 },
+  {
+    'webhooked/kanso.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = { theme = 'mist', bold = false },
+  },
   {
     'folke/flash.nvim',
     event = 'VeryLazy',
@@ -867,6 +872,14 @@ local plugins = {
     'esmuellert/vscode-diff.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
     cmd = 'CodeDiff',
+  },
+  {
+    'olivercederborg/poimandres.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require('poimandres').setup({})
+    end,
   },
 }
 
