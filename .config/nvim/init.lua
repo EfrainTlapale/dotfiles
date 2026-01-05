@@ -506,7 +506,6 @@ local plugins = {
     event = 'VeryLazy',
     opts = {},
     keys = {
-      { '<leader>v', ft = 'lua', desc = 'LÖVE' },
       {
         '<leader>vv',
         '<cmd>LoveRun<cr>',
