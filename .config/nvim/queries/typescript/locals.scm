@@ -56,5 +56,26 @@
           key: (string (string_fragment) @local.definition.field)))))
 )
 
+(property_signature
+  name: (string
+    (string_fragment) @local.definition.field
+  )
+)
 
 
+
+;; 1. Matches top-level keys (e.g., "components")
+(interface_declaration
+  body: (interface_body
+    (property_signature
+      name: (property_identifier) @local.definition.field
+    )
+  )
+)
+
+;; 2. Matches nested keys (e.g., "Aoi")
+(object_type
+  (property_signature
+    name: (property_identifier) @local.definition.field
+  )
+)
