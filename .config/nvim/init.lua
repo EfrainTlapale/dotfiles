@@ -315,8 +315,10 @@ local plugins = {
         markdown = { 'prettier' },
         python = { 'ruff_format' },
         yaml = { 'prettier' },
+        css = { 'prettier' },
+        scss = { 'prettier' },
       },
-      format_on_save = { timeout_ms = 10000, lsp_fallback = true },
+      format_on_save = { timeout_ms = 10000, lsp_fallback = false },
     },
   },
 
@@ -873,12 +875,34 @@ local plugins = {
     cmd = 'CodeDiff',
   },
   {
-    'olivercederborg/poimandres.nvim',
+    'sainnhe/gruvbox-material',
     lazy = false,
     priority = 1000,
     config = function()
-      require('poimandres').setup({})
+      vim.g.gruvbox_material_background = 'medium'
+      -- vim.cmd.colorscheme 'gruvbox-material'
     end,
+  },
+
+  {
+    'rmehri01/onenord.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function() end,
+  },
+  {
+    'zenbones-theme/zenbones.nvim',
+    -- Optionally install Lush. Allows for more configuration or extending the colorscheme
+    -- If you don't want to install lush, make sure to set g:zenbones_compat = 1
+    -- In Vim, compat mode is turned on as Lush only works in Neovim.
+    dependencies = 'rktjmp/lush.nvim',
+    lazy = false,
+    priority = 1000,
+    -- you can set set configuration options here
+    -- config = function()
+    --     vim.g.zenbones_darken_comments = 45
+    --     vim.cmd.colorscheme('zenbones')
+    -- end
   },
 }
 
@@ -899,19 +923,23 @@ require('quickrun').setup()
 
 -- Lualine setup after colorscheme is set so that auto theme works
 
-local auto = require 'lualine.themes.auto'
+local lualineTheme = require 'lualine.themes.auto'
 if vim.g.colors_name == 'efra-2' then
-  auto.visual.a.bg = '#A68CB3'
+  lualineTheme.visual.a.bg = '#A68CB3'
 end
 
 if vim.g.colors_name == 'noir' then
-  auto = require 'lualine.themes.noir'
+  lualineTheme = require 'lualine.themes.noir'
+end
+
+if vim.g.colors_name == 'gruvbox-material' then
+  lualineTheme = 'gruvbox-material'
 end
 
 require('lualine').setup({
   options = {
     section_separators = { left = '', right = '' },
-    theme = auto,
+    theme = lualineTheme,
   },
   sections = {
     lualine_a = {
