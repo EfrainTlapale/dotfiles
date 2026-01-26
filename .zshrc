@@ -311,6 +311,37 @@ toggle_keyboard_control() {
   fi
 }
 
+
+function toggle_touchpad() {
+    # Define the GNOME settings schema and key
+    local schema="org.gnome.desktop.peripherals.touchpad"
+    local key="send-events"
+    
+    # Get the current state
+    local current_state=$(gsettings get $schema $key)
+
+    if [[ "$current_state" == "'disabled'" ]]; then
+        # ENABLE LOGIC
+        gsettings set $schema $key 'enabled'
+        echo "Touchpad: Enabled 🟢"
+        
+        # Notification with Green Circle and Pointing Finger
+        notify-send "Touchpad Enabled 🟢" "Touch controls are active 👆" \
+            -i input-touchpad-on \
+            -h string:x-canonical-private-synchronous:touchpad-toggle
+
+    else
+        # DISABLE LOGIC
+        gsettings set $schema $key 'disabled'
+        echo "Touchpad: Disabled 🔴"
+        
+        # Notification with Red Circle and Crossed Mark
+        notify-send "Touchpad Disabled 🔴" "Touch controls are locked 🚫" \
+            -i input-touchpad-off \
+            -h string:x-canonical-private-synchronous:touchpad-toggle
+    fi
+}
+
 # Personal aliases
 alias connect-wf='connectBtDevice AA:BB:CC:DD:EE:01'
 alias connect-wh='connectBtDevice AA:BB:CC:DD:EE:02'
