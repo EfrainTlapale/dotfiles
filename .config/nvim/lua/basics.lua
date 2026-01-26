@@ -170,3 +170,6 @@ vim.api.nvim_create_autocmd('ExitPre', {
     end
   end,
 })
+
+-- remap / when visual selection is active to only search inside the selection
+vim.keymap.set('x', '/', '<Esc>/\\%V')
