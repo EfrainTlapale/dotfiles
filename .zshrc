@@ -69,6 +69,7 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(gitfast zsh-autosuggestions)
 
+
 bindkey '^ ' autosuggest-accept
 bindkey "^P" up-line-or-search
 bindkey "^N" down-line-or-search
@@ -437,3 +438,5 @@ export PATH=$(go env GOPATH)/bin:$PATH
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
+
+bindkey -v
