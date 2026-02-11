@@ -386,6 +386,8 @@ export NVM_DIR="$HOME/.nvm"
 if [[ $(uname) == "Darwin" ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"
   source <(fzf --zsh)
+  # Created by `pipx` on 2026-02-03 02:02:48
+  export PATH="$PATH:/Users/efra/.local/bin"
 fi
 
 if [[ $(uname) == "Linux" ]]; then
@@ -437,3 +439,4 @@ export PATH=$(go env GOPATH)/bin:$PATH
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
+
