@@ -565,6 +565,7 @@ local plugins = {
     priority = 1000,
     lazy = false,
     opts = {
+      terminal = { auto_insert = false },
       dashboard = {
         sections = {
           { section = 'header' },
@@ -870,7 +871,7 @@ local plugins = {
   { 'bngarren/checkmate.nvim', ft = 'markdown', opts = {} },
   { 'nendix/zen.nvim', lazy = false, priority = 1000 },
   {
-    'esmuellert/vscode-diff.nvim',
+    'esmuellert/codediff.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
     cmd = 'CodeDiff',
   },
