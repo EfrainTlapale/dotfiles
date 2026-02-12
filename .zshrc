@@ -1,6 +1,7 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -69,11 +70,14 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(gitfast zsh-autosuggestions)
 
-bindkey '^ ' autosuggest-accept
-bindkey "^P" up-line-or-search
-bindkey "^N" down-line-or-search
 
 source $ZSH/oh-my-zsh.sh
+
+bindkey -v
+
+bindkey -M viins '^ ' autosuggest-accept
+bindkey "^P" up-line-or-search
+bindkey "^N" down-line-or-search
 
 # User configuration
 
@@ -439,4 +443,5 @@ export PATH=$(go env GOPATH)/bin:$PATH
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
+
 
