@@ -439,4 +439,3 @@ export PATH=$(go env GOPATH)/bin:$PATH
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 
-bindkey -v

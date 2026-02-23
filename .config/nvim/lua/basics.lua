@@ -158,6 +158,8 @@ vim.keymap.set(
   '<cmd>ToggleTerm direction=vertical size=100<CR>'
 )
 
+vim.keymap.set({ 'n' }, '<leader>nn', '<cmd>NoNeckPain<CR>')
+
 vim.api.nvim_create_autocmd('ExitPre', {
   pattern = '*',
   callback = function(event)

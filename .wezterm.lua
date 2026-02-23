@@ -217,7 +217,7 @@ if host_os == "macos" then
 	config.font_size = 16
 	config.window_padding.top = 10
 else
-	config.font_size = 12.96
+	-- config.font_size = 10.6
 	-- config.line_height = 0.95
 	config.set_environment_variables = {
 		-- prepend the path to your utility and include the rest of the PATH
