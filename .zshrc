@@ -1,6 +1,7 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -70,11 +71,13 @@ ZSH_THEME="robbyrussell"
 plugins=(gitfast zsh-autosuggestions)
 
 
-bindkey '^ ' autosuggest-accept
+source $ZSH/oh-my-zsh.sh
+
+bindkey -v
+
+bindkey -M viins '^ ' autosuggest-accept
 bindkey "^P" up-line-or-search
 bindkey "^N" down-line-or-search
-
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -387,6 +390,8 @@ export NVM_DIR="$HOME/.nvm"
 if [[ $(uname) == "Darwin" ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"
   source <(fzf --zsh)
+  # Created by `pipx` on 2026-02-03 02:02:48
+  export PATH="$PATH:/Users/efra/.local/bin"
 fi
 
 if [[ $(uname) == "Linux" ]]; then
