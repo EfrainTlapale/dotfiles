@@ -90,7 +90,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     if client.name == 'eslint' then
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
-        command = 'silent! EslintFixAll',
+        command = 'silent! LspEslintFixAll',
         group = vim.api.nvim_create_augroup(
           'MyAutocmdsJavaScripFormatting',
           {}
