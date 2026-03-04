@@ -546,7 +546,6 @@ local plugins = {
       })
     end,
   },
-  'aktersnurra/no-clown-fiesta.nvim',
   {
     'nvzone/typr',
     dependencies = 'nvzone/volt',
@@ -554,10 +553,7 @@ local plugins = {
     cmd = { 'Typr', 'TyprStats' },
   },
   'EdenEast/nightfox.nvim',
-  'shaunsingh/nord.nvim',
   'nyoom-engineering/oxocarbon.nvim',
-  'navarasu/onedark.nvim',
-  'rebelot/kanagawa.nvim',
   { 'vague-theme/vague.nvim', opts = { bold = false } },
   { 'e-q/okcolors.nvim', name = 'okcolors' },
   {
@@ -811,19 +807,6 @@ local plugins = {
     end,
   },
   {
-    'rjshkhr/shadow.nvim',
-    priority = 1000,
-    config = function()
-      vim.opt.termguicolors = true
-    end,
-  },
-  {
-    'webhooked/kanso.nvim',
-    lazy = false,
-    priority = 1000,
-    opts = { theme = 'mist', bold = false },
-  },
-  {
     'folke/flash.nvim',
     event = 'VeryLazy',
     opts = {},
@@ -848,16 +831,7 @@ local plugins = {
       },
     },
   },
-  {
-    'khoido2003/monokai-v2.nvim',
-    priority = 1000,
-    config = function()
-      require('monokai-v2').setup({ filter = 'machine' })
-    end,
-  },
   'armannikoyan/rusty',
-  { 'dgox16/oldworld.nvim', lazy = false, priority = 1000 },
-  { 'slugbyte/lackluster.nvim', lazy = false, priority = 1000 },
   {
     'eero-lehtinen/oklch-color-picker.nvim',
     event = 'VeryLazy',
@@ -868,7 +842,6 @@ local plugins = {
       },
     },
   },
-  { 'bngarren/checkmate.nvim', ft = 'markdown', opts = {} },
   { 'nendix/zen.nvim', lazy = false, priority = 1000 },
   {
     'esmuellert/codediff.nvim',
@@ -884,26 +857,13 @@ local plugins = {
       -- vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
-
   {
-    'rmehri01/onenord.nvim',
+    'AlexvZyl/nordic.nvim',
     lazy = false,
     priority = 1000,
-    config = function() end,
-  },
-  {
-    'zenbones-theme/zenbones.nvim',
-    -- Optionally install Lush. Allows for more configuration or extending the colorscheme
-    -- If you don't want to install lush, make sure to set g:zenbones_compat = 1
-    -- In Vim, compat mode is turned on as Lush only works in Neovim.
-    dependencies = 'rktjmp/lush.nvim',
-    lazy = false,
-    priority = 1000,
-    -- you can set set configuration options here
-    -- config = function()
-    --     vim.g.zenbones_darken_comments = 45
-    --     vim.cmd.colorscheme('zenbones')
-    -- end
+    config = function()
+      require('nordic').load()
+    end,
   },
 }
 
@@ -935,6 +895,10 @@ end
 
 if vim.g.colors_name == 'gruvbox-material' then
   lualineTheme = 'gruvbox-material'
+end
+
+if vim.g.colors_name == 'nordic' then
+  lualineTheme = 'nordic'
 end
 
 require('lualine').setup({
