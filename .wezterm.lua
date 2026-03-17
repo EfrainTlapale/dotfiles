@@ -1,5 +1,7 @@
 -- Pull in the wezterm API
 local wezterm = require("wezterm")
+local io = require("io")
+local os = require("os")
 
 -- This will hold the configuration.
 local config = wezterm.config_builder()
@@ -15,6 +17,7 @@ config.colors = {
 }
 
 config.font = wezterm.font("FiraCode Nerd Font")
+-- config.font = wezterm.font("AtkynsonMono NF")
 
 config.hide_tab_bar_if_only_one_tab = true
 config.tab_bar_at_bottom = true
@@ -136,10 +139,6 @@ config.mouse_bindings = {
 
 config.use_fancy_tab_bar = false
 
-local io = require("io")
-local os = require("os")
-local act = wezterm.action
-
 local function my_fixed_get_text_from_semantic_zone(pane, zone)
 	-- Unfortunately, the function `get_text_from_semantic_zone(zone)` swallows the last line.
 	-- So we need to get the region up to column 0 of the line that follows the zone.
@@ -217,8 +216,10 @@ if host_os == "macos" then
 	config.font_size = 16
 	config.window_padding.top = 10
 else
-	-- config.font_size = 10.8
-	config.font_size = 10.7
+	-- config.font_size = 10.7
+	config.font_size = 9
+	-- config.font_size = 9.3
+
 	config.set_environment_variables = {
 		-- prepend the path to your utility and include the rest of the PATH
 		PATH = wezterm.home_dir .. "/.local/share/bob/nvim-bin:" .. os.getenv("PATH"),
