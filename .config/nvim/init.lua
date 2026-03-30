@@ -64,8 +64,6 @@ local plugins = {
         signature = { enabled = false },
         progress = { enabled = false },
         override = {
-          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-          ['vim.lsp.util.stylize_markdown'] = true,
           -- ['cmp.entry.get_documentation'] = true,
         },
         hover = { silent = true },
@@ -318,7 +316,7 @@ local plugins = {
         css = { 'prettier' },
         scss = { 'prettier' },
       },
-      format_on_save = { timeout_ms = 10000, lsp_fallback = false },
+      format_on_save = { timeout_ms = 10000, lsp_format = false },
     },
   },
 
