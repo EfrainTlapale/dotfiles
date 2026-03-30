@@ -6,3 +6,5 @@ vim.opt.background = 'dark' -- set this to dark or light
 vim.cmd.colorscheme 'gruvbox-material'
 -- vim.cmd.colorscheme 'carbonfox'
 -- vim.cmd.colorscheme 'nordic'
+-- vim.cmd.colorscheme 'kanso-zen'
+-- vim.cmd.colorscheme 'nordstone'

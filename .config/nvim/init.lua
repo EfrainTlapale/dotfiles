@@ -861,9 +861,6 @@ local plugins = {
     'AlexvZyl/nordic.nvim',
     lazy = false,
     priority = 1000,
-    config = function()
-      require('nordic').load()
-    end,
   },
   {
     'dtormoen/neural-open.nvim',
@@ -877,6 +874,11 @@ local plugins = {
     },
     -- opts are optional. NeuralOpen will automatically use the defaults below.
     opts = {},
+    {
+      'webhooked/kanso.nvim',
+      lazy = false,
+      priority = 1000,
+    },
   },
 }
 
