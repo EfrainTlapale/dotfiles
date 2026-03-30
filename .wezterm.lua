@@ -214,7 +214,7 @@ if host_os == "macos" then
 	}
 
 	config.window_decorations = "RESIZE"
-	config.font_size = 16
+	config.font_size = 15.8
 	config.window_padding.top = 10
 else
 	config.font_size = 10.8
