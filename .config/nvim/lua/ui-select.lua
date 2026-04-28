@@ -31,7 +31,6 @@ local function override_ui_select()
       zindex = 999,
     }
 
-    print(kind)
     if kind == 'codeaction' then
       popup_options.relative = 'cursor'
       popup_options.position = { row = 1, col = 0 }

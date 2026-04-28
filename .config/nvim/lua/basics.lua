@@ -1,7 +1,6 @@
 vim.g.mapleader = ' '
 vim.o.number = false
 vim.o.relativenumber = true
-vim.o.wrap = false
 vim.o.expandtab = true
 vim.o.incsearch = true
 vim.o.tabstop = 2
@@ -47,13 +46,13 @@ vim.keymap.set(
 vim.api.nvim_set_keymap(
   'c',
   '<c-p>',
-  [[ wildmenumode() ? "c-k>" : "<up>" ]],
+  [[ wildmenumode() ? "\<C-p>" : "\<up>" ]],
   { noremap = true, expr = true }
 )
 vim.api.nvim_set_keymap(
   'c',
   '<c-n>',
-  [[ wildmenumode() ? "c-k>" : "<down>" ]],
+  [[ wildmenumode() ? "\<C-n>" : "\<down>" ]],
   { noremap = true, expr = true }
 )
 
@@ -175,3 +174,13 @@ vim.api.nvim_create_autocmd('ExitPre', {
 
 -- remap / when visual selection is active to only search inside the selection
 vim.keymap.set('x', '/', '<Esc>/\\%V')
+
+-- Filetype detection
+vim.filetype.add({
+  extension = { ['http'] = 'http' },
+})
+
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile' }, {
+  pattern = '.env*',
+  command = 'set filetype=bash',
+})

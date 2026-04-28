@@ -151,28 +151,26 @@ vim.lsp.config('denols', {
   root_markers = { 'deno.json' },
   workspace_required = true,
   settings = {
-    {
-      deno = {
-        enable = true,
-        cacheOnSave = true,
-        lint = true,
-        documentPreloadLimit = 1000,
-        suggest = {
-          imports = {
-            autoDiscover = true,
-            hosts = { ['https://deno.land'] = true },
-          },
+    deno = {
+      enable = true,
+      cacheOnSave = true,
+      lint = true,
+      documentPreloadLimit = 1000,
+      suggest = {
+        imports = {
+          autoDiscover = true,
+          hosts = { ['https://deno.land'] = true },
         },
-        testing = {
-          args = { '--allow-all', '--no-check' },
-        },
-        unstable = true,
-        codeLens = {
-          implementations = false,
-          references = false,
-          referencesAllFunctions = false,
-          test = false,
-        },
+      },
+      testing = {
+        args = { '--allow-all', '--no-check' },
+      },
+      unstable = true,
+      codeLens = {
+        implementations = false,
+        references = false,
+        referencesAllFunctions = false,
+        test = false,
       },
     },
   },
@@ -185,9 +183,7 @@ vim.lsp.config('biome', {
 })
 
 vim.lsp.config('oxlint', {
-  cmd = {
-    '/Users/efra/dev/sin-boleto-next/node_modules/oxlint/bin/oxc_language_server',
-  },
+  cmd = { './node_modules/oxlint/bin/oxc_language_server' },
 })
 
 vim.lsp.config('lua_ls', {
