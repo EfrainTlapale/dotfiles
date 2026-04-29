@@ -1,6 +1,6 @@
 return {
   'nvim-lualine/lualine.nvim',
-  event = 'VeryLazy',
+  event = 'ColorScheme',
   dependencies = { 'kyazdani42/nvim-web-devicons', lazy = true },
   config = function()
     local theme_overrides = {

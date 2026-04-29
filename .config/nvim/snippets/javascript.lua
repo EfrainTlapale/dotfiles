@@ -32,12 +32,8 @@ return {
 
   s('logef', {
     t({ 'useEffect(() => {', 'console.log(' }),
-    i(1, 'value'),
-    t({ ')', '}, [' }),
-    f(function(args)
-      return args[1][1]
-    end, { 1 }),
-    t '])',
+    i(1),
+    t({ ')', '}, [])' }),
   }),
 
   s('usem', {
