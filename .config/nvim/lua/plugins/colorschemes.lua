@@ -24,4 +24,9 @@ return {
   { 'vague-theme/vague.nvim', lazy = true, opts = { bold = false } },
   { 'AlexvZyl/nordic.nvim', lazy = true },
   { 'webhooked/kanso.nvim', lazy = true },
+  {
+    'AvengeMedia/base46',
+    lazy = true,
+    opts = {},
+  },
 }
