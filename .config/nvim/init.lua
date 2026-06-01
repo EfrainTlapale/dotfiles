@@ -41,7 +41,6 @@ require 'colors'
 
 -- User modules that aren't plugin-tied
 require('quickrun').setup()
-require 'code-actions'
 require 'ui-select'
 
 vim.api.nvim_create_user_command(
