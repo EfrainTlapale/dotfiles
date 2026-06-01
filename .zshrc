@@ -122,6 +122,12 @@ alias gl='git pull'
 alias gp='git push'
 alias gca='git commit --all --message'
 
+gwtcd() {
+  local repo
+  repo=$(cd "$(git rev-parse --git-common-dir)/.." && basename "$PWD") || return
+  cd "$HOME/worktrees/$repo/$1"
+}
+
 # -------
 # Docker Aliases
 # -------
