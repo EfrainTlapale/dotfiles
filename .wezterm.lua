@@ -216,9 +216,37 @@ if host_os == "macos" then
 	config.font_size = 15.8
 	config.window_padding.top = 10
 else
-	-- config.font_size = 10.7
-	config.font_size = 9
-	-- config.font_size = 9.3
+	-- Detect if an external monitor is connected by reading /sys/class/drm,
+	-- the kernel's view of connected displays. Works under X11 and Wayland.
+	-- Any connected output whose name isn't an internal panel (eDP/LVDS) counts as external.
+	-- Only re-evaluated when the config is reloaded, not on hotplug.
+	local function has_external_monitor()
+		local check = io.popen(
+			"for d in /sys/class/drm/card*-*/status; do "
+				.. "[ \"$(cat \"$d\" 2>/dev/null)\" = connected ] && basename \"$(dirname \"$d\")\"; "
+				.. "done 2>/dev/null"
+		)
+		if not check then
+			return false
+		end
+		local found = false
+		for line in check:lines() do
+			-- Names look like "card0-eDP-1", "card0-DP-2", "card0-HDMI-A-1".
+			local output = line:match("^card%d+%-(.+)$") or line
+			if not output:match("^eDP") and not output:match("^LVDS") then
+				found = true
+				break
+			end
+		end
+		check:close()
+		return found
+	end
+
+	if has_external_monitor() then
+		config.font_size = 9
+	else
+		config.font_size = 13
+	end
 
 	config.set_environment_variables = {
 		-- prepend the path to your utility and include the rest of the PATH
