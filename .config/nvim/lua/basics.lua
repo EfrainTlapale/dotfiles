@@ -195,3 +195,7 @@ vim.keymap.set('n', '<leader>R', function()
   -- 3. Restart Neovim and tell the new instance to source the session file
   vim.cmd('restart source ' .. vim.fn.fnameescape(session_file))
 end, { desc = 'Restart Neovim and restore state' })
+
+vim.api.nvim_create_user_command('GitStatus', function(opts)
+  require('minifugit').status()
+end, { nargs = '*' })

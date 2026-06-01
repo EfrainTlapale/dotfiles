@@ -1,11 +1,20 @@
 -- Try running "npx tsgo --version"
 local function has_tsgo()
-  return vim.fn.executable("./node_modules/.bin/tsgo") == 1
+  return vim.fn.executable './node_modules/.bin/tsgo' == 1
 end
 
 ---@type vim.lsp.Config
 return {
   cmd = { 'npx', 'tsgo', '--lsp', '--stdio' },
+  init_options = {
+    preferences = {
+      preferTypeOnlyAutoImports = true,
+    },
+  },
+  settings = {
+    typescript = { preferences = { preferTypeOnlyAutoImports = true } },
+    javascript = { preferences = { preferTypeOnlyAutoImports = true } },
+  },
   filetypes = {
     'javascript',
     'javascriptreact',

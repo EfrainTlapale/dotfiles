@@ -64,9 +64,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Mappings
     nmap('<leader>rn', vim.lsp.buf.rename, 'Rename')
 
-    nmap('<leader>a', '<cmd>CodeActions<CR>', 'Action')
     vim.keymap.set(
-      'x',
+      { 'n', 'v', 'x' },
       '<leader>a',
       vim.lsp.buf.code_action,
       { buffer = args.buf }
@@ -182,10 +181,6 @@ vim.lsp.config('biome', {
   },
 })
 
-vim.lsp.config('oxlint', {
-  cmd = { './node_modules/oxlint/bin/oxc_language_server' },
-})
-
 vim.lsp.config('lua_ls', {
   settings = {
     Lua = {
@@ -224,6 +219,12 @@ vim.lsp.config('pyright', {
         useLibraryCodeForTypes = true,
       },
     },
+  },
+})
+
+vim.lsp.config('oxlint', {
+  settings = {
+    fixKind = 'all',
   },
 })
 

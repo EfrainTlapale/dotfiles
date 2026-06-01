@@ -67,6 +67,10 @@ return {
     config = true,
   },
   {
+    'vieitesss/minifugit.nvim',
+    cmd = { 'MinifugitStatus' },
+  },
+  {
     'esmuellert/codediff.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
     cmd = 'CodeDiff',
