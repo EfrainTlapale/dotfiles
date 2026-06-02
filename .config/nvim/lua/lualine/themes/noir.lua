@@ -1,15 +1,15 @@
 local p = {
   bg = '#262D31',
   bg_alt = '#2E383C',
-  fg = '#D6DAE0',
-  fg_dim = '#A3A8B1',
-  comment = '#6B7280',
+  fg = '#DFDFE0',
+  fg_dim = '#B4BBC8',
+  comment = '#7C8395',
 
-  accent = '#7F9FBF',
-  keyword = '#8FAF8F',
+  accent = '#9BBEFF',
+  keyword = '#A6D6A6',
 
-  git_add = '#7F9F88',
-  git_del = '#9A6B6B',
+  git_add = '#9ED4B0',
+  git_del = '#D28A8A',
 }
 
 return {

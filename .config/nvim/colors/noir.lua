@@ -26,8 +26,17 @@ local palette = {
   inline_change_bg = '#142C44',
   inline_del_bg = '#301A1E',
 
+  diag_error_fg = '#E0908F',
+  diag_warn_fg = '#D9C08C',
+  diag_hint_fg = '#9BCEB5',
   diag_error_sp = 'NvimLightRed',
   diag_warn_sp = 'NvimLightYellow',
+
+  search_bg = '#34405A',
+  search_cur_bg = '#4A5B82',
+  match_paren_bg = '#3D4A52',
+
+  nontext = '#3F484E',
 }
 
 local function hi(group, opts)
@@ -84,7 +93,6 @@ hi('@tag.attribute', { fg = palette.fg_dim })
 hi('@variable.jsx', { fg = palette.fg })
 hi('@string.jsx', { fg = palette.fg })
 hi('@text.jsx', { fg = palette.fg })
-hi('@text.jsx', { fg = palette.fg })
 
 hi('@punctuation.bracket', { fg = palette.fg_dim })
 hi('@punctuation.delimiter', { fg = palette.fg_dim })
@@ -102,7 +110,7 @@ hi('GitSignsAddLn', { bg = palette.diff_add_bg })
 hi('GitSignsAddInline', { bg = palette.diff_add_bg })
 hi('GitSignsChangeLn', { bg = palette.diff_change_bg })
 hi('GitSignsChangeInline', { bg = palette.diff_change_bg })
-hi('GitSignsDeleteLn', { bg = palette.diff_text_bg })
+hi('GitSignsDeleteLn', { bg = palette.diff_del_bg })
 hi('GitSignsDeleteInline', { bg = palette.diff_del_bg })
 
 hi('DiffAdd', { bg = palette.diff_add_bg })
@@ -113,7 +121,10 @@ hi('DiffAdded', { bg = palette.inline_add_bg })
 hi('DiffChanged', { bg = palette.inline_change_bg })
 hi('DiffRemoved', { bg = palette.inline_del_bg })
 
+hi('DiagnosticError', { fg = palette.diag_error_fg })
+hi('DiagnosticWarn', { fg = palette.diag_warn_fg })
 hi('DiagnosticInfo', { fg = palette.accent })
+hi('DiagnosticHint', { fg = palette.diag_hint_fg })
 hi('MoreMsg', { fg = palette.keyword })
 
 hi(
@@ -124,7 +135,42 @@ hi(
   'DiagnosticUnderlineWarn',
   { fg = 'NONE', bg = 'NONE', sp = palette.diag_warn_sp, undercurl = true }
 )
+hi(
+  'DiagnosticUnderlineInfo',
+  { fg = 'NONE', bg = 'NONE', sp = palette.accent, undercurl = true }
+)
+hi(
+  'DiagnosticUnderlineHint',
+  { fg = 'NONE', bg = 'NONE', sp = palette.diag_hint_fg, undercurl = true }
+)
 hi('FlashLabel', { fg = palette.keyword })
+
+-- Search / matching
+hi('Search', { fg = palette.fg, bg = palette.search_bg })
+hi('IncSearch', { fg = palette.fg, bg = palette.search_cur_bg, bold = true })
+hi('CurSearch', { fg = palette.fg, bg = palette.search_cur_bg, bold = true })
+hi('MatchParen', { bg = palette.match_paren_bg, bold = true })
+
+-- Gutter / chrome
+hi('SignColumn', { bg = palette.bg })
+hi('FoldColumn', { fg = palette.comment, bg = palette.bg })
+hi('Folded', { fg = palette.comment, bg = palette.bg_alt })
+hi('ColorColumn', { bg = palette.bg_alt })
+hi('EndOfBuffer', { fg = palette.nontext })
+hi('NonText', { fg = palette.nontext })
+hi('Whitespace', { fg = palette.nontext })
+hi('Cursor', { fg = palette.bg, bg = palette.fg })
+hi('QuickFixLine', { bg = palette.bg_alt, bold = true })
+
+-- Titles / messages / tabs
+hi('Title', { fg = palette.accent, bold = true })
+hi('ErrorMsg', { fg = palette.diag_error_fg })
+hi('WarningMsg', { fg = palette.diag_warn_fg })
+hi('TabLineFill', { bg = palette.bg })
+hi('TabLine', { fg = palette.comment, bg = palette.bg_alt })
+hi('TabLineSel', { fg = palette.fg, bg = palette.bg, bold = true })
+hi('WinBar', { fg = palette.fg, bg = palette.bg })
+hi('WinBarNC', { fg = palette.comment, bg = palette.bg })
 
 -- Floats / popups
 hi('NormalFloat', { fg = palette.fg, bg = palette.bg_alt })
