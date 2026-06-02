@@ -1,6 +1,6 @@
 local p = {
-  bg = '#08090B',
-  bg_alt = '#0E1014',
+  bg = '#262D31',
+  bg_alt = '#2E383C',
   fg = '#D6DAE0',
   fg_dim = '#A3A8B1',
   comment = '#6B7280',

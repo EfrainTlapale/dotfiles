@@ -1,11 +1,19 @@
 local palette = {
   accent = '#9BBEFF',
-  bg = '#06070A',
-  bg_alt = '#0C0E14',
+  bg = '#1B1F22',
+  bg_alt = '#23292D',
   fg = '#DFDFE0',
   fg_dim = '#B4BBC8',
   comment = '#7C8395',
-  border = '#161A26',
+  border = '#333C40',
+
+  constant = '#B7D3FF',
+  directory = '#9ECFA5',
+  keyword = '#A6D6A6',
+
+  visual_bg = '#2A3236',
+  pmenu_sel_bg = '#2E3B4A',
+  picker_sel_bg = '#3A464C',
 
   git_add_fg = '#9ED4B0',
   git_del_fg = '#D28A8A',
@@ -17,7 +25,9 @@ local palette = {
   inline_add_bg = '#143028',
   inline_change_bg = '#142C44',
   inline_del_bg = '#301A1E',
-  keyword = '#A6D6A6',
+
+  diag_error_sp = 'NvimLightRed',
+  diag_warn_sp = 'NvimLightYellow',
 }
 
 local function hi(group, opts)
@@ -33,8 +43,8 @@ vim.g.colors_name = 'noir'
 
 hi('Normal', { fg = palette.fg, bg = palette.bg })
 hi('CursorLine', { bg = palette.bg_alt })
-hi('Visual', { bg = '#222735' })
-hi('Directory', { fg = '#9ECFA5' })
+hi('Visual', { bg = palette.visual_bg })
+hi('Directory', { fg = palette.directory })
 
 hi('LineNr', { fg = palette.comment })
 hi('CursorLineNr', { fg = palette.accent })
@@ -48,14 +58,14 @@ hi('Keyword', { fg = palette.keyword })
 hi('Type', { fg = palette.accent })
 hi('Identifier', { fg = palette.fg_dim })
 hi('Operator', { fg = palette.fg })
-hi('Constant', { fg = '#B7D3FF' })
+hi('Constant', { fg = palette.constant })
 hi('Special', { fg = palette.accent })
 
 hi('StatusLine', { fg = palette.fg, bg = palette.bg_alt })
 hi('StatusLineNC', { fg = palette.comment, bg = palette.bg })
 
 hi('PmenuSel', {
-  bg = '#1B2A4A',
+  bg = palette.pmenu_sel_bg,
   fg = palette.fg,
   bold = true,
 })
@@ -108,10 +118,34 @@ hi('MoreMsg', { fg = palette.keyword })
 
 hi(
   'DiagnosticUnderlineError',
-  { fg = 'NONE', bg = 'NONE', sp = 'NvimLightRed', undercurl = true }
+  { fg = 'NONE', bg = 'NONE', sp = palette.diag_error_sp, undercurl = true }
 )
 hi(
   'DiagnosticUnderlineWarn',
-  { fg = 'NONE', bg = 'NONE', sp = 'NvimLightYellow', undercurl = true }
+  { fg = 'NONE', bg = 'NONE', sp = palette.diag_warn_sp, undercurl = true }
 )
 hi('FlashLabel', { fg = palette.keyword })
+
+-- Floats / popups
+hi('NormalFloat', { fg = palette.fg, bg = palette.bg_alt })
+hi('FloatBorder', { fg = palette.border, bg = palette.bg_alt })
+hi('FloatTitle', { fg = palette.accent, bg = palette.bg_alt })
+hi('Pmenu', { fg = palette.fg, bg = palette.bg_alt })
+hi('PmenuSbar', { bg = palette.bg_alt })
+hi('PmenuThumb', { bg = palette.border })
+
+-- Snacks picker
+hi('SnacksNormal', { link = 'NormalFloat' })
+hi('SnacksNormalNC', { link = 'NormalFloat' })
+hi('SnacksWinBar', { link = 'FloatTitle' })
+hi('SnacksWinBarNC', { link = 'NormalFloat' })
+hi('SnacksPicker', { link = 'NormalFloat' })
+hi('SnacksPickerBorder', { link = 'FloatBorder' })
+hi('SnacksPickerTitle', { link = 'FloatTitle' })
+hi('SnacksPickerList', { link = 'NormalFloat' })
+hi('SnacksPickerPreview', { link = 'NormalFloat' })
+hi('SnacksPickerInput', { fg = palette.fg, bg = palette.bg_alt })
+hi('SnacksPickerInputBorder', { link = 'FloatBorder' })
+hi('SnacksPickerListCursorLine', { bg = palette.picker_sel_bg })
+hi('SnacksPickerMatch', { fg = palette.accent, bold = true })
+hi('SnacksPickerDir', { fg = palette.comment })
