@@ -227,6 +227,7 @@ vim.lsp.config('oxlint', {
     fixKind = 'all',
   },
 })
+vim.lsp.enable 'oxfmt'
 
 -- Manually enabled servers (if not covered by Mason auto-enable)
 vim.lsp.enable 'oxlint'

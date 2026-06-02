@@ -1,3 +1,4 @@
+local jsish = { 'oxfmt', 'biome', 'prettier_d', 'prettier' }
 return {
   'stevearc/conform.nvim',
   opts = {
@@ -19,17 +20,17 @@ return {
     },
     formatters_by_ft = {
       lua = { 'stylua' },
-      javascript = { 'biome', 'prettier_d', 'prettier' },
-      typescript = { 'biome', 'prettier_d', 'prettier' },
-      typescriptreact = { 'biome', 'prettier_d', 'prettier' },
-      json = { 'biome', 'prettier_d', 'prettier' },
+      javascript = jsish,
+      typescript = jsish,
+      typescriptreact = jsish,
+      json = jsish,
       go = { 'gofumpt' },
-      html = { 'prettier' },
-      markdown = { 'prettier' },
+      html = jsish,
+      markdown = jsish,
       python = { 'ruff_format' },
-      yaml = { 'prettier' },
-      css = { 'prettier' },
-      scss = { 'prettier' },
+      yaml = jsish,
+      css = jsish,
+      scss = jsish,
     },
     format_on_save = { timeout_ms = 10000, lsp_format = false },
   },
