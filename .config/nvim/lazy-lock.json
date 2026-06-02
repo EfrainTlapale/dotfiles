@@ -33,7 +33,7 @@
   "noice.nvim": { "branch": "main", "commit": "7bfd942445fb63089b59f97ca487d605e715f155" },
   "nordic.nvim": { "branch": "main", "commit": "9fb62116b891184049c50ca6ffb0d3bc100a1a6e" },
   "nui.nvim": { "branch": "main", "commit": "de740991c12411b663994b2860f1a4fd0937c130" },
-  "nvim-lspconfig": { "branch": "master", "commit": "9573948c38bfabeec353ae7dd7d3ffec4c506a6b" },
+  "nvim-lspconfig": { "branch": "master", "commit": "07dff35e7c95288861200b788ef32d6103f107f0" },
   "nvim-navic": { "branch": "master", "commit": "f5eba192f39b453675d115351808bd51276d9de5" },
   "nvim-notify": { "branch": "master", "commit": "8701bece920b38ea289b457f902e2ad184131a5d" },
   "nvim-surround": { "branch": "main", "commit": "2e93e154de9ff326def6480a4358bfc149d5da2c" },
@@ -52,7 +52,7 @@
   "treesitter-modules.nvim": { "branch": "main", "commit": "290eec96bfc43ed28264661dd30e894a60c4b99c" },
   "tsc.nvim": { "branch": "main", "commit": "a3661c71b7f5989885437af11c907bf760095350" },
   "typr": { "branch": "main", "commit": "584e4ef34dea25a4035627794322f315b22d1253" },
-  "vague.nvim": { "branch": "main", "commit": "fd58046b9d64259d9785e4aeb6d6f494c6943cad" },
+  "vague.nvim": { "branch": "main", "commit": "f911602f49116b1ebab95a45391e1cfe2dc62c2b" },
   "volt": { "branch": "main", "commit": "620de1321f275ec9d80028c68d1b88b409c0c8b1" },
   "zen.nvim": { "branch": "main", "commit": "e552fc12f847113a05589981d02f69c953d6d3e9" }
 }
