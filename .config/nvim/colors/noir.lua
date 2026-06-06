@@ -152,8 +152,8 @@ hi('CurSearch', { fg = palette.fg, bg = palette.search_cur_bg, bold = true })
 hi('MatchParen', { bg = palette.match_paren_bg, bold = true })
 
 -- Gutter / chrome
-hi('SignColumn', { bg = palette.bg })
-hi('FoldColumn', { fg = palette.comment, bg = palette.bg })
+hi('SignColumn', { bg = 'NONE' })
+hi('FoldColumn', { fg = palette.comment, bg = 'NONE' })
 hi('Folded', { fg = palette.comment, bg = palette.bg_alt })
 hi('ColorColumn', { bg = palette.bg_alt })
 hi('EndOfBuffer', { fg = palette.nontext })
