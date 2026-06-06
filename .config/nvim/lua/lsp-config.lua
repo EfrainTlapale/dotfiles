@@ -2,6 +2,25 @@ local navic = require 'nvim-navic'
 local util = require 'lspconfig.util'
 local luasnip = require 'luasnip'
 
+-- Code action wrapper that feeds ALL line diagnostics (across every client /
+-- namespace) into the request context. Native code_action only forwards the
+-- invoking client's own-namespace diagnostics, which drops tsgo's pull
+-- diagnostics and hides diagnostic-bound fixes like "add missing import".
+local function codeAction()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
+  local diagnostics = vim.tbl_map(function(d)
+    return d.user_data and d.user_data.lsp or {}
+  end, vim.diagnostic.get(bufnr, { lnum = lnum }))
+
+  vim.lsp.buf.code_action({
+    context = {
+      diagnostics = diagnostics,
+      triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked,
+    },
+  })
+end
+
 -- Custom QuickFix helper
 local function quickFix()
   local is_first = true
@@ -67,7 +86,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set(
       { 'n', 'v', 'x' },
       '<leader>a',
-      vim.lsp.buf.code_action,
+      codeAction,
       { buffer = args.buf }
     )
     nmap('gi', vim.lsp.buf.implementation, 'Goto Implementation')
