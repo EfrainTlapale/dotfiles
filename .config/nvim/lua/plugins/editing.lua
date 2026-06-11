@@ -1,10 +1,11 @@
 return {
-  {
-    'kylechui/nvim-surround',
-    version = '*',
-    event = 'VeryLazy',
-    opts = {},
-  },
+  -- {
+  --   'kylechui/nvim-surround',
+  --   version = '*',
+  --   event = 'VeryLazy',
+  --   opts = {},
+  -- },
+  { 'nvim-mini/mini.surround', version = '*', opts = {} },
   {
     'shortcuts/no-neck-pain.nvim',
     version = '*',
