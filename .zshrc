@@ -115,7 +115,7 @@ bindkey "^N" down-line-or-search
 alias gs='git status'
 alias gpnb='git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)'
 alias lg='lazygit'
-alias glg='git log'
+alias glg="git log --graph --pretty=format:'%C(auto)%h%d %s %C(dim white)(%ar)%Creset %C(blue)%cn%Creset'"
 alias gss='git status --short'
 alias gc='git commit --message'
 alias gl='git pull'
