@@ -162,6 +162,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
         end,
       })
     end
+
+    if client and client.name == 'cssls' then
+      -- Disable the LSP document color provider
+      vim.lsp.document_color.enable(false, { bufnr = args.buf })
+    end
   end,
 })
 
