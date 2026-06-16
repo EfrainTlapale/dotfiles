@@ -223,7 +223,7 @@ else
 	local function has_external_monitor()
 		local check = io.popen(
 			"for d in /sys/class/drm/card*-*/status; do "
-				.. "[ \"$(cat \"$d\" 2>/dev/null)\" = connected ] && basename \"$(dirname \"$d\")\"; "
+				.. '[ "$(cat "$d" 2>/dev/null)" = connected ] && basename "$(dirname "$d")"; '
 				.. "done 2>/dev/null"
 		)
 		if not check then
@@ -245,7 +245,7 @@ else
 	if has_external_monitor() then
 		config.font_size = 9
 	else
-		config.font_size = 13
+		config.font_size = 11
 	end
 
 	config.set_environment_variables = {
