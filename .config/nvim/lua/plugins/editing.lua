@@ -125,6 +125,7 @@ return {
   },
   {
     'gbprod/yanky.nvim',
+    event = 'TextYankPost',
     dependencies = {
       { 'kkharji/sqlite.lua' },
     },
@@ -133,14 +134,6 @@ return {
       highlight = {
         on_put = false,
         on_yank = false,
-      },
-    },
-    keys = {
-      {
-        '<leader>p',
-        '<cmd>YankyRingHistory<cr>',
-        mode = { 'n', 'x' },
-        desc = 'Open Yank History',
       },
     },
   },

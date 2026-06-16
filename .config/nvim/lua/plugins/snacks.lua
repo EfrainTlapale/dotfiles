@@ -125,12 +125,37 @@ return {
     {
       '<leader>p',
       function()
-        Snacks.picker.files({
-          hidden = true,
-          layout = { preset = 'vscode' },
+        Snacks.picker.pick({
+          title = 'Yank History',
+          finder = function()
+            local items = {}
+            for i, item in ipairs(require('yanky.history').all()) do
+              local text = type(item.regcontents) == 'table'
+                  and table.concat(item.regcontents, '\n')
+                or item.regcontents
+              table.insert(items, {
+                idx = i,
+                text = text,
+                regtype = item.regtype,
+                preview = { text = text, ft = 'text' },
+              })
+            end
+            return items
+          end,
+          format = function(item)
+            return { { (item.text:gsub('\n', '⏎')), 'SnacksPickerLabel' } }
+          end,
+          preview = 'preview',
+          confirm = function(picker, item)
+            picker:close()
+            if item then
+              vim.fn.setreg('"', item.text, item.regtype)
+              vim.api.nvim_feedkeys('p', 'n', false)
+            end
+          end,
         })
       end,
-      desc = 'Smart Find Files',
+      desc = 'Yank History',
     },
     {
       '<leader>rf',
