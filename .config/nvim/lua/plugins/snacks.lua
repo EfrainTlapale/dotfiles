@@ -125,35 +125,27 @@ return {
     {
       '<leader>p',
       function()
-        Snacks.picker.pick({
-          title = 'Yank History',
-          finder = function()
-            local items = {}
-            for i, item in ipairs(require('yanky.history').all()) do
-              local text = type(item.regcontents) == 'table'
-                  and table.concat(item.regcontents, '\n')
-                or item.regcontents
-              table.insert(items, {
-                idx = i,
-                text = text,
-                regtype = item.regtype,
-                preview = { text = text, ft = 'text' },
-              })
-            end
-            return items
+        local items = {}
+        for _, item in ipairs(require('yanky.history').all()) do
+          local text = type(item.regcontents) == 'table'
+              and table.concat(item.regcontents, '\n')
+            or item.regcontents
+          table.insert(items, { text = text, regtype = item.regtype })
+          if #items >= 10 then
+            break
+          end
+        end
+        vim.ui.select(items, {
+          prompt = 'Yank History',
+          format_item = function(item)
+            return item.text:gsub('\n', '⏎')
           end,
-          format = function(item)
-            return { { (item.text:gsub('\n', '⏎')), 'SnacksPickerLabel' } }
-          end,
-          preview = 'preview',
-          confirm = function(picker, item)
-            picker:close()
-            if item then
-              vim.fn.setreg('"', item.text, item.regtype)
-              vim.api.nvim_feedkeys('p', 'n', false)
-            end
-          end,
-        })
+        }, function(choice)
+          if choice then
+            vim.fn.setreg('"', choice.text, choice.regtype)
+            vim.api.nvim_feedkeys('p', 'n', false)
+          end
+        end)
       end,
       desc = 'Yank History',
     },
