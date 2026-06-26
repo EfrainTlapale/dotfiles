@@ -205,11 +205,12 @@ local function detect_host_os()
 end
 
 local host_os = detect_host_os()
+local bob_nvim_bin = wezterm.home_dir .. "/.local/share/bob/nvim-bin"
 
 if host_os == "macos" then
 	-- check homebrew binary symlinks on startup.
 	config.set_environment_variables = {
-		PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
+		PATH = bob_nvim_bin .. ":/opt/homebrew/bin:" .. os.getenv("PATH"),
 	}
 
 	config.window_decorations = "RESIZE"
@@ -250,7 +251,7 @@ else
 
 	config.set_environment_variables = {
 		-- prepend the path to your utility and include the rest of the PATH
-		PATH = wezterm.home_dir .. "/.local/share/bob/nvim-bin:" .. os.getenv("PATH"),
+		PATH = bob_nvim_bin .. ":" .. os.getenv("PATH"),
 	}
 end
 
