@@ -25,6 +25,26 @@
   (array_pattern
     (identifier) @local.definition.var))
 
+;; Capture the loop variable in `for (const item of inbox)`
+(for_in_statement
+  left: (identifier) @local.definition.var)
+
+;; Capture destructured loop variables, e.g. `for (const [k, v] of map)`
+(for_in_statement
+  left: (array_pattern
+    (identifier) @local.definition.var))
+
+;; Capture destructured loop variables, e.g. `for (const { id } of inbox)`
+(for_in_statement
+  left: (object_pattern
+    (shorthand_property_identifier_pattern) @local.definition.var))
+
+;; Capture renamed object destructuring, e.g. `for (const { id: x } of inbox)`
+(for_in_statement
+  left: (object_pattern
+    (pair_pattern
+      value: (identifier) @local.definition.var)))
+
 
 (
   (variable_declarator

@@ -125,12 +125,29 @@ return {
     {
       '<leader>p',
       function()
-        Snacks.picker.files({
-          hidden = true,
-          layout = { preset = 'vscode' },
-        })
+        local items = {}
+        for _, item in ipairs(require('yanky.history').all()) do
+          local text = type(item.regcontents) == 'table'
+              and table.concat(item.regcontents, '\n')
+            or item.regcontents
+          table.insert(items, { text = text, regtype = item.regtype })
+          if #items >= 10 then
+            break
+          end
+        end
+        vim.ui.select(items, {
+          prompt = 'Yank History',
+          format_item = function(item)
+            return item.text:gsub('\n', '⏎')
+          end,
+        }, function(choice)
+          if choice then
+            vim.fn.setreg('"', choice.text, choice.regtype)
+            vim.api.nvim_feedkeys('p', 'n', false)
+          end
+        end)
       end,
-      desc = 'Smart Find Files',
+      desc = 'Yank History',
     },
     {
       '<leader>rf',

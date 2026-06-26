@@ -112,4 +112,82 @@ return {
     },
   },
   { 'nendix/zen.nvim', lazy = false, priority = 1000 },
+  {
+    'Goose97/timber.nvim',
+    version = '*', -- Use for stability; omit to use `main` branch for the latest features
+    event = 'VeryLazy',
+    config = function()
+      require('timber').setup({
+        -- Configuration here, or leave empty to use defaults
+      })
+    end,
+  },
+  {
+    'gbprod/yanky.nvim',
+    event = 'TextYankPost',
+    dependencies = {
+      { 'kkharji/sqlite.lua' },
+    },
+    keys = {
+      {
+        'p',
+        function()
+          require('yanky-cycle').put 'p'
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Paste (yanky)',
+      },
+      {
+        'P',
+        function()
+          require('yanky-cycle').put 'P'
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Paste before (yanky)',
+      },
+      {
+        'gp',
+        function()
+          require('yanky-cycle').put 'gp'
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Paste after (gp)',
+      },
+      {
+        'gP',
+        function()
+          require('yanky-cycle').put 'gP'
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Paste before (gP)',
+      },
+      {
+        ']p',
+        function()
+          require('yanky-cycle').put ']p'
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Paste indent after',
+      },
+      {
+        '[p',
+        function()
+          require('yanky-cycle').put '[p'
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Paste indent before',
+      },
+    },
+    opts = {
+      ring = { storage = 'sqlite' },
+      highlight = {
+        on_put = false,
+        on_yank = false,
+      },
+    },
+    config = function(_, opts)
+      require('yanky').setup(opts)
+      require('yanky-cycle').setup({ timeout_ms = 2000 })
+    end,
+  },
 }
