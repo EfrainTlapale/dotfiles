@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find ~/.local/share/nvim -type d -name \"snacks*\")",
+      "Bash(grep -rl \"registers\" ~/.local/share/nvim/lazy/snacks.nvim/lua/snacks/picker/)",
+      "Bash(find ~/.local/share/nvim -path \"*yanky*history.lua\")"
+    ]
+  }
+}
