@@ -20,7 +20,14 @@ return {
       })
     end,
   },
-  { 'm4xshen/autoclose.nvim', opts = {} },
+  {
+    'm4xshen/autoclose.nvim',
+    opts = {
+      keys = {
+        ["'"] = { disabled_filetypes = { 'rust' } },
+      },
+    },
+  },
   {
     'akinsho/toggleterm.nvim',
     version = '*',

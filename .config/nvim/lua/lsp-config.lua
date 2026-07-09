@@ -56,6 +56,7 @@ require('mason-lspconfig').setup({
     'denols',
     'stylua',
     'tailwindcss',
+    'rust_analyzer',
   },
   automatic_enable = true,
 })
@@ -142,6 +143,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
       client.name == 'golangci_lint_ls'
       or client.name == 'gopls'
       or client.name == 'tsgolsp'
+      or client.name == 'rust_analyzer'
     then
       vim.diagnostic.config({ update_in_insert = true })
     end

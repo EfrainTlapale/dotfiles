@@ -31,6 +31,7 @@ return {
       yaml = jsish,
       css = jsish,
       scss = jsish,
+      rust = { 'rustfmt' },
     },
     format_on_save = { timeout_ms = 10000, lsp_format = false },
   },
