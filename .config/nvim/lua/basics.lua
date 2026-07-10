@@ -156,6 +156,11 @@ vim.keymap.set(
   '<leader>tv',
   '<cmd>ToggleTerm direction=vertical size=100<CR>'
 )
+vim.keymap.set(
+  { 'n' },
+  '<leader>tt',
+  '<cmd>ToggleTerm direction=float size=30<CR>'
+)
 
 vim.keymap.set({ 'n' }, '<leader>nn', '<cmd>NoNeckPain<CR>')
 

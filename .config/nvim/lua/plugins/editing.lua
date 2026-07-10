@@ -1,3 +1,6 @@
+local width = math.floor(vim.o.columns * 0.6)
+local height = math.floor(vim.o.lines * 0.4)
+
 return {
   {
     'kylechui/nvim-surround',
@@ -38,8 +41,10 @@ return {
       size = 18,
       float_opts = {
         border = 'curved',
-        width = 180,
-        height = 40,
+        width = width,
+        height = height,
+        -- row = (vim.o.lines - height) / 2,
+        -- col = (vim.o.columns - width) / 2,
         winblend = 3,
       },
     },
