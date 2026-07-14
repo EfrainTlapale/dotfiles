@@ -1,11 +1,18 @@
+-- typescript 7 installed under an alias, e.g. "typescript7": "npm:@typescript/native-preview"
+local tsc7 = './node_modules/typescript7/bin/tsc'
+
+local function has_tsc7()
+  return vim.fn.executable(tsc7) == 1
+end
+
 -- Try running "npx tsgo --version"
 local function has_tsgo()
-  return vim.fn.executable './node_modules/.bin/tsgo' == 1
+  return vim.fn.executable './node_modules/.bin/tsgo' == 1 or has_tsc7()
 end
 
 ---@type vim.lsp.Config
 return {
-  cmd = { 'npx', 'tsgo', '--lsp', '--stdio' },
+  cmd = has_tsc7() and { tsc7, '--lsp', '--stdio' } or { 'npx', 'tsgo', '--lsp', '--stdio' },
   init_options = {
     preferences = {
       preferTypeOnlyAutoImports = true,

@@ -1,5 +1,7 @@
 local function has_tsgo()
+  -- also covers typescript 7 installed under an alias, e.g. "typescript7": "npm:typescript@7"
   return vim.fn.executable './node_modules/.bin/tsgo' == 1
+    or vim.fn.executable './node_modules/typescript7/bin/tsc' == 1
 end
 
 return {
