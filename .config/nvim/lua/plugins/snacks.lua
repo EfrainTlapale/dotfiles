@@ -1,3 +1,22 @@
+---Line range of the active visual selection, or nil when not in visual mode.
+---Exits visual mode so the picker doesn't open on top of the selection.
+---@return {[1]: number, [2]: number}?
+local function visual_selection_lines()
+  if not vim.fn.mode():match '^[vV\22]' then
+    return nil
+  end
+
+  local first, last = vim.fn.getpos('v')[2], vim.fn.getpos('.')[2]
+  if first > last then
+    first, last = last, first
+  end
+
+  local esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
+  vim.api.nvim_feedkeys(esc, 'nx', false)
+
+  return { first, last }
+end
+
 return {
   'folke/snacks.nvim',
   priority = 1000,
@@ -77,15 +96,17 @@ return {
     {
       '<leader>o',
       function()
-        local picker = require 'snacks.picker'
-        local tspicker = require 'customTsPicker'
+        -- with an active visual selection, only show symbols inside it
+        local range = visual_selection_lines()
 
-        picker.pick({
-          finder = tspicker.symbols,
+        require('snacks.picker').pick({
+          finder = require('customTsPicker').symbols,
           format = 'lsp_symbol',
-          title = 'Treesitter',
+          title = range and 'Treesitter (selection)' or 'Treesitter',
+          range = range,
         })
       end,
+      mode = { 'n', 'x' },
       desc = 'LSP Symbols',
     },
     {

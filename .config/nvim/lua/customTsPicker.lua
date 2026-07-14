@@ -90,42 +90,71 @@ function M.get_locals(buf)
   return matches
 end
 
----Key of the nearest enclosing pair, skipping the pair the node is a key of
+---@param text string
+---@return string
+local function strip_quotes(text)
+  return (text:gsub('^["\']', ''):gsub('["\']$', ''))
+end
+
+---Key of the nearest enclosing pair, ignoring the pair `node` is the key of.
+---For `"scripts": { "knip": ... }`, the parent key of `knip` is `scripts`.
 ---@param node TSNode
 ---@param buf number
 ---@return string?
 local function parent_key(node, buf)
-  local prev = node
-  local n = node:parent()
-  while n do
-    if n:type() == "pair" then
-      local key = n:field("key")[1]
-      if key and key:id() ~= prev:id() then
-        local text = vim.treesitter.get_node_text(key, buf)
-        return (text:gsub('^["\']', ''):gsub('["\']$', ''))
+  local child = node
+  local ancestor = node:parent()
+  while ancestor do
+    if ancestor:type() == "pair" then
+      local key = ancestor:field("key")[1]
+      local came_from_key = key and key:id() == child:id()
+      if key and not came_from_key then
+        return strip_quotes(vim.treesitter.get_node_text(key, buf))
       end
     end
-    prev = n
-    n = n:parent()
+    child = ancestor
+    ancestor = ancestor:parent()
   end
 end
 
+---Display label: object keys get their parent key appended, e.g. `knip (scripts)`
+---@param match snacks.picker.treesitter.Match
+---@param buf number
+---@return string
+local function display_label(match, buf)
+  if match.kind ~= "field" then
+    return match.text
+  end
+  local parent = parent_key(match.node, buf)
+  return parent and ("%s (%s)"):format(match.text, parent) or match.text
+end
+
+---@param match snacks.picker.treesitter.Match
+---@param range {[1]: number, [2]: number}?
+---@return boolean
+local function within_lines(match, range)
+  if not range then
+    return true
+  end
+  local line = match.pos[1]
+  return line >= range[1] and line <= range[2]
+end
+
 ---@type snacks.picker.finder
-function M.symbols(_, ctx)
+function M.symbols(opts, ctx)
   local buf = ctx.filter.current_buf
-  local matches = M.get_locals(buf)
+  local range = opts and opts.range ---@type {[1]: number, [2]: number}?
 
   local items = {} ---@type snacks.picker.finder.Item[]
 
-  for _, match in ipairs(matches) do
+  for _, match in ipairs(M.get_locals(buf)) do
     local kind = kind_mapping[match.kind] or "Unknown"
-    if not vim.tbl_contains(ignores, kind) then
-      local suffix = match.kind == "field" and parent_key(match.node, buf) or nil
-      local label = suffix and (match.text .. " (" .. suffix .. ")") or match.text
+    if within_lines(match, range) and not vim.tbl_contains(ignores, kind) then
+      local label = display_label(match, buf)
       items[#items + 1] = {
         text = label,
         name = label,
-        kind = kind_mapping[match.kind] or "Unknown",
+        kind = kind,
         ts_kind = match.kind,
         buf = buf,
         pos = match.pos,

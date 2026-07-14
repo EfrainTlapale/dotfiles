@@ -46,35 +46,16 @@
       value: (identifier) @local.definition.var)))
 
 
-(
-  (variable_declarator
-    value: (object
-      (pair
-        key: (property_identifier) @local.definition.field)))
-)
+;; Object literal keys at any nesting depth (covers variable declarations,
+;; `as` expressions, and nested objects — queries can't recurse, so match
+;; the pair's immediate (object ...) parent instead of anchoring to the root)
+(object
+  (pair
+    key: (property_identifier) @local.definition.field))
 
-(
-  (variable_declarator
-    value: (object
-      (pair
-        key: (string (string_fragment) @local.definition.field))))
-)
-
-(
-  (variable_declarator
-    value: (as_expression
-      (object
-        (pair
-          key: (property_identifier) @local.definition.field))))
-)
-
-(
-  (variable_declarator
-    value: (as_expression
-      (object
-        (pair
-          key: (string (string_fragment) @local.definition.field)))))
-)
+(object
+  (pair
+    key: (string (string_fragment) @local.definition.field)))
 
 (property_signature
   name: (string
