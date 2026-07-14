@@ -5,6 +5,7 @@ return {
   config = function()
     local theme_overrides = {
       noir = require 'lualine.themes.noir',
+      ['noir-mono'] = require 'lualine.themes.noir-mono',
       ['gruvbox-material'] = 'gruvbox-material',
       nordic = 'nordic',
     }

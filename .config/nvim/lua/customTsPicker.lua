@@ -90,6 +90,26 @@ function M.get_locals(buf)
   return matches
 end
 
+---Key of the nearest enclosing pair, skipping the pair the node is a key of
+---@param node TSNode
+---@param buf number
+---@return string?
+local function parent_key(node, buf)
+  local prev = node
+  local n = node:parent()
+  while n do
+    if n:type() == "pair" then
+      local key = n:field("key")[1]
+      if key and key:id() ~= prev:id() then
+        local text = vim.treesitter.get_node_text(key, buf)
+        return (text:gsub('^["\']', ''):gsub('["\']$', ''))
+      end
+    end
+    prev = n
+    n = n:parent()
+  end
+end
+
 ---@type snacks.picker.finder
 function M.symbols(_, ctx)
   local buf = ctx.filter.current_buf
@@ -100,9 +120,11 @@ function M.symbols(_, ctx)
   for _, match in ipairs(matches) do
     local kind = kind_mapping[match.kind] or "Unknown"
     if not vim.tbl_contains(ignores, kind) then
+      local suffix = match.kind == "field" and parent_key(match.node, buf) or nil
+      local label = suffix and (match.text .. " (" .. suffix .. ")") or match.text
       items[#items + 1] = {
-        text = match.text,
-        name = match.text,
+        text = label,
+        name = label,
         kind = kind_mapping[match.kind] or "Unknown",
         ts_kind = match.kind,
         buf = buf,
