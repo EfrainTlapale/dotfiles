@@ -3,7 +3,7 @@
 -- Toggle the accent: comment the active block, uncomment the other one.
 
 -- How colorful the accents get: 0 = grayscale, 1 = neon.
-local vibrancy = 0.2
+local vibrancy = 0.55
 
 -- stylua: ignore
 -- local accent = { -- purple
@@ -14,12 +14,12 @@ local vibrancy = 0.2
 -- }
 
 -- stylua: ignore
--- local accent = { -- blue
---   fg            = '#94ADC7',
---   dim           = '#7A93AB',
---   search_bg     = '#243240',
---   search_cur_bg = '#304354',
--- }
+local accent = { -- blue
+  fg            = '#94ADC7',
+  dim           = '#7A93AB',
+  search_bg     = '#243240',
+  search_cur_bg = '#304354',
+}
 
 -- stylua: ignore
 -- local accent = { -- green
@@ -30,12 +30,12 @@ local vibrancy = 0.2
 -- }
 
 -- stylua: ignore
-local accent = { -- mixed: blue functions, green keywords, teal search
-  fg            = '#94ADC7',
-  dim           = '#7C9885',
-  search_bg     = '#243A36',
-  search_cur_bg = '#2F4A45',
-}
+-- local accent = { -- mixed: blue functions, green keywords, teal search
+--   fg            = '#94ADC7',
+--   dim           = '#7C9885',
+--   search_bg     = '#243A36',
+--   search_cur_bg = '#2F4A45',
+-- }
 
 local palette = {
   bg = '#000000',
