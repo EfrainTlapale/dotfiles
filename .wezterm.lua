@@ -56,6 +56,11 @@ config.keys = {
 		action = wezterm.action.EmitEvent("trigger-vim-with-scrollback"),
 	},
 	{
+		key = "O",
+		mods = "CTRL|SHIFT",
+		action = wezterm.action.EmitEvent("trigger-vim-with-viewport"),
+	},
+	{
 		key = "{",
 		mods = "CTRL|SHIFT",
 		action = wezterm.action.ActivatePaneDirection("Left"),
@@ -145,14 +150,7 @@ local function my_fixed_get_text_from_semantic_zone(pane, zone)
 	return pane:get_text_from_region(zone.start_x, zone.start_y, 0, zone.end_y + 1)
 end
 
-wezterm.on("trigger-vim-with-scrollback", function(window, pane)
-	-- Retrieve the text from the pane
-	local zones = pane:get_semantic_zones("Output")
-	local zone = zones[#zones]
-	local text = my_fixed_get_text_from_semantic_zone(pane, zone)
-
-	print(text)
-
+local function open_text_in_vim(window, pane, text)
 	-- Create a temporary file to pass to vim
 	local name = os.tmpname()
 	local f = io.open(name, "w+")
@@ -184,6 +182,23 @@ wezterm.on("trigger-vim-with-scrollback", function(window, pane)
 	-- to avoid cluttering up the temporary directory.
 	wezterm.sleep_ms(1000)
 	os.remove(name)
+end
+
+wezterm.on("trigger-vim-with-scrollback", function(window, pane)
+	-- Retrieve the text of the last command's output from the pane
+	local zones = pane:get_semantic_zones("Output")
+	local zone = zones[#zones]
+	local text = my_fixed_get_text_from_semantic_zone(pane, zone)
+
+	open_text_in_vim(window, pane, text)
+end)
+
+wezterm.on("trigger-vim-with-viewport", function(window, pane)
+	-- get_lines_as_text() with no argument returns only the visible viewport,
+	-- not the full scrollback.
+	local text = pane:get_lines_as_text()
+
+	open_text_in_vim(window, pane, text)
 end)
 
 local function detect_host_os()
