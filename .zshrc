@@ -79,6 +79,10 @@ bindkey -M viins '^ ' autosuggest-accept
 bindkey "^P" up-line-or-search
 bindkey "^N" down-line-or-search
 
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^G' edit-command-line
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"

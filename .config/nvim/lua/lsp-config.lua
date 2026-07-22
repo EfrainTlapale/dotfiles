@@ -248,6 +248,14 @@ vim.lsp.config('pyright', {
   },
 })
 
+vim.lsp.config('rust_analyzer', {
+  settings = {
+    ['rust-analyzer'] = {
+      check = { command = 'clippy' },
+    },
+  },
+})
+
 vim.lsp.config('oxlint', {
   settings = {
     fixKind = 'all',

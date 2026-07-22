@@ -217,3 +217,30 @@ vim.keymap.set('n', '<leader>;', function()
   end
   vim.api.nvim_win_set_cursor(0, cursor)
 end, { desc = 'Toggle semicolon in current line' })
+
+local function copy_selection_with_context()
+  local start_pos = vim.fn.getpos "'<"
+  local end_pos = vim.fn.getpos "'>"
+  local start_line = start_pos[2]
+  local end_line = end_pos[2]
+
+  local lines = vim.fn.getline(start_line, end_line)
+  local filepath = vim.fn.expand '%:.' -- relative to cwd; use '%:p' for absolute
+  local filetype = vim.bo.filetype
+
+  local range_str = start_line == end_line and ('line ' .. start_line)
+    or ('lines ' .. start_line .. '-' .. end_line)
+
+  local header = string.format('%s (%s):', filepath, range_str)
+  local code_block =
+    string.format('```%s\n%s\n```', filetype, table.concat(lines, '\n'))
+  local result = header .. '\n' .. code_block
+
+  vim.fn.setreg('+', result)
+  vim.notify('Copied ' .. range_str .. ' from ' .. filepath .. ' to clipboard')
+end
+
+vim.keymap.set('v', '<leader>cc', function()
+  vim.cmd 'normal! \27' -- \27 is the literal Escape byte, this works in a string
+  copy_selection_with_context()
+end, { desc = 'Copy selection with file/line context' })
