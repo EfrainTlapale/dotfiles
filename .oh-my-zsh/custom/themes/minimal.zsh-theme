@@ -29,4 +29,5 @@ zle -N zle-line-init
 zle -N zle-keymap-select
 
 # Only the current folder name is shown, not the full path.
-PROMPT='%F{$__path_fg}%c%f$(git_prompt_info) %(?.%F{$__ok_fg}.%F{$__err_fg})${__vi_char}%f '
+# Leading glyph is a static separator; the trailing vi-mode char carries success/failure color.
+PROMPT='%F{$__path_fg}»%f %F{$__path_fg}%c%f$(git_prompt_info) %(?.%F{$__ok_fg}.%F{$__err_fg})${__vi_char}%f '
