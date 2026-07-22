@@ -74,9 +74,6 @@ plugins=(gitfast zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
-bindkey -v
-
-bindkey -M viins '^ ' autosuggest-accept
 bindkey "^P" up-line-or-search
 bindkey "^N" down-line-or-search
 
