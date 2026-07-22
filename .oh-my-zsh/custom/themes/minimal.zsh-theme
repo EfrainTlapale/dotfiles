@@ -28,5 +28,5 @@ function zle-keymap-select {
 zle -N zle-line-init
 zle -N zle-keymap-select
 
-# Path truncates to ".../last three" once it gets more than 5 segments deep.
-PROMPT='%F{$__path_fg}%(5~|…/%3~|%~)%f$(git_prompt_info) %(?.%F{$__ok_fg}.%F{$__err_fg})${__vi_char}%f '
+# Only the current folder name is shown, not the full path.
+PROMPT='%F{$__path_fg}%c%f$(git_prompt_info) %(?.%F{$__ok_fg}.%F{$__err_fg})${__vi_char}%f '
