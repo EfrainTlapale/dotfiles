@@ -14,6 +14,32 @@ config.colors = {
 	-- The default text color
 	foreground = "white",
 	cursor_bg = "white",
+	-- background = "#1c1f24", -- Doom Emacs doom-one
+	background = "#1d2021", -- Gruvbox dark, hard contrast
+
+	-- Pin the ANSI palette explicitly so colors (eg. `ls`/LS_COLORS blue
+	-- directories) render identically across machines instead of relying
+	-- on WezTerm's built-in default, which can vary by version/platform.
+	ansi = {
+		"#1e1e1e", -- black
+		"#cc6666", -- red
+		"#98c379", -- green
+		"#e5c07b", -- yellow
+		"#61afef", -- blue
+		"#c678dd", -- magenta
+		"#56b6c2", -- cyan
+		"#abb2bf", -- white
+	},
+	brights = {
+		"#5c6370", -- bright black
+		"#e06c75", -- bright red
+		"#98c379", -- bright green
+		"#e5c07b", -- bright yellow
+		"#61afef", -- bright blue
+		"#c678dd", -- bright magenta
+		"#56b6c2", -- bright cyan
+		"#ffffff", -- bright white
+	},
 }
 
 config.font = wezterm.font("FiraCode Nerd Font")
