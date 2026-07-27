@@ -204,6 +204,13 @@ return {
       desc = 'Buffer Lines',
     },
     {
+      '<leader>ff',
+      function()
+        Snacks.picker.lines()
+      end,
+      desc = 'Buffer Lines',
+    },
+    {
       '<leader>bf',
       function()
         Snacks.picker.buffers()
