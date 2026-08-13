@@ -6,7 +6,7 @@ My dotfiles, linked into `$HOME` with GNU stow. Used on both Linux and macOS.
 
 | Path | What it configures |
 | --- | --- |
-| `.zshrc` | zsh, via oh-my-zsh — aliases, git/docker helpers, per-OS setup |
+| `.zshrc` | zsh, via oh-my-zsh — aliases, git/bluetooth/input helpers, per-OS setup |
 | `.oh-my-zsh/custom/themes/minimal.zsh-theme` | the prompt |
 | `.git-config-base` | git settings, aliases and delta; included from `~/.gitconfig` |
 | `.wezterm.lua`, `wezterm.sh` | WezTerm config and its shell integration |
@@ -74,7 +74,9 @@ tool is missing — but the config assumes these:
 - **Editor:** `nvim` (installed via [bob](https://github.com/MordechaiHadad/bob);
   the WezTerm config puts `~/.local/share/bob/nvim-bin` on `PATH`)
 - **Terminal font:** FiraCode Nerd Font
-- **Optional runtimes:** `go`, `deno`, `nvm`, `docker`
+- **Optional runtimes:** `go`, `deno`, `nvm`
+- **Formatters** used by nvim's conform setup, when on `PATH`: `ruff` (Python),
+  `stylua`, `prettier`/`biome`, `gofumpt`, `rustfmt`
 - **Linux extras** for the input/bluetooth helpers: `xinput`, `gsettings`,
   `bluetoothctl`, `notify-send`. On macOS: `blueutil`.
 
