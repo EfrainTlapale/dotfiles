@@ -57,114 +57,6 @@ _gwtcd() {
 }
 compdef _gwtcd gwtcd
 
-# -------
-# Docker Aliases
-# -------
-alias dkp='docker ps'
-dksh() {
-  if [[ -z "$1" ]]; then
-    echo "usage: dksh <container> [command...]" >&2
-    return 1
-  fi
-  local container="$1"
-  shift
-  docker exec -it "$container" "${@:-bash}"
-}
-
-app-cli() {
-  docker exec -it my-app-frontend  app-cli
-}
-
-# Complete `dksh` (and friends) with the names of running containers.
-_running_containers() {
-  local -a containers
-  containers=(${(f)"$(docker ps --format '{{.Names}}' 2>/dev/null)"})
-  _describe -t containers 'running container' containers
-}
-compdef _running_containers dksh
-
-# `docker ps` trimmed down to name / image / tag, coloured.
-docker_psf() {
-  docker ps --format '{{.Names}}\t{{.Image}}' | awk -F '\t' '
-  BEGIN {
-    # Define ANSI colors
-    name_color = "\033[1;36m"   # Cyan
-    image_color = "\033[1;32m"  # Green
-    reset = "\033[0m"
-
-    # Print headers
-    printf "%s%-25s\t%-25s\t%-10s%s\n", name_color, "CONTAINER NAME", "IMAGE NAME", "VERSION", reset
-  }
-  {
-    # Split image into name and version
-    split($2, image_parts, ":");
-    image_name = image_parts[1];
-    version = (length(image_parts) > 1) ? image_parts[2] : "latest";
-
-    # Print row with colors
-    printf "%s%-25s\t%s%-25s\t%-10s%s\n", name_color, $1, image_color, image_name, version, reset
-  }'
-}
-
-alias dkl='docker-compose pull'
-alias dkd='docker compose down --remove-orphans -t0'
-alias dku='docker compose up -d'
-
-# Local docker stacks. Started server-first; stopped in the reverse order.
-LOCAL_STACK_SERVER=$HOME/deploy/my-server/latest
-LOCAL_STACK_SIM=$HOME/deploy/my-app/latest
-
-# -s: server stack, -c: sim stack. `local OPTIND` matters here: without it
-# getopts keeps its position across calls and the second invocation in a
-# shell parses no flags at all.
-_local_stack() {
-  local action=$1
-  shift
-  local flag_s flag_c opt
-  local OPTIND=1 OPTARG
-
-  # Leading ':' silences getopts' own message so we print usage just once.
-  while getopts ":sc" opt; do
-    case $opt in
-      s) flag_s=true ;;
-      c) flag_c=true ;;
-      *) echo "${action}-local-stack: unknown option -$OPTARG" >&2
-         echo "usage: ${action}-local-stack [-s] [-c]" >&2
-         return 1 ;;
-    esac
-  done
-
-  if [[ -z $flag_s && -z $flag_c ]]; then
-    echo "usage: ${action}-local-stack [-s] [-c]" >&2
-    return 1
-  fi
-
-  local -a targets=()
-  if [[ $action == run ]]; then
-    [[ $flag_s ]] && targets+=("$LOCAL_STACK_SERVER")
-    [[ $flag_c ]] && targets+=("$LOCAL_STACK_SIM")
-  else
-    [[ $flag_c ]] && targets+=("$LOCAL_STACK_SIM")
-    [[ $flag_s ]] && targets+=("$LOCAL_STACK_SERVER")
-  fi
-
-  local dir
-  for dir in $targets; do
-    # Subshell: a failed `cd` can never leave the caller somewhere unexpected.
-    (
-      cd "$dir" || exit 1
-      if [[ $action == run ]]; then
-        docker compose up -d
-      else
-        docker compose down --remove-orphans -t0
-      fi
-    ) || { echo "${action}-local-stack: failed in $dir" >&2; return 1; }
-  done
-}
-
-run-local-stack()  { _local_stack run "$@"; }
-stop-local-stack() { _local_stack stop "$@"; }
-
 connectBtDevice() {
   if [[ $(uname) == "Darwin" ]]; then
     blueutil --connect $1
@@ -241,6 +133,8 @@ alias connect-pods='connectBtDevice AA:BB:CC:DD:EE:03'
 alias connect-mouse='connectBtDevice AA:BB:CC:DD:EE:04' 
 alias connect-ora='connectBtDevice AA:BB:CC:DD:EE:05' 
 
+# WORK? Playwright artifact helpers — generic tooling, but only useful in a repo
+# that runs Playwright. Keep if you use it outside work, drop it otherwise.
 showTestVideo() {
   fd -I .webm -x xdg-open
 }
@@ -249,6 +143,8 @@ showTestTrace() {
   fd -I trace.zip -x npx playwright@latest show-trace
 }
 
+# WORK: tied to the my-app deploy layout under $HOME/deploy.
+# Nothing here applies on a personal machine — candidate for removal.
 fixFrontAssetManagement(){
   sudo rm $HOME/deploy/my-app-frontend/data/state.json
 }
