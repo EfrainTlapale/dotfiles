@@ -54,13 +54,7 @@ find_temp_file() {
   return 1
 }
 
-find_fan_file() {
-  local fan
-  for fan in /sys/class/hwmon/hwmon*/fan1_input; do
-    [ -r "$fan" ] && { printf '%s\n' "$fan"; return 0; }
-  done
-  return 1
-}
+read_load() { awk '{print $1}' /proc/loadavg; }
 
 read_temp() { awk '{printf "%.1f", $1/1000}' "$TEMP_FILE"; }
 
@@ -73,7 +67,19 @@ read_freq() {
   fi
 }
 
-read_fan() { [ -n "$FAN_FILE" ] && cat "$FAN_FILE" || printf '%s' -; }
+# Dell laptops have two fans, and dell_smm / dell_ddv each report the same pair,
+# so scan every sensor and take the highest. Reading only fan1 understates the
+# cooling by whichever fan happens to be spinning slower.
+read_fan() {
+  local fan rpm max=
+  for fan in /sys/class/hwmon/hwmon*/fan*_input; do
+    [ -r "$fan" ] || continue
+    rpm=$(cat "$fan" 2>/dev/null) || continue
+    case $rpm in '' | *[!0-9]*) continue ;; esac
+    if [ -z "$max" ] || [ "$rpm" -gt "$max" ]; then max=$rpm; fi
+  done
+  printf '%s' "${max:--}"
+}
 
 # RAPL is a monotonic microjoule counter that wraps at max_energy_range_uj.
 read_energy() { [ -n "$RAPL_ENERGY" ] && cat "$RAPL_ENERGY" || printf '%s' -; }
@@ -119,7 +125,7 @@ stop_load() {
 # consecutive samples, so the first row of each phase has no value for it.
 sample_phase() {
   local phase=$1 duration=$2 out=$3
-  local start now elapsed temp freq fan energy watts
+  local start now elapsed temp freq fan energy watts load
   local prev_energy= prev_time=
 
   start=$SECONDS
@@ -132,6 +138,7 @@ sample_phase() {
     freq=$(read_freq)
     fan=$(read_fan)
     energy=$(read_energy)
+    load=$(read_load)
 
     watts=-
     if [ "$energy" != - ] && [ -n "$prev_energy" ] && [ "$now" -gt "$prev_time" ]; then
@@ -146,15 +153,15 @@ sample_phase() {
     prev_energy=$energy
     prev_time=$now
 
-    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
       "$phase" "$elapsed" "$temp" "$freq" "$watts" \
       "$(cat "$THROTTLE_DIR/package_throttle_count")" \
       "$(cat "$THROTTLE_DIR/core_throttle_count")" \
       "$(cat "$THROTTLE_DIR/package_throttle_total_time_ms")" \
-      "$fan" >>"$out"
+      "$fan" "$load" >>"$out"
 
-    printf '\r  %-5s %3ds/%ds  %5s°C  %5s MHz  %5s W ' \
-      "$phase" "$elapsed" "$duration" "$temp" "$freq" "$watts" >&2
+    printf '\r  %-5s %3ds/%ds  %5s°C  %5s MHz  %5s W  %5s rpm  load %-5s' \
+      "$phase" "$elapsed" "$duration" "$temp" "$freq" "$watts" "$fan" "$load" >&2
     sleep "$INTERVAL"
   done
   printf '\r\033[K' >&2
@@ -170,14 +177,15 @@ stats_line() {
       n++; tsum += $3; if ($3 > tmax) tmax = $3; fsum += $4
       if ($5 != "-") { wsum += $5; wn++ }
       if ($9 != "-" && $9 + 0 > fanmax) fanmax = $9 + 0
+      if ($10 != "" && $10 != "-") { lsum += $10; ln++ }
       if (n == 1) { p0 = $6; c0 = $7; m0 = $8 }
       p1 = $6; c1 = $7; m1 = $8
     }
     END {
-      if (!n) { print "0 - - - - - - - -"; exit }
-      printf "%d %.1f %.1f %.0f %s %d %d %d %s\n", n, tsum / n, tmax, fsum / n,
+      if (!n) { print "0 - - - - - - - - -"; exit }
+      printf "%d %.1f %.1f %.0f %s %d %d %d %s %s\n", n, tsum / n, tmax, fsum / n,
         (wn ? sprintf("%.1f", wsum / wn) : "-"), p1 - p0, c1 - c0, m1 - m0,
-        (fanmax ? fanmax : "-")
+        (fanmax ? fanmax : "-"), (ln ? sprintf("%.2f", lsum / ln) : "-")
     }
   ' "$1"
 }
@@ -185,31 +193,37 @@ stats_line() {
 meta() { sed -n "s/^# $2\t//p" "$1"; }
 
 print_summary() {
-  local file=$1 phase n mt xt mf mw dp dc dm xf
+  local file=$1 phase n mt xt mf mw dp dc dm xf la
   printf 'run:    %s\n' "$(basename "$file")"
   printf 'when:   %s\n' "$(meta "$file" date)"
   printf 'model:  %s\n' "$(meta "$file" model)"
   printf 'load:   %s   power: %s\n' "$(meta "$file" load_tool)" "$(meta "$file" power_source)"
-  printf '\n%-6s %4s %7s %7s %8s %7s %9s %9s %8s\n' \
-    phase n 'temp avg' 'temp max' 'freq avg' watts 'thr pkg' 'thr core' 'thr ms'
+  printf '\n%-6s %4s %7s %7s %8s %7s %9s %9s %8s %7s\n' \
+    phase n 'temp avg' 'temp max' 'freq avg' watts 'thr pkg' 'thr core' 'thr ms' 'sysload'
   for phase in idle load; do
-    read -r n mt xt mf mw dp dc dm xf < <(stats_line "$file" "$phase")
+    read -r n mt xt mf mw dp dc dm xf la < <(stats_line "$file" "$phase")
     [ "$n" = 0 ] && continue
-    printf '%-6s %4s %6s°C %6s°C %6s MHz %6s W %9s %9s %8s\n' \
-      "$phase" "$n" "$mt" "$xt" "$mf" "$mw" "$dp" "$dc" "$dm"
+    printf '%-6s %4s %6s°C %6s°C %6s MHz %6s W %9s %9s %8s %7s\n' \
+      "$phase" "$n" "$mt" "$xt" "$mf" "$mw" "$dp" "$dc" "$dm" "$la"
   done
-  local fan; fan=$(stats_line "$file" load | awk '{print $9}')
-  [ "$fan" != - ] && printf '\nfan peak: %s rpm\n' "$fan"
+  read -r n mt xt mf mw dp dc dm xf la < <(stats_line "$file" idle)
+  [ "$xf" != - ] && printf '\nfan peak: %s rpm (load phase)\n' \
+    "$(stats_line "$file" load | awk '{print $9}')"
+  # An idle phase is only a baseline if the machine was actually idle.
+  if [ "$la" != - ] && awk -v l="$la" 'BEGIN {exit !(l > 0.6)}'; then
+    printf 'WARNING: system load averaged %s during the idle phase — that\n' "$la"
+    printf '         baseline is contaminated and not comparable.\n' >&2
+  fi
   return 0
 }
 
 cmd_compare() {
   local before after
   before=$(resolve_run "$1"); after=$(resolve_run "$2")
-  local bn bmt bxt bmf bmw bdp bdc bdm bxf
-  local an amt axt amf amw adp adc adm axf
-  read -r bn bmt bxt bmf bmw bdp bdc bdm bxf < <(stats_line "$before" load)
-  read -r an amt axt amf amw adp adc adm axf < <(stats_line "$after" load)
+  local bn bmt bxt bmf bmw bdp bdc bdm bxf bla
+  local an amt axt amf amw adp adc adm axf ala
+  read -r bn bmt bxt bmf bmw bdp bdc bdm bxf bla < <(stats_line "$before" load)
+  read -r an amt axt amf amw adp adc adm axf ala < <(stats_line "$after" load)
   if [ "$bn" = 0 ] || [ "$an" = 0 ]; then
     die 'one of those runs has no load phase'
   fi
@@ -229,8 +243,28 @@ cmd_compare() {
   _row watts "$bmw" "$amw"
   _row 'thr pkg' "$bdp" "$adp"
   _row 'thr ms' "$bdm" "$adm"
+  _row 'fan peak' "$bxf" "$axf"
+  # Load-phase sysload is dominated by the synthetic load itself (~nproc), so it
+  # says nothing about contamination. The idle phase is the honest signal.
+  local bila aila
+  bila=$(stats_line "$before" idle | awk '{print $10}')
+  aila=$(stats_line "$after" idle | awk '{print $10}')
+  _row 'idle sysld' "$bila" "$aila"
   printf '\nLower temp at equal-or-higher average clock is the win. A big drop in\n'
   printf 'throttle counts with clocks up means the cooling fix worked.\n'
+
+  # Guard against the two ways this comparison silently lies.
+  if [ "$bn" != "$an" ]; then
+    printf '\nWARNING: %s vs %s load samples — different -d durations are not\n' "$bn" "$an"
+    printf '         comparable; a longer soak always runs hotter.\n'
+  fi
+  local w
+  for w in "$bila:$(basename "$before")" "$aila:$(basename "$after")"; do
+    if [ "${w%%:*}" != - ] && awk -v l="${w%%:*}" 'BEGIN {exit !(l > 0.6)}'; then
+      printf 'WARNING: %s idled at sysload %s — background work inflated it.\n' \
+        "${w#*:}" "${w%%:*}"
+    fi
+  done
 }
 
 resolve_run() {
@@ -273,7 +307,17 @@ cmd_run() {
   [ "$(uname -s)" = Linux ] || die 'Linux only — it reads Intel sysfs counters'
   [ -d "$THROTTLE_DIR" ] || die "no $THROTTLE_DIR (Intel CPU required)"
   TEMP_FILE=$(find_temp_file) || die 'found no package temperature sensor'
-  FAN_FILE=$(find_fan_file || true)
+
+  # A busy machine makes the idle baseline meaningless, and background work
+  # competes with the synthetic load. Endpoint-security scanners (wazuh, s1) and
+  # post-boot indexing are the usual offenders.
+  local l1 busy
+  l1=$(read_load)
+  if awk -v l="$l1" 'BEGIN {exit !(l > 0.6)}'; then
+    busy=$(ps -eo pcpu,comm --sort=-pcpu | awk 'NR==2 {printf "%s at %s%%", $2, $1}')
+    note "warning: load average is $l1 (top: $busy)"
+    note '         wait for the machine to settle or this run is not comparable'
+  fi
 
   RAPL_ENERGY=; RAPL_MAX=0
   if [ -r "$RAPL_DIR/energy_uj" ]; then
@@ -312,7 +356,7 @@ cmd_run() {
     printf '# temp_sensor\t%s\n' "$TEMP_FILE"
     printf '# load_tool\t%s\n' "${LOAD_TOOL:-none}"
     printf '# interval\t%s\n' "$INTERVAL"
-    printf 'phase\tt\ttemp_c\tfreq_mhz\twatts\tpkg_thr\tcore_thr\tpkg_thr_ms\tfan_rpm\n'
+    printf 'phase\tt\ttemp_c\tfreq_mhz\twatts\tpkg_thr\tcore_thr\tpkg_thr_ms\tfan_rpm\tsysload\n'
   } >"$out"
 
   note "recording to $out"
