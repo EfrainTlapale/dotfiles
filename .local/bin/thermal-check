@@ -1,0 +1,363 @@
+#!/usr/bin/env bash
+# thermal-check — measure CPU temperature, clock speed and throttling under a
+# synthetic load, so cooling work (repaste, fan clean, new fans) can be checked
+# against numbers instead of guessed at.
+#
+#   thermal-check run [-d SECS] [-l LABEL]   record an idle + load run
+#   thermal-check list                       list recorded runs
+#   thermal-check show RUN                   summarise one run
+#   thermal-check compare BEFORE AFTER       diff two runs
+#
+# Runs are TSV files under ${XDG_STATE_HOME:-~/.local/state}/thermal-check/.
+# RUN can be a path, a file name, or any unique prefix of one.
+#
+# Linux + Intel only: reads coretemp / x86_pkg_temp and the per-CPU
+# thermal_throttle counters from sysfs. Package power draw comes from RAPL,
+# which is root-only since kernel 5.10 — run under sudo to fill in the watts
+# column, otherwise it reads "-" and everything else still works.
+
+set -euo pipefail
+
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/thermal-check"
+INTERVAL=5     # seconds between samples
+IDLE_SECS=30   # idle baseline recorded before the load phase
+LOAD_SECS=300  # default load duration; -d overrides
+
+THROTTLE_DIR=/sys/devices/system/cpu/cpu0/thermal_throttle
+RAPL_DIR=/sys/class/powercap/intel-rapl:0
+
+die() { printf 'thermal-check: %s\n' "$*" >&2; exit 1; }
+note() { printf '%s\n' "$*" >&2; }
+
+# --- sensor discovery ------------------------------------------------------
+# Prefer coretemp's "Package id 0", which is the real package sensor. Fall back
+# to the x86_pkg_temp thermal zone, which reports the same thing less directly.
+find_temp_file() {
+  local hwmon label
+  for hwmon in /sys/class/hwmon/hwmon*; do
+    [ -r "$hwmon/name" ] || continue
+    [ "$(cat "$hwmon/name")" = coretemp ] || continue
+    for label in "$hwmon"/temp*_label; do
+      [ -r "$label" ] || continue
+      case "$(cat "$label")" in
+        'Package id 0') printf '%s\n' "${label%_label}_input"; return 0 ;;
+      esac
+    done
+  done
+  local zone
+  for zone in /sys/class/thermal/thermal_zone*; do
+    [ -r "$zone/type" ] || continue
+    if [ "$(cat "$zone/type")" = x86_pkg_temp ]; then
+      printf '%s\n' "$zone/temp"; return 0
+    fi
+  done
+  return 1
+}
+
+find_fan_file() {
+  local fan
+  for fan in /sys/class/hwmon/hwmon*/fan1_input; do
+    [ -r "$fan" ] && { printf '%s\n' "$fan"; return 0; }
+  done
+  return 1
+}
+
+read_temp() { awk '{printf "%.1f", $1/1000}' "$TEMP_FILE"; }
+
+read_freq() {
+  local freqs=(/sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq)
+  if [ -r "${freqs[0]}" ]; then
+    awk '{s+=$1; n++} END {if (n) printf "%.0f", s/n/1000}' "${freqs[@]}"
+  else
+    awk -F: '/^cpu MHz/ {s+=$2; n++} END {if (n) printf "%.0f", s/n}' /proc/cpuinfo
+  fi
+}
+
+read_fan() { [ -n "$FAN_FILE" ] && cat "$FAN_FILE" || printf '%s' -; }
+
+# RAPL is a monotonic microjoule counter that wraps at max_energy_range_uj.
+read_energy() { [ -n "$RAPL_ENERGY" ] && cat "$RAPL_ENERGY" || printf '%s' -; }
+
+# --- synthetic load -------------------------------------------------------
+LOAD_PIDS=()
+
+# stress-ng if it's installed, otherwise one `yes` per thread — crude but it
+# pins every core just as effectively, and needs nothing installed.
+detect_load_tool() {
+  if command -v stress-ng >/dev/null 2>&1; then
+    LOAD_TOOL="stress-ng --cpu $(nproc)"
+  else
+    LOAD_TOOL="yes x$(nproc)"
+  fi
+}
+
+start_load() {
+  local jobs; jobs=$(nproc)
+  if command -v stress-ng >/dev/null 2>&1; then
+    stress-ng --cpu "$jobs" --timeout "$((LOAD_SECS + INTERVAL))s" --quiet &
+    LOAD_PIDS=($!)
+  else
+    local i
+    for ((i = 0; i < jobs; i++)); do
+      yes >/dev/null &
+      LOAD_PIDS+=($!)
+    done
+  fi
+}
+
+stop_load() {
+  local pid
+  for pid in "${LOAD_PIDS[@]:-}"; do
+    kill "$pid" 2>/dev/null || true
+  done
+  wait "${LOAD_PIDS[@]:-}" 2>/dev/null || true
+  LOAD_PIDS=()
+}
+
+# --- sampling -------------------------------------------------------------
+# Writes one TSV row per sample. Watts is derived from the RAPL delta between
+# consecutive samples, so the first row of each phase has no value for it.
+sample_phase() {
+  local phase=$1 duration=$2 out=$3
+  local start now elapsed temp freq fan energy watts
+  local prev_energy= prev_time=
+
+  start=$SECONDS
+  while :; do
+    now=$SECONDS
+    elapsed=$((now - start))
+    [ "$elapsed" -ge "$duration" ] && break
+
+    temp=$(read_temp)
+    freq=$(read_freq)
+    fan=$(read_fan)
+    energy=$(read_energy)
+
+    watts=-
+    if [ "$energy" != - ] && [ -n "$prev_energy" ] && [ "$now" -gt "$prev_time" ]; then
+      watts=$(awk -v e1="$prev_energy" -v e2="$energy" -v dt="$((now - prev_time))" \
+                  -v max="$RAPL_MAX" '
+        BEGIN {
+          d = e2 - e1
+          if (d < 0) { if (max > 0) d += max; else { print "-"; exit } }
+          printf "%.1f", d / 1000000 / dt
+        }')
+    fi
+    prev_energy=$energy
+    prev_time=$now
+
+    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+      "$phase" "$elapsed" "$temp" "$freq" "$watts" \
+      "$(cat "$THROTTLE_DIR/package_throttle_count")" \
+      "$(cat "$THROTTLE_DIR/core_throttle_count")" \
+      "$(cat "$THROTTLE_DIR/package_throttle_total_time_ms")" \
+      "$fan" >>"$out"
+
+    printf '\r  %-5s %3ds/%ds  %5s°C  %5s MHz  %5s W ' \
+      "$phase" "$elapsed" "$duration" "$temp" "$freq" "$watts" >&2
+    sleep "$INTERVAL"
+  done
+  printf '\r\033[K' >&2
+}
+
+# --- reporting ------------------------------------------------------------
+# Emits: n mean_temp max_temp mean_freq mean_watts d_pkg d_core d_ms max_fan
+stats_line() {
+  awk -v PH="$2" '
+    /^#/ || $1 == "phase" { next }
+    $1 != PH { next }
+    {
+      n++; tsum += $3; if ($3 > tmax) tmax = $3; fsum += $4
+      if ($5 != "-") { wsum += $5; wn++ }
+      if ($9 != "-" && $9 + 0 > fanmax) fanmax = $9 + 0
+      if (n == 1) { p0 = $6; c0 = $7; m0 = $8 }
+      p1 = $6; c1 = $7; m1 = $8
+    }
+    END {
+      if (!n) { print "0 - - - - - - - -"; exit }
+      printf "%d %.1f %.1f %.0f %s %d %d %d %s\n", n, tsum / n, tmax, fsum / n,
+        (wn ? sprintf("%.1f", wsum / wn) : "-"), p1 - p0, c1 - c0, m1 - m0,
+        (fanmax ? fanmax : "-")
+    }
+  ' "$1"
+}
+
+meta() { sed -n "s/^# $2\t//p" "$1"; }
+
+print_summary() {
+  local file=$1 phase n mt xt mf mw dp dc dm xf
+  printf 'run:    %s\n' "$(basename "$file")"
+  printf 'when:   %s\n' "$(meta "$file" date)"
+  printf 'model:  %s\n' "$(meta "$file" model)"
+  printf 'load:   %s   power: %s\n' "$(meta "$file" load_tool)" "$(meta "$file" power_source)"
+  printf '\n%-6s %4s %7s %7s %8s %7s %9s %9s %8s\n' \
+    phase n 'temp avg' 'temp max' 'freq avg' watts 'thr pkg' 'thr core' 'thr ms'
+  for phase in idle load; do
+    read -r n mt xt mf mw dp dc dm xf < <(stats_line "$file" "$phase")
+    [ "$n" = 0 ] && continue
+    printf '%-6s %4s %6s°C %6s°C %6s MHz %6s W %9s %9s %8s\n' \
+      "$phase" "$n" "$mt" "$xt" "$mf" "$mw" "$dp" "$dc" "$dm"
+  done
+  local fan; fan=$(stats_line "$file" load | awk '{print $9}')
+  [ "$fan" != - ] && printf '\nfan peak: %s rpm\n' "$fan"
+  return 0
+}
+
+cmd_compare() {
+  local before after
+  before=$(resolve_run "$1"); after=$(resolve_run "$2")
+  local bn bmt bxt bmf bmw bdp bdc bdm bxf
+  local an amt axt amf amw adp adc adm axf
+  read -r bn bmt bxt bmf bmw bdp bdc bdm bxf < <(stats_line "$before" load)
+  read -r an amt axt amf amw adp adc adm axf < <(stats_line "$after" load)
+  if [ "$bn" = 0 ] || [ "$an" = 0 ]; then
+    die 'one of those runs has no load phase'
+  fi
+
+  printf 'load phase, %s -> %s\n\n' "$(basename "$before")" "$(basename "$after")"
+  printf '%-12s %10s %10s %10s\n' metric before after change
+  _row() { # label before after
+    awk -v l="$1" -v b="$2" -v a="$3" '
+      BEGIN {
+        if (b == "-" || a == "-") { printf "%-12s %10s %10s %10s\n", l, b, a, "-"; exit }
+        printf "%-12s %10s %10s %+10.1f\n", l, b, a, a - b
+      }'
+  }
+  _row 'temp avg' "$bmt" "$amt"
+  _row 'temp max' "$bxt" "$axt"
+  _row 'freq avg' "$bmf" "$amf"
+  _row watts "$bmw" "$amw"
+  _row 'thr pkg' "$bdp" "$adp"
+  _row 'thr ms' "$bdm" "$adm"
+  printf '\nLower temp at equal-or-higher average clock is the win. A big drop in\n'
+  printf 'throttle counts with clocks up means the cooling fix worked.\n'
+}
+
+resolve_run() {
+  local arg=$1 matches
+  [ -f "$arg" ] && { printf '%s\n' "$arg"; return; }
+  [ -f "$LOG_DIR/$arg" ] && { printf '%s\n' "$LOG_DIR/$arg"; return; }
+  matches=$(find "$LOG_DIR" -maxdepth 1 -name "$arg*.tsv" | sort)
+  case $(printf '%s\n' "$matches" | grep -c .) in
+    0) die "no run matching '$arg' (try: thermal-check list)" ;;
+    1) printf '%s\n' "$matches" ;;
+    *) die "'$arg' matches more than one run" ;;
+  esac
+}
+
+cmd_list() {
+  [ -d "$LOG_DIR" ] || die "no runs recorded yet in $LOG_DIR"
+  local file n mt xt mf mw dp rest
+  printf '%-34s %10s %9s %9s %9s\n' run when 'temp avg' 'temp max' 'thr pkg'
+  for file in "$LOG_DIR"/*.tsv; do
+    [ -f "$file" ] || continue
+    read -r n mt xt mf mw dp rest < <(stats_line "$file" load)
+    printf '%-34s %10s %8s°C %8s°C %9s\n' \
+      "$(basename "$file")" "$(meta "$file" date | cut -dT -f1)" "$mt" "$xt" "$dp"
+  done
+}
+
+cmd_run() {
+  local label=run
+  while getopts ':d:l:' opt; do
+    case $opt in
+      d) case $OPTARG in
+           '' | *[!0-9]*) die "-d needs a whole number of seconds, got '$OPTARG'" ;;
+         esac
+         LOAD_SECS=$OPTARG ;;
+      l) label=$OPTARG ;;
+      *) die "unknown option -$OPTARG" ;;
+    esac
+  done
+
+  [ "$(uname -s)" = Linux ] || die 'Linux only — it reads Intel sysfs counters'
+  [ -d "$THROTTLE_DIR" ] || die "no $THROTTLE_DIR (Intel CPU required)"
+  TEMP_FILE=$(find_temp_file) || die 'found no package temperature sensor'
+  FAN_FILE=$(find_fan_file || true)
+
+  RAPL_ENERGY=; RAPL_MAX=0
+  if [ -r "$RAPL_DIR/energy_uj" ]; then
+    RAPL_ENERGY="$RAPL_DIR/energy_uj"
+    RAPL_MAX=$(cat "$RAPL_DIR/max_energy_range_uj" 2>/dev/null || echo 0)
+  else
+    note 'note: package power needs root — rerun under sudo for the watts column'
+  fi
+
+  local ac=unknown supply
+  for supply in /sys/class/power_supply/A{C,DP}*/online; do
+    [ -r "$supply" ] && { [ "$(cat "$supply")" = 1 ] && ac=AC || ac=battery; break; }
+  done
+  [ "$ac" = battery ] && note 'warning: on battery — power limits differ, compare AC to AC'
+
+  mkdir -p "$LOG_DIR"
+  local stamp out
+  stamp=$(date +%Y%m%d-%H%M%S)
+  out="$LOG_DIR/$label-$stamp.tsv"
+
+  detect_load_tool
+  trap 'stop_load; exit 130' INT TERM
+  trap stop_load EXIT
+
+  {
+    printf '# date\t%s\n' "$(date -Is)"
+    printf '# host\t%s\n' "$(uname -n)"
+    printf '# kernel\t%s\n' "$(uname -r)"
+    printf '# model\t%s\n' \
+      "$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo unknown)"
+    printf '# cpu\t%s\n' \
+      "$(awk -F': ' '/^model name/ {print $2; exit}' /proc/cpuinfo)"
+    printf '# governor\t%s\n' \
+      "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null || echo unknown)"
+    printf '# power_source\t%s\n' "$ac"
+    printf '# temp_sensor\t%s\n' "$TEMP_FILE"
+    printf '# load_tool\t%s\n' "${LOAD_TOOL:-none}"
+    printf '# interval\t%s\n' "$INTERVAL"
+    printf 'phase\tt\ttemp_c\tfreq_mhz\twatts\tpkg_thr\tcore_thr\tpkg_thr_ms\tfan_rpm\n'
+  } >"$out"
+
+  note "recording to $out"
+  note "idle baseline (${IDLE_SECS}s) — leave the machine alone"
+  sample_phase idle "$IDLE_SECS" "$out"
+
+  note "load (${LOAD_SECS}s) — ${LOAD_TOOL:-load}"
+  start_load
+  sample_phase load "$LOAD_SECS" "$out"
+  stop_load
+  trap - EXIT INT TERM
+
+  printf '\n'
+  print_summary "$out"
+}
+
+usage() {
+  cat <<'EOF'
+thermal-check — CPU temperature, clocks and throttling under a synthetic load,
+so cooling work (repaste, fan clean) can be verified instead of guessed at.
+
+  thermal-check run [-d SECS] [-l LABEL]   record an idle + load run
+  thermal-check list                       list recorded runs
+  thermal-check show RUN                   summarise one run
+  thermal-check compare BEFORE AFTER       diff two runs
+
+  -d SECS    load duration, default 300 (a 30s idle baseline is always taken)
+  -l LABEL   name the run, e.g. -l before-repaste
+
+RUN is a path, a file name, or any unique prefix of one. Runs live in
+${XDG_STATE_HOME:-~/.local/state}/thermal-check/ as TSV.
+
+Linux + Intel only. Run under sudo to fill in the package watts column.
+EOF
+  exit "${1:-0}"
+}
+
+case ${1:-} in
+  run)     shift; cmd_run "$@" ;;
+  list)    shift; cmd_list ;;
+  show)    shift; [ $# -eq 1 ] || usage 1
+           # die() inside a substitution only exits the subshell, so check here
+           run=$(resolve_run "$1") || exit 1
+           print_summary "$run" ;;
+  compare) shift; [ $# -eq 2 ] || usage 1; cmd_compare "$1" "$2" ;;
+  -h|--help|help|'') usage ;;
+  *) die "unknown command '$1' (try: thermal-check help)" ;;
+esac
