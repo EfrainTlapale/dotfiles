@@ -133,29 +133,6 @@ alias connect-pods='connectBtDevice AA:BB:CC:DD:EE:03'
 alias connect-mouse='connectBtDevice AA:BB:CC:DD:EE:04' 
 alias connect-ora='connectBtDevice AA:BB:CC:DD:EE:05' 
 
-# WORK? Playwright artifact helpers — generic tooling, but only useful in a repo
-# that runs Playwright. Keep if you use it outside work, drop it otherwise.
-showTestVideo() {
-  fd -I .webm -x xdg-open
-}
-
-showTestTrace() {
-  fd -I trace.zip -x npx playwright@latest show-trace
-}
-
-# WORK: tied to the my-app deploy layout under $HOME/deploy.
-# Nothing here applies on a personal machine — candidate for removal.
-fixFrontAssetManagement(){
-  sudo rm $HOME/deploy/my-app-frontend/data/state.json
-}
-
-fixBackAssetManagement(){
-  sudo rm $HOME/deploy/my-app-backend/data/state.json
-}
-
-
-
-
 export GPG_TTY=$(tty)
 (( $+commands[zoxide] )) && eval "$(zoxide init --cmd j zsh)"
 

@@ -6,17 +6,6 @@ return {
       biome = { require_cwd = true },
       prettier = { require_cwd = true },
       gofumpt = { require_cwd = true },
-      ruff_format = {
-        command = 'docker',
-        args = {
-          'exec',
-          'django-app-my-server',
-          'ruff',
-          'format',
-          '$RELATIVE_FILEPATH',
-        },
-        stdin = false,
-      },
     },
     formatters_by_ft = {
       lua = { 'stylua' },
