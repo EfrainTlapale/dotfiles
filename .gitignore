@@ -24,3 +24,6 @@
 !.oh-my-zsh/custom/themes
 !.oh-my-zsh/custom/themes/**
 
+# Never track secrets, even if accidentally placed in this repo dir
+.netrc
+

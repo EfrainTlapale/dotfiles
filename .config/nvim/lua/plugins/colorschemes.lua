@@ -41,4 +41,10 @@ return {
       require('black-metal').load()
     end,
   },
+  {
+    'wtfox/luna.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
 }

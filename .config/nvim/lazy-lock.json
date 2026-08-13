@@ -25,6 +25,7 @@
   "leetcode.nvim": { "branch": "master", "commit": "4e8b3683940a8377379ce9398e7f329e3560b42c" },
   "love2d.nvim": { "branch": "main", "commit": "25715394680590f56aab90390d430cab0dc46808" },
   "lualine.nvim": { "branch": "master", "commit": "221ce6b2d999187044529f49da6554a92f740a96" },
+  "luna.nvim": { "branch": "main", "commit": "95e1c7beeb7bffa1f02a28f0fe921520d79ce317" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "0a695750d747db1e7e70bcf0267ef8951c95fc83" },
   "mason.nvim": { "branch": "main", "commit": "16ba83bfc8a25f52bb545134f5bee082b195c460" },
   "minifugit.nvim": { "branch": "main", "commit": "b12e05779dd1a745322903a622a42e1ac184e852" },
