@@ -1,30 +1,54 @@
 [core]
-  editor = nvim
+    editor = nvim
+    pager = delta
+
+[init]
+    defaultBranch = main
+
+[fetch]
+    # Drop local refs for branches deleted on the remote.
+    prune = true
+
+[push]
+    default = simple
+    # `git push` on a new branch sets up the upstream itself (git >= 2.37),
+    # which is what the `gpnb` alias exists to work around on older git.
+    autoSetupRemote = true
+
+[rebase]
+    autoStash = true
+
+[rerere]
+    # Remember how a conflict was resolved and replay it next time.
+    enabled = true
+
+[branch]
+    # `git branch` lists most-recently-committed first.
+    sort = -committerdate
+
+[column]
+    ui = auto
 
 [color "status"]
-  changed = "#ed8796"
-  untracked = "#ed8796"
-  added = "#b3fba5"
+    changed = "#ed8796"
+    untracked = "#ed8796"
+    added = "#b3fba5"
 
 [color "diff"]
-  old = "#ed8796"
-  new = "#b3fba5"
+    old = "#ed8796"
+    new = "#b3fba5"
 
 [alias]
-  # ATTENTION: All aliases prefixed with ! run in /bin/sh make sure you use sh syntax, not bash/zsh or whatever
-  recentb = "!r() { count=$1; git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:magenta)%(authorname)|%(color:blue)%(subject)%(color:reset)' --color=always --count=${count:-10} | ( echo \"branch|lastcommit|author|message\n\" && cat) | column -ts'|';}; r"
+    # ATTENTION: All aliases prefixed with ! run in /bin/sh make sure you use sh syntax, not bash/zsh or whatever
+    recentb = "!r() { count=$1; git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:magenta)%(authorname)|%(color:blue)%(subject)%(color:reset)' --color=always --count=${count:-10} | ( echo \"branch|lastcommit|author|message\n\" && cat) | column -ts'|';}; r"
 
-   diff-side-by-side = -c delta.features=side-by-side diff
-   diff-split = -c delta.features=side-by-side diff
+    diff-side-by-side = -c delta.features=side-by-side diff
+    diff-split = -c delta.features=side-by-side diff
 
-   wta = "!f() { repo=$(cd \"$(git rev-parse --git-common-dir)/..\" && basename \"$PWD\"); mkdir -p \"$HOME/worktrees/$repo\" && git worktree add -b \"$1\" \"$HOME/worktrees/$repo/$1\"; }; f"
-   wtr = "!f() { repo=$(cd \"$(git rev-parse --git-common-dir)/..\" && basename \"$PWD\"); git worktree remove \"$HOME/worktrees/$repo/$1\"; }; f"
-   wtl = worktree list
-
-
-
-[core]
-    pager = delta
+    # Worktrees live in ~/worktrees/<repo>/<branch>; see `gwtcd` in .zshrc.
+    wta = "!f() { repo=$(cd \"$(git rev-parse --git-common-dir)/..\" && basename \"$PWD\"); mkdir -p \"$HOME/worktrees/$repo\" && git worktree add -b \"$1\" \"$HOME/worktrees/$repo/$1\"; }; f"
+    wtr = "!f() { repo=$(cd \"$(git rev-parse --git-common-dir)/..\" && basename \"$PWD\"); git worktree remove \"$HOME/worktrees/$repo/$1\"; }; f"
+    wtl = worktree list
 
 [interactive]
     diffFilter = delta --color-only
@@ -42,11 +66,13 @@
     minus-non-emph-style          = "#ed8796"
     map-styles = bold purple => syntax "#330f29", bold cyan => syntax "#0d2235"
 
-
 [merge]
+    # zdiff3 is nicer but needs git >= 2.35, and an unknown value here is a
+    # hard error at merge time rather than something git can ignore.
     conflictstyle = diff3
 
 [diff]
     colorMoved = default
+    algorithm = histogram
 
 ; vim: set ft=gitconfig:

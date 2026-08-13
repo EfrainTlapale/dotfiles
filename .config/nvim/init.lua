@@ -36,7 +36,7 @@ require('lazy').setup({
   install = { colorscheme = { 'habamax' } },
 })
 
--- Set the active colorscheme (gruvbox-material via lua/colors.lua)
+-- Set the active colorscheme (see lua/colors.lua for the alternatives)
 require 'colors'
 
 -- User modules that aren't plugin-tied

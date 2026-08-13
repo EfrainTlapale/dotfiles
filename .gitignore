@@ -10,19 +10,38 @@
 !.wezterm.lua
 !wezterm.sh
 
+# Controls what `stow .` links into $HOME, so it has to be tracked for a
+# fresh clone to stow the same way this machine does.
+!.stow-local-ignore
+
 !.config
 
 !.config/nvim
 !.config/nvim/**
-.config/nvim/.env.local
 
 !.config/lazygit
 !.config/lazygit/**
+
+!.config/kitty
+!.config/kitty/**
 
 !.oh-my-zsh
 !.oh-my-zsh/custom
 !.oh-my-zsh/custom/themes
 !.oh-my-zsh/custom/themes/**
+
+!.local
+!.local/bin
+!.local/bin/**
+
+# Re-exclusions. These come last on purpose: within .gitignore the last
+# matching pattern wins, so anything here overrides the allowlist above.
+
+# Machine-local, not config: API keys for nvim plugins, and the per-machine
+# Claude Code permission grants.
+.config/nvim/.env.local
+.claude/
+**/.claude/
 
 # Never track secrets, even if accidentally placed in this repo dir
 .netrc

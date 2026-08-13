@@ -1,3 +1,7 @@
+# Keep $path (and so $PATH) free of duplicates, so re-sourcing this file
+# doesn't grow PATH every time.
+typeset -U path PATH
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -30,76 +34,136 @@ alias gl='git pull'
 alias gp='git push'
 alias gca='git commit --all --message'
 
-gwtcd() {
-  local repo
-  repo=$(cd "$(git rev-parse --git-common-dir)/.." && basename "$PWD") || return
-  cd "$HOME/worktrees/$repo/$1"
+# cd into a worktree of the current repo, as laid out by `git wta` (.git-config-base).
+_worktree_root() {
+  local common
+  common=$(git rev-parse --git-common-dir 2>/dev/null) || return 1
+  print -r -- "$HOME/worktrees/$(basename "$(cd "$common/.." && pwd)")"
 }
+
+gwtcd() {
+  local root
+  root=$(_worktree_root) || {
+    echo "gwtcd: not inside a git repository" >&2
+    return 1
+  }
+  cd "$root/$1"
+}
+
+_gwtcd() {
+  local root
+  root=$(_worktree_root) || return 1
+  _path_files -W "$root" -/
+}
+compdef _gwtcd gwtcd
 
 # -------
 # Docker Aliases
 # -------
 alias dkp='docker ps'
 dksh() {
-  docker exec -it $1 bash
+  if [[ -z "$1" ]]; then
+    echo "usage: dksh <container> [command...]" >&2
+    return 1
+  fi
+  local container="$1"
+  shift
+  docker exec -it "$container" "${@:-bash}"
 }
 
 app-cli() {
   docker exec -it my-app-frontend  app-cli
 }
 
-complete -F _custom_docker_exec_completion dksh
+# Complete `dksh` (and friends) with the names of running containers.
+_running_containers() {
+  local -a containers
+  containers=(${(f)"$(docker ps --format '{{.Names}}' 2>/dev/null)"})
+  _describe -t containers 'running container' containers
+}
+compdef _running_containers dksh
+
+# `docker ps` trimmed down to name / image / tag, coloured.
+docker_psf() {
+  docker ps --format '{{.Names}}\t{{.Image}}' | awk -F '\t' '
+  BEGIN {
+    # Define ANSI colors
+    name_color = "\033[1;36m"   # Cyan
+    image_color = "\033[1;32m"  # Green
+    reset = "\033[0m"
+
+    # Print headers
+    printf "%s%-25s\t%-25s\t%-10s%s\n", name_color, "CONTAINER NAME", "IMAGE NAME", "VERSION", reset
+  }
+  {
+    # Split image into name and version
+    split($2, image_parts, ":");
+    image_name = image_parts[1];
+    version = (length(image_parts) > 1) ? image_parts[2] : "latest";
+
+    # Print row with colors
+    printf "%s%-25s\t%s%-25s\t%-10s%s\n", name_color, $1, image_color, image_name, version, reset
+  }'
+}
+
 alias dkl='docker-compose pull'
 alias dkd='docker compose down --remove-orphans -t0'
 alias dku='docker compose up -d'
 
-run-local-stack() {
-  ORIGINAL_PATH=$(pwd)
-  local flag_s flag_c
+# Local docker stacks. Started server-first; stopped in the reverse order.
+LOCAL_STACK_SERVER=$HOME/deploy/my-server/latest
+LOCAL_STACK_SIM=$HOME/deploy/my-app/latest
 
-  while getopts "sc" opt; do
-      case $opt in
-          s) flag_s=true ;;
-          c) flag_c=true ;;
-          *) echo "Usage: my_function -sc" ; return 1 ;;
-      esac
+# -s: server stack, -c: sim stack. `local OPTIND` matters here: without it
+# getopts keeps its position across calls and the second invocation in a
+# shell parses no flags at all.
+_local_stack() {
+  local action=$1
+  shift
+  local flag_s flag_c opt
+  local OPTIND=1 OPTARG
+
+  # Leading ':' silences getopts' own message so we print usage just once.
+  while getopts ":sc" opt; do
+    case $opt in
+      s) flag_s=true ;;
+      c) flag_c=true ;;
+      *) echo "${action}-local-stack: unknown option -$OPTARG" >&2
+         echo "usage: ${action}-local-stack [-s] [-c]" >&2
+         return 1 ;;
+    esac
   done
 
-  if [[ $flag_s ]]; then
-      cd $HOME/deploy/my-server/latest
-      dku
+  if [[ -z $flag_s && -z $flag_c ]]; then
+    echo "usage: ${action}-local-stack [-s] [-c]" >&2
+    return 1
   fi
 
-  if [[ $flag_c ]]; then
-      cd $HOME/deploy/my-app/latest
-      dku
+  local -a targets=()
+  if [[ $action == run ]]; then
+    [[ $flag_s ]] && targets+=("$LOCAL_STACK_SERVER")
+    [[ $flag_c ]] && targets+=("$LOCAL_STACK_SIM")
+  else
+    [[ $flag_c ]] && targets+=("$LOCAL_STACK_SIM")
+    [[ $flag_s ]] && targets+=("$LOCAL_STACK_SERVER")
   fi
-  cd $ORIGINAL_PATH
-}
 
-stop-local-stack() {
-  ORIGINAL_PATH=$(pwd)
-  local flag_s flag_c
-
-  while getopts "sc" opt; do
-      case $opt in
-          s) flag_s=true ;;
-          c) flag_c=true ;;
-          *) echo "Usage: my_function -sc" ; return 1 ;;
-      esac
+  local dir
+  for dir in $targets; do
+    # Subshell: a failed `cd` can never leave the caller somewhere unexpected.
+    (
+      cd "$dir" || exit 1
+      if [[ $action == run ]]; then
+        docker compose up -d
+      else
+        docker compose down --remove-orphans -t0
+      fi
+    ) || { echo "${action}-local-stack: failed in $dir" >&2; return 1; }
   done
-
-  if [[ $flag_c ]]; then
-      cd $HOME/deploy/my-app/latest
-      dkd
-  fi
-
-  if [[ $flag_s ]]; then
-      cd $HOME/deploy/my-server/latest
-      dkd
-  fi
-  cd $ORIGINAL_PATH
 }
+
+run-local-stack()  { _local_stack run "$@"; }
+stop-local-stack() { _local_stack stop "$@"; }
 
 connectBtDevice() {
   if [[ $(uname) == "Darwin" ]]; then
@@ -197,7 +261,7 @@ fixBackAssetManagement(){
 
 
 export GPG_TTY=$(tty)
-eval "$(zoxide init --cmd j zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init --cmd j zsh)"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -205,16 +269,22 @@ export NVM_DIR="$HOME/.nvm"
 
 
 # What OS are we running?
-if [[ $(uname) == "Darwin" ]]; then
+if [[ $OSTYPE == darwin* ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"
-  source <(fzf --zsh)
   # Created by `pipx` on 2026-02-03 02:02:48
-  export PATH="$PATH:/Users/efra/.local/bin"
+  path+=("$HOME/.local/bin")
+else
+  # Homebrew, when installed. Also puts `brew`-managed tools on PATH.
+  [ -x /home/linuxbrew/.linuxbrew/bin/brew ] &&
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-if [[ $(uname) == "Linux" ]]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf keybindings + completion. A git install writes ~/.fzf.zsh (which also
+# puts ~/.fzf/bin on PATH); package installs just have fzf on PATH already.
+if [ -f ~/.fzf.zsh ]; then
+  source ~/.fzf.zsh
+elif (( $+commands[fzf] )); then
+  source <(fzf --zsh)
 fi
 
 
@@ -225,38 +295,21 @@ pasteinit() {
   zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
 }
 
-docker_psf() {
-  docker ps --format '{{.Names}}\t{{.Image}}' | awk -F '\t' '
-  BEGIN {
-    # Define ANSI colors
-    name_color = "\033[1;36m"   # Cyan
-    image_color = "\033[1;32m"  # Green
-    reset = "\033[0m"
-
-    # Print headers
-    printf "%s%-25s\t%-25s\t%-10s%s\n", name_color, "CONTAINER NAME", "IMAGE NAME", "VERSION", reset
-  }
-  {
-    # Split image into name and version
-    split($2, image_parts, ":");
-    image_name = image_parts[1];
-    version = (length(image_parts) > 1) ? image_parts[2] : "latest";
-
-    # Print row with colors
-    printf "%s%-25s\t%s%-25s\t%-10s%s\n", name_color, $1, image_color, image_name, version, reset
-  }'
-}
-
 pastefinish() {
   zle -N self-insert $OLD_SELF_INSERT
 }
 zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 
-. $HOME/wezterm.sh
+# Shell integration (OSC 133 semantic zones, used by the wezterm.lua keybinds).
+[ -f "$HOME/wezterm.sh" ] && . "$HOME/wezterm.sh"
 
-export PATH=$(go env GOPATH)/bin:$PATH
-. "$HOME/.deno/env"
+# Go binaries. Using the default GOPATH instead of shelling out to `go env`
+# drops a subprocess from every shell start, and stops this line from printing
+# "command not found" on machines without Go.
+[ -d "${GOPATH:-$HOME/go}/bin" ] && path=("${GOPATH:-$HOME/go}/bin" $path)
+
+[ -f "$HOME/.deno/env" ] && . "$HOME/.deno/env"
 
 
 export EDITOR=nvim

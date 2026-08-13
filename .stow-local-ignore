@@ -1,0 +1,28 @@
+# Comments and blank lines are allowed.
+# This replaces Stow's built-in ignore list, so it re-includes the
+# defaults we still want plus our own custom entries.
+
+RCS
+.+,v
+
+CVS
+\.\#.+       # CVS conflict files / emacs lock files
+\.cvsignore
+
+\.svn
+_darcs
+\.hg
+
+\.git
+\.gitignore
+
+.+~          # emacs backup files
+\#.*\#       # emacs autosave files
+
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+# Custom
+\.claude
+\.netrc

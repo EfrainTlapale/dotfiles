@@ -172,9 +172,18 @@ local function my_fixed_get_text_from_semantic_zone(pane, zone)
 end
 
 local function open_text_in_vim(window, pane, text)
+	if not text or text == "" then
+		wezterm.log_warn("nothing to open in vim")
+		return
+	end
+
 	-- Create a temporary file to pass to vim
 	local name = os.tmpname()
 	local f = io.open(name, "w+")
+	if not f then
+		wezterm.log_error("could not open temp file " .. name)
+		return
+	end
 	f:write(text)
 	f:flush()
 	f:close()
@@ -206,12 +215,17 @@ local function open_text_in_vim(window, pane, text)
 end
 
 wezterm.on("trigger-vim-with-scrollback", function(window, pane)
-	-- Retrieve the text of the last command's output from the pane
+	-- Retrieve the text of the last command's output from the pane.
+	-- There are no zones at all until the shell integration in wezterm.sh has
+	-- emitted its first OSC 133 marker, so bail out instead of indexing nil.
 	local zones = pane:get_semantic_zones("Output")
 	local zone = zones[#zones]
-	local text = my_fixed_get_text_from_semantic_zone(pane, zone)
+	if not zone then
+		wezterm.log_warn("no semantic zones in this pane; is shell integration loaded?")
+		return
+	end
 
-	open_text_in_vim(window, pane, text)
+	open_text_in_vim(window, pane, my_fixed_get_text_from_semantic_zone(pane, zone))
 end)
 
 wezterm.on("trigger-vim-with-viewport", function(window, pane)
@@ -292,18 +306,24 @@ else
 end
 
 wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
-	local process = pane.foreground_process_name
-	-- Get the current working directory of the pane
-	local cwd = pane.current_working_dir.file_path
+	-- Both of these are absent in panes that never reported them (a fresh pane,
+	-- or a shell without OSC 7 / OSC 133 integration), so read them defensively
+	-- rather than indexing straight through.
+	local cwd_uri = pane.current_working_dir
+	local cwd = cwd_uri and cwd_uri.file_path
+	local dir_name = cwd and cwd:match("([^/]+)/*$")
 
-	-- Set the window title based on the cwd
-	if cwd then
-		local dir_name = cwd:match("([^/]+)/*$")
-		local procName = process:match("([^/]+)/*$")
-		return procName .. ": " .. dir_name
-	else
-		return "WezTerm" -- Default title if no cwd available
+	if not dir_name then
+		return "WezTerm"
 	end
+
+	local process = pane.foreground_process_name
+	local proc_name = process and process:match("([^/]+)/*$")
+
+	if proc_name then
+		return proc_name .. ": " .. dir_name
+	end
+	return dir_name
 end)
 
 -- and finally, return the configuration to wezterm
