@@ -296,7 +296,7 @@ else
 	if has_external_monitor() then
 		config.font_size = 9
 	else
-		config.font_size = 11
+		config.font_size = 12
 	end
 
 	config.set_environment_variables = {
