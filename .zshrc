@@ -188,3 +188,4 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 
+export PATH="$HOME/.local/bin:$PATH"
