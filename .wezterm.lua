@@ -294,7 +294,7 @@ else
 	end
 
 	if has_external_monitor() then
-		config.font_size = 9
+		config.font_size = 12
 	else
 		config.font_size = 12
 	end
