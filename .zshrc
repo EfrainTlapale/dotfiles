@@ -126,12 +126,6 @@ function toggle_touchpad() {
     fi
 }
 
-# Personal aliases
-alias connect-wf='connectBtDevice AA:BB:CC:DD:EE:01'
-alias connect-wh='connectBtDevice AA:BB:CC:DD:EE:02'
-alias connect-pods='connectBtDevice AA:BB:CC:DD:EE:03'
-alias connect-mouse='connectBtDevice AA:BB:CC:DD:EE:04' 
-alias connect-ora='connectBtDevice AA:BB:CC:DD:EE:05' 
 
 export GPG_TTY=$(tty)
 (( $+commands[zoxide] )) && eval "$(zoxide init --cmd j zsh)"
@@ -189,3 +183,14 @@ export EDITOR=nvim
 export VISUAL="$EDITOR"
 
 export PATH="$HOME/.local/bin:$PATH"
+
+[ -d /Library/Java/JavaVirtualMachines/zulu-17.jdk ] && \
+  export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+
+if [ -d "$HOME/Library/Android/sdk" ]; then
+  export ANDROID_HOME="$HOME/Library/Android/sdk"
+  path+=("$ANDROID_HOME/emulator" "$ANDROID_HOME/platform-tools")
+fi
+
+# Machine-local config (device addresses, per-host aliases) - not tracked.
+[ -f "$HOME/.zshrc.local" ] && . "$HOME/.zshrc.local"
