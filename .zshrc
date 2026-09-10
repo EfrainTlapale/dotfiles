@@ -102,7 +102,7 @@ toggle_keyboard_control() {
     disown
     echo $! >"$pid_file"
 
-    notify-send "⛔️ Keyboard Floated" "Input disabled, palm detection off."
+    notify-send "⛔️ Keyboard Floated" "Input disabled"
   fi
 }
 
