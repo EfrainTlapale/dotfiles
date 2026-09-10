@@ -67,29 +67,40 @@ connectBtDevice() {
 
 toggle_keyboard_control() {
   local keyboard_name="AT Translated Set 2 keyboard"
-  local keyboard_id=$(xinput | grep "$keyboard_name" | grep -Eo '[0-9]+' | head -2 | tail -1)
+  local state_dir="${XDG_RUNTIME_DIR:-/tmp}/toggle-keyboard"
+  local pid_file="$state_dir/grab.pid"
 
-  if [[ -z "$keyboard_id" ]]; then
-    echo "❌ Could not find keyboard ID for '$keyboard_name'."
+  local event=$(awk -v name="$keyboard_name" '
+    /^N: Name=/ { found = index($0, "\"" name "\"") > 0 }
+    found && /^H: Handlers=/ {
+      for (i = 1; i <= NF; i++) if ($i ~ /^event[0-9]+$/) { print $i; exit }
+    }
+  ' /proc/bus/input/devices)
+
+  if [[ -z "$event" ]]; then
+    echo "❌ Could not find event device for '$keyboard_name'."
     return 1
   fi
+  local dev="/dev/input/$event"
 
-  if xinput | grep -A0 "$keyboard_name" | grep -q 'floating'; then
-    echo "🔄 Reattaching keyboard (ID: $keyboard_id)"
-    xinput reattach "$keyboard_id" 3
+  mkdir -p "$state_dir"
+
+  if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+    echo "🔄 Reattaching keyboard ($dev)"
+    kill "$(cat "$pid_file")"
+    rm -f "$pid_file"
     notify-send "🔌 Keyboard Reattached" "Keyboard input restored."
   else
-    echo "🧊 Floating keyboard (ID: $keyboard_id)"
-    xinput float "$keyboard_id"
-
-    local touchpad_id=$(xinput | grep -i touchpad | grep -Eo 'id=[0-9]+' | grep -Eo '[0-9]+')
-    if [[ -n "$touchpad_id" ]]; then
-      xinput set-prop "$touchpad_id" "libinput Tapping Enabled" 1 2>/dev/null
-      xinput set-prop "$touchpad_id" "libinput Disable While Typing Enabled" 0 2>/dev/null
-      echo "✅ Tap-to-click and touchpad during typing enabled (ID: $touchpad_id)"
-    else
-      echo "⚠️  Touchpad not found."
+    if [[ ! -r "$dev" ]]; then
+      echo "❌ Can't read $dev — add yourself to the 'input' group:"
+      echo "   sudo usermod -aG input \$USER   (then log out and back in)"
+      return 1
     fi
+
+    echo "🧊 Floating keyboard ($dev)"
+    libinput debug-events --grab --device "$dev" >/dev/null 2>&1 &
+    disown
+    echo $! >"$pid_file"
 
     notify-send "⛔️ Keyboard Floated" "Input disabled, palm detection off."
   fi
