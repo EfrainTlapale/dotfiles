@@ -30,5 +30,17 @@ return {
       lang = 'typescript',
       picker = 'snacks-picker',
     },
+    {
+      '2giosangmitom/sqmeow.nvim',
+      dependencies = { 'MunifTanjim/nui.nvim' },
+      version = '*',
+      build = function()
+        -- Downloads the matching release binary; pass 'curl', 'wget', 'powershell' or 'cargo' to choose.
+        require('sqmeow').install()
+      end,
+      opts = {},
+      cmd = 'Sqmeow',
+      keys = {},
+    },
   },
 }
