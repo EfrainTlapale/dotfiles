@@ -257,6 +257,7 @@ vim.lsp.config('rust_analyzer', {
 })
 
 vim.lsp.config('oxlint', {
+  workspace_required = true,
   settings = {
     fixKind = 'all',
   },
