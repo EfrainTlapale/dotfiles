@@ -261,6 +261,9 @@ vim.lsp.config('oxlint', {
     fixKind = 'all',
   },
 })
+vim.lsp.config('oxfmt', {
+  workspace_required = true,
+})
 vim.lsp.enable 'oxfmt'
 
 -- Manually enabled servers (if not covered by Mason auto-enable)
