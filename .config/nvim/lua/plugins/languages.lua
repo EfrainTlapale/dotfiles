@@ -1,7 +1,9 @@
 return {
   {
     'EfrainTlapale/req.nvim',
-    opts = {},
+    opts = {
+      format_on_save = true,
+    },
     ft = { 'http' },
     init = function()
       vim.filetype.add({ extension = { rest = 'http' } })
