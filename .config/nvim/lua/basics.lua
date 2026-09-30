@@ -190,17 +190,6 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile' }, {
   command = 'set filetype=bash',
 })
 
-vim.keymap.set('n', '<leader>R', function()
-  -- 1. Define a hidden location for the temporary session file
-  local session_file = vim.fn.stdpath 'state' .. '/restart_session.vim'
-
-  -- 2. Save the current state (overwriting if it already exists)
-  vim.cmd('mksession! ' .. vim.fn.fnameescape(session_file))
-
-  -- 3. Restart Neovim and tell the new instance to source the session file
-  vim.cmd('restart source ' .. vim.fn.fnameescape(session_file))
-end, { desc = 'Restart Neovim and restore state' })
-
 vim.api.nvim_create_user_command('GitStatus', function(opts)
   require('minifugit').status()
 end, { nargs = '*' })
