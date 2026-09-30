@@ -139,72 +139,72 @@ return {
       })
     end,
   },
-  {
-    'gbprod/yanky.nvim',
-    event = 'TextYankPost',
-    dependencies = {
-      { 'kkharji/sqlite.lua' },
-    },
-    keys = {
-      {
-        'p',
-        function()
-          require('yanky-cycle').put 'p'
-        end,
-        mode = { 'n', 'x' },
-        desc = 'Paste (yanky)',
-      },
-      {
-        'P',
-        function()
-          require('yanky-cycle').put 'P'
-        end,
-        mode = { 'n', 'x' },
-        desc = 'Paste before (yanky)',
-      },
-      {
-        'gp',
-        function()
-          require('yanky-cycle').put 'gp'
-        end,
-        mode = { 'n', 'x' },
-        desc = 'Paste after (gp)',
-      },
-      {
-        'gP',
-        function()
-          require('yanky-cycle').put 'gP'
-        end,
-        mode = { 'n', 'x' },
-        desc = 'Paste before (gP)',
-      },
-      {
-        ']p',
-        function()
-          require('yanky-cycle').put ']p'
-        end,
-        mode = { 'n', 'x' },
-        desc = 'Paste indent after',
-      },
-      {
-        '[p',
-        function()
-          require('yanky-cycle').put '[p'
-        end,
-        mode = { 'n', 'x' },
-        desc = 'Paste indent before',
-      },
-    },
-    opts = {
-      ring = { storage = 'sqlite' },
-      highlight = {
-        on_put = false,
-        on_yank = false,
-      },
-    },
-    config = function(_, opts)
-      require('yanky').setup(opts)
-      require('yanky-cycle').setup({ timeout_ms = 2000 })
-    end,
-  },
+  -- {
+  --   'gbprod/yanky.nvim',
+  --   event = 'TextYankPost',
+  --   dependencies = {
+  --     { 'kkharji/sqlite.lua' },
+  --   },
+  --   keys = {
+  --     {
+  --       'p',
+  --       function()
+  --         require('yanky-cycle').put 'p'
+  --       end,
+  --       mode = { 'n', 'x' },
+  --       desc = 'Paste (yanky)',
+  --     },
+  --     {
+  --       'P',
+  --       function()
+  --         require('yanky-cycle').put 'P'
+  --       end,
+  --       mode = { 'n', 'x' },
+  --       desc = 'Paste before (yanky)',
+  --     },
+  --     {
+  --       'gp',
+  --       function()
+  --         require('yanky-cycle').put 'gp'
+  --       end,
+  --       mode = { 'n', 'x' },
+  --       desc = 'Paste after (gp)',
+  --     },
+  --     {
+  --       'gP',
+  --       function()
+  --         require('yanky-cycle').put 'gP'
+  --       end,
+  --       mode = { 'n', 'x' },
+  --       desc = 'Paste before (gP)',
+  --     },
+  --     {
+  --       ']p',
+  --       function()
+  --         require('yanky-cycle').put ']p'
+  --       end,
+  --       mode = { 'n', 'x' },
+  --       desc = 'Paste indent after',
+  --     },
+  --     {
+  --       '[p',
+  --       function()
+  --         require('yanky-cycle').put '[p'
+  --       end,
+  --       mode = { 'n', 'x' },
+  --       desc = 'Paste indent before',
+  --     },
+  --   },
+  --   opts = {
+  --     ring = { storage = 'sqlite' },
+  --     highlight = {
+  --       on_put = false,
+  --       on_yank = false,
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require('yanky').setup(opts)
+  --     require('yanky-cycle').setup({ timeout_ms = 2000 })
+  --   end,
+  -- },
 }
