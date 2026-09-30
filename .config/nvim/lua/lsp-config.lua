@@ -142,7 +142,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     if
       client.name == 'golangci_lint_ls'
       or client.name == 'gopls'
-      or client.name == 'tsgolsp'
+      or client.name == 'tsc'
       or client.name == 'rust_analyzer'
     then
       vim.diagnostic.config({ update_in_insert = true })
@@ -269,7 +269,7 @@ vim.lsp.enable 'oxfmt'
 
 -- Manually enabled servers (if not covered by Mason auto-enable)
 vim.lsp.enable 'oxlint'
-vim.lsp.enable 'tsgolsp'
+vim.lsp.enable 'tsc'
 vim.lsp.enable 'biome'
 
 -- =============================================================================
