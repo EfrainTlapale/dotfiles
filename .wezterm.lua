@@ -82,6 +82,16 @@ config.keys = {
 		action = wezterm.action.EmitEvent("trigger-vim-with-viewport"),
 	},
 	{
+		key = ")",
+		mods = "CTRL|SHIFT",
+		action = wezterm.action.ActivatePaneDirection("Up"),
+	},
+	{
+		key = "(",
+		mods = "CTRL|SHIFT",
+		action = wezterm.action.ActivatePaneDirection("Down"),
+	},
+	{
 		key = "{",
 		mods = "CTRL|SHIFT",
 		action = wezterm.action.ActivatePaneDirection("Left"),
