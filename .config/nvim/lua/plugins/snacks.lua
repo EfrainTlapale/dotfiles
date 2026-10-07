@@ -50,6 +50,16 @@ return {
       layout = 'dropdown',
       ui_select = false,
       sources = {
+        -- static grep for TODO/FIXME markers; the input then fuzzy-filters the results
+        todos = {
+          finder = 'grep',
+          format = 'file',
+          search = [[\b(TODO|FIXME)\b]],
+          regex = true,
+          live = false,
+          supports_live = true,
+          hidden = true,
+        },
         explorer = {
           jump = {
             close = true,
@@ -195,6 +205,13 @@ return {
       end,
       desc = 'Visual selection or word',
       mode = { 'n', 'x' },
+    },
+    {
+      '<leader>ft',
+      function()
+        Snacks.picker.todos()
+      end,
+      desc = 'TODO comments',
     },
     {
       '<leader>fc',
