@@ -40,7 +40,9 @@ return {
       end,
       opts = {},
       cmd = 'Sqmeow',
-      keys = {},
+      keys = {
+        { '<leader>st', '<cmd>Sqmeow toggle<cr>', desc = 'Toggle' },
+      },
     },
   },
 }
